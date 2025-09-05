@@ -4,11 +4,15 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Notre Dame Football — News</title>
-  <link rel="icon" href="/static/notre-dame-logo.png" />
-  <link rel="apple-touch-icon" href="/static/notre-dame-logo.png" />
-  <link rel="manifest" href="/static/manifest.webmanifest" />
+
+  <!-- Favicons & PWA icons -->
+  <link rel="icon" href="/static/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
+  <link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
+  <link rel="manifest" href="/static/manifest.webmanifest">
+  <meta name="theme-color" content="#0C2340">
+
   <link rel="stylesheet" href="/static/style.css" />
-  <meta name="theme-color" content="#0C2340" />
 </head>
 <body>
   <header class="header">
@@ -22,7 +26,6 @@
   </header>
 
   <nav class="links">
-    <!-- STATIC_LINKS populated server-side? We embed here to keep simple -->
     <a class="pill" href="https://und.com/sports/football/" target="_blank" rel="noopener">Official Site</a>
     <a class="pill" href="https://und.com/sports/football/schedule/" target="_blank" rel="noopener">Schedule</a>
     <a class="pill" href="https://und.com/sports/football/roster/" target="_blank" rel="noopener">Roster</a>
@@ -73,7 +76,6 @@
 
       lastCount = data.count;
 
-      // Render items
       elFeed.innerHTML = (data.items || []).map(item => `
         <article class="card">
           <a href="${item.link}" target="_blank" rel="noopener">
@@ -94,7 +96,6 @@
       load(true);
     });
 
-    // Initial load and silent polling every 5 minutes
     load(true);
     setInterval(async () => {
       const res = await fetch('/items.json', { cache: 'no-store' });
