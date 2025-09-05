@@ -1,14 +1,16 @@
-# collect.py — fetch + filter feeds, write items.json (cap 50)
-import json, time, hashlib
+# collect.py — resilient feed collector for Notre Dame Football
+# Never exits non-zero; always writes items.json even if feeds fail.
+
+import json, time, hashlib, traceback
 from datetime import datetime, timezone
-import feedparser
 from urllib.parse import urlparse
+
+import feedparser
 
 from feeds import FEEDS
 
 MAX_ITEMS = 50
 
-# Safe sources: pass unless clearly another sport
 TRUSTED_SOURCES = {
     "UND.com — News (via Google)",
     "South Bend Tribune — ND Insider (via Google)",
@@ -26,7 +28,6 @@ TRUSTED_SOURCES = {
     "AP News — Notre Dame (via Google)",
 }
 
-# Exclude obvious other sports
 EXCLUDE_TOKENS = [
     "basketball", "mbb", "wbb", "women", "softball", "baseball",
     "volleyball", "soccer", "hockey", "lacrosse", "golf", "tennis",
@@ -53,13 +54,11 @@ def allow_item(entry, feed_name: str) -> bool:
         if bad in text:
             return False
 
-    # Trusted sources: allow with team hint
     if feed_name in TRUSTED_SOURCES:
         if any(tok in text for tok in TEAM_TOKENS) or "notre" in text or "irish" in text:
             return True
         return "notre" in norm(feed_name) or "irish" in norm(feed_name)
 
-    # Others: require team + football-ish
     team_hit = any(tok in text for tok in TEAM_TOKENS) or "notre" in text
     footballish = "football" in text or any(tok in text for tok in FOOTBALL_HINTS)
     return team_hit and footballish
@@ -80,47 +79,74 @@ def parse_time(entry):
 
 def collect():
     items_by_key = {}
+    errors = []
+
     for f in FEEDS:
-        name = f["name"]
-        url = f["url"]
-        d = feedparser.parse(url)
+        name = f.get("name", "Unknown")
+        url = f.get("url")
+        if not url:
+            continue
 
-        for e in d.entries:
-            title = e.get("title", "").strip()
-            link = e.get("link", "").strip()
-            if not title or not link:
-                continue
-            if not allow_item(e, name):
-                continue
+        try:
+            d = feedparser.parse(url)
+            # feedparser never raises for bad feeds; it sets bozo flag.
+            if getattr(d, "bozo", False):
+                print(f"[WARN] BOZO feed: {name} — {getattr(d, 'bozo_exception', '')}")
 
-            published_ts = parse_time(e)
-            summary = e.get("summary", "") or e.get("description", "")
-            domain = host_of(link)
+            for e in d.entries:
+                title = e.get("title", "").strip()
+                link = e.get("link", "").strip()
+                if not title or not link:
+                    continue
+                if not allow_item(e, name):
+                    continue
 
-            key = uniq_key(link, title)
-            if key in items_by_key:
-                continue
+                key = uniq_key(link, title)
+                if key in items_by_key:
+                    continue
 
-            items_by_key[key] = {
-                "title": title,
-                "link": link,
-                "summary": summary,
-                "published": published_ts,
-                "source": name,
-                "domain": domain,
-            }
+                items_by_key[key] = {
+                    "title": title,
+                    "link": link,
+                    "summary": e.get("summary", "") or e.get("description", ""),
+                    "published": parse_time(e),
+                    "source": name,
+                    "domain": host_of(link),
+                }
+
+            print(f"[OK] {name}: {len(getattr(d, 'entries', []))} entries parsed")
+
+        except Exception as ex:
+            msg = f"[ERROR] {name}: {ex}"
+            errors.append(msg)
+            print(msg)
+            traceback.print_exc()
 
     items = sorted(items_by_key.values(), key=lambda x: x["published"], reverse=True)[:MAX_ITEMS]
     payload = {
         "team": "Notre Dame Football",
         "updated": int(time.time()),
         "count": len(items),
-        "items": items
+        "items": items,
+        "notes": {"errors": errors[:10]}  # keep a peek at problems without failing
     }
+
     with open("items.json", "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=2)
 
-    print(f"Wrote {len(items)} items to items.json at {datetime.now(timezone.utc).isoformat()}")
+    ts = datetime.now(timezone.utc).isoformat()
+    print(f"[WRITE] items.json — {len(items)} items @ {ts} (UTC)")
+    if errors:
+        print(f"[INFO] Non-fatal feed errors: {len(errors)} (written into items.json.notes)")
 
 if __name__ == "__main__":
-    collect()
+    # Never raise — we always write a valid items.json and exit(0)
+    try:
+        collect()
+    except Exception as e:
+        print(f"[FATAL] collector crashed unexpectedly: {e}")
+        traceback.print_exc()
+        # write a minimal file so the site still renders
+        with open("items.json", "w", encoding="utf-8") as f:
+            json.dump({"team":"Notre Dame Football","updated":int(time.time()),"count":0,"items":[]}, f, indent=2)
+        # do NOT exit non-zero — GH Actions will mark job green
