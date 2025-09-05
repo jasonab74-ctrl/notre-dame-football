@@ -3,32 +3,29 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Notre Dame Football — News</title>
+  <title>{{ title or 'Notre Dame Football — News' }}</title>
 
-  <!-- Favicons & PWA -->
+  <!-- Icons & manifest (optional; safe if missing) -->
   <link rel="icon" href="/static/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
   <link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
   <link rel="manifest" href="/static/manifest.webmanifest">
   <meta name="theme-color" content="#0C2340">
-
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
   <header class="header">
     <img class="logo" src="/static/notre-dame-logo.png" alt="Notre Dame logo" />
     <div>
-      <h1>Notre Dame Football</h1>
+      <h1>Notre Dame<br/>Football</h1>
       <div id="updated" class="muted">Updated: —</div>
     </div>
     <button id="play-fight-song" class="pill">Victory March</button>
     <audio id="fight-song" src="/static/fight-song.mp3" preload="auto"></audio>
   </header>
 
-  <!-- Top links auto-filled from /feeds.json -->
   <nav id="links" class="links"></nav>
 
-  <!-- Controls row: Sources dropdown (Purdue-style) -->
   <section class="controls">
     <label for="sourceSel" class="muted">Sources:</label>
     <select id="sourceSel" class="select">
@@ -44,11 +41,7 @@
   </footer>
 
   <script>
-    const fmtTime = (ts) => {
-      if (!ts) return "";
-      const d = new Date(ts * 1000);
-      return d.toLocaleString();
-    };
+    const fmtTime = (ts) => ts ? new Date(ts * 1000).toLocaleString() : "";
 
     const elUpdated = document.getElementById('updated');
     const elFeed = document.getElementById('feed');
@@ -56,9 +49,9 @@
     const elReload = document.getElementById('reload');
     const elLinks = document.getElementById('links');
     const elSource = document.getElementById('sourceSel');
-
     const fightBtn = document.getElementById('play-fight-song');
     const audio = document.getElementById('fight-song');
+
     fightBtn.addEventListener('click', () => {
       if (audio.paused) { audio.currentTime = 0; audio.play(); fightBtn.textContent = '⏸ Victory March'; }
       else { audio.pause(); fightBtn.textContent = 'Victory March'; }
@@ -68,7 +61,6 @@
     let currentSource = "__all__";
     let cache = { items: [], updated: 0 };
 
-    // Populate links row and sources dropdown from /feeds.json
     async function hydrateMeta() {
       try {
         const meta = await (await fetch('/feeds.json', {cache:'no-store'})).json();
@@ -83,7 +75,6 @@
     }
 
     function render(items) {
-      // Filter by source if selected
       const filtered = currentSource === "__all__"
         ? items
         : items.filter(i => (i.source || '').toLowerCase() === currentSource.toLowerCase());
@@ -108,14 +99,12 @@
       const data = await res.json();
       cache = data;
       elUpdated.textContent = 'Updated: ' + fmtTime(data.updated);
-
       if (!initial && data.count > lastCount) elNotice.classList.remove('hidden');
       lastCount = data.count;
-
       render(data.items || []);
     }
 
-    elReload.addEventListener('click', () => {
+    elReload?.addEventListener('click', () => {
       elNotice.classList.add('hidden');
       load(true);
     });
@@ -125,7 +114,6 @@
       render(cache.items || []);
     });
 
-    // Boot
     hydrateMeta();
     load(true);
     setInterval(async () => {
