@@ -1,0 +1,94 @@
+:root {
+  --navy: #0C2340;
+  --gold: #C99700;
+  --bg: #0c2340;          /* deep navy background */
+  --card: #142b4b;        /* slightly lighter navy for cards */
+  --text: #f7f7f7;
+  --muted: #cbd5e1;
+  --accent: #C99700;      /* gold */
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
+
+.header {
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 2px solid var(--accent);
+}
+.logo { width: 64px; height: 64px; object-fit: contain; }
+h1 { margin: 0; font-size: 1.5rem; letter-spacing: 0.2px; }
+.muted { color: var(--muted); font-size: 0.9rem; margin-top: 2px; }
+
+.pill {
+  background: var(--accent);
+  color: #0b1222;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: transform .05s ease-in-out, opacity .15s;
+}
+.pill:hover { transform: translateY(-1px); opacity: 0.95; }
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.notice {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  background: #123; border-left: 4px solid var(--accent);
+  margin: 10px 16px; padding: 10px 12px; border-radius: 8px;
+}
+.notice.hidden { display: none; }
+.notice button { composes: pill; }
+
+.grid {
+  padding: 16px;
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 12px;
+}
+
+/* 3 per row on desktop, 2 on tablets, 1 on phones */
+@media (min-width: 720px) {
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 1024px) {
+  .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 14px 14px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.2);
+}
+.card a { color: inherit; text-decoration: none; }
+.card h3 { margin: 0 0 8px; font-size: 1.05rem; line-height: 1.25; }
+.card .summary { margin: 0 0 10px; color: #e5e7eb; font-size: 0.95rem; }
+.card .meta { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 0.85rem; }
+.card .meta .dot { opacity: 0.7; }
+
+.footer {
+  padding: 20px 16px;
+  color: var(--muted);
+  text-align: center;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+/* PWA-ish manifest minimal (served as static file if you add it) */
