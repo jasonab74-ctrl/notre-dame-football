@@ -1,4 +1,6 @@
-:root{--navy:#0C2340;--gold:#C99700;--bg:#0c2340;--card:#142b4b;--text:#f7f7f7;--muted:#cbd5e1;--accent:#C99700}
+:root{
+  --navy:#0C2340;--gold:#C99700;--bg:#0c2340;--card:#142b4b;--text:#f7f7f7;--muted:#cbd5e1;--accent:#C99700
+}
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%}
 
@@ -9,34 +11,84 @@ h1{margin:0;font-size:1.35rem;line-height:1.15;letter-spacing:.2px;word-break:br
 .muted{color:var(--muted);font-size:.9rem;margin-top:2px}
 
 /* Pills */
-.pill{background:var(--accent);color:#0b1222;border:0;border-radius:999px;font-weight:700;text-decoration:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;min-height:44px;line-height:1.2;text-align:center;transition:transform .06s ease,opacity .15s ease;white-space:nowrap}
+.pill{
+  background:var(--accent);
+  color:#0b1222;
+  border:0;
+  border-radius:999px;
+  font-weight:700;
+  text-decoration:none;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:9px 12px;              /* tighter height */
+  min-height:42px;               /* still thumb-friendly */
+  line-height:1.15;
+  text-align:center;
+  transition:transform .06s ease,opacity .15s ease;
+  white-space:normal;            /* allow 2-line wrap for long labels */
+}
 .pill:focus{outline:3px solid rgba(201,151,0,.45);outline-offset:2px}
 .pill:hover{transform:translateY(-1px);opacity:.96}
 .pill:active{transform:translateY(0);opacity:.92}
 
-/* Top links (flow like Purdue style) */
+/* Top links — Purdue-style flow (not strict grid) */
 .links{
   padding:12px 14px;
   border-bottom:1px solid rgba(255,255,255,.08);
   display:flex;
   flex-wrap:wrap;
-  gap:10px;
+  gap:10px;                      /* consistent spacing between pills */
 }
 .links .pill{
-  flex:0 0 auto; /* pills keep their natural width */
+  flex:0 0 auto;                 /* keep natural width */
+  font-size:0.98rem;             /* slightly smaller to reduce wrapping */
+  padding-inline:14px;
 }
 
 /* Controls */
-.controls{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.08)}
-.select{background:var(--card);color:var(--text);border:1px solid rgba(255,255,255,.22);border-radius:12px;padding:10px 12px;font-size:1rem;min-height:44px}
+.controls{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:10px;
+  align-items:center;
+  padding:10px 14px;
+  border-bottom:1px solid rgba(255,255,255,.08)
+}
+.select{
+  background:var(--card);
+  color:var(--text);
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:12px;
+  padding:10px 12px;
+  font-size:1rem;
+  min-height:44px
+}
 
 /* Notice */
-.notice{grid-column:1/-1;display:flex;gap:8px;align-items:center;background:rgba(18,34,52,.9);border-left:4px solid var(--accent);margin-top:6px;padding:10px 12px;border-radius:10px}
+.notice{
+  grid-column:1/-1;
+  display:flex;
+  gap:8px;
+  align-items:center;
+  background:rgba(18,34,52,.9);
+  border-left:4px solid var(--accent);
+  margin-top:6px;
+  padding:10px 12px;
+  border-radius:10px
+}
 .notice.hidden{display:none}
 
-/* Grid & cards */
+/* Feed grid & cards */
 .grid{padding:14px;display:grid;grid-template-columns:1fr;gap:12px}
-.card{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:14px;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.card{
+  background:var(--card);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:14px;
+  padding:14px;
+  box-shadow:0 1px 2px rgba(0,0,0,.2)
+}
 .card a{color:inherit;text-decoration:none;display:block}
 .card h3{margin:0 0 8px;font-size:1.05rem;line-height:1.25}
 .card .summary{margin:0 0 10px;color:#e5e7eb;font-size:.95rem}
@@ -51,6 +103,7 @@ h1{margin:0;font-size:1.35rem;line-height:1.15;letter-spacing:.2px;word-break:br
   .header{grid-template-columns:64px 1fr auto;padding:14px 16px}
   .logo{width:64px;height:64px}
   h1{font-size:1.5rem}
+  .links .pill{font-size:1rem}
   .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
