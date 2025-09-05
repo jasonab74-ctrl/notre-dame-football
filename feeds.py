@@ -1,21 +1,20 @@
-# feeds.py — Notre Dame Football sources + quick links (beefed up)
+# feeds.py — Notre Dame Football sources + quick links
 
 FEEDS = [
-    # --- Big aggregators
+    # Aggregators
     {"name": "Google News — Notre Dame Football",
      "url": "https://news.google.com/rss/search?q=%22Notre+Dame%22+football+OR+%22Fighting+Irish%22+football&hl=en-US&gl=US&ceid=US:en"},
     {"name": "Bing News — Notre Dame Football",
      "url": "https://www.bing.com/news/search?q=%22Notre+Dame%22+football+OR+%22Fighting+Irish%22+football&format=rss"},
 
-    # --- Core ND outlets
+    # Core outlets
     {"name": "UND.com — News (via Google)",
      "url": "https://news.google.com/rss/search?q=site:und.com+football+%22Notre+Dame%22&hl=en-US&gl=US&ceid=US:en"},
     {"name": "South Bend Tribune — ND Insider (via Google)",
      "url": "https://news.google.com/rss/search?q=site:ndinsider.com+Notre+Dame+football&hl=en-US&gl=US&ceid=US:en"},
     {"name": "Chicago Tribune — Notre Dame (via Google)",
      "url": "https://news.google.com/rss/search?q=site:chicagotribune.com+Notre+Dame+football&hl=en-US&gl=US&ceid=US:en"},
-    {"name": "NBC Sports — Notre Dame",
-     "url": "https://www.nbcsports.com/tags/notre-dame-fighting-irish/rss"},
+    {"name": "NBC Sports — Notre Dame", "url": "https://www.nbcsports.com/tags/notre-dame-fighting-irish/rss"},
     {"name": "CBS Sports — Notre Dame (via Google)",
      "url": "https://news.google.com/rss/search?q=site:cbssports.com+Notre+Dame+football&hl=en-US&gl=US&ceid=US:en"},
     {"name": "Yahoo Sports — Notre Dame (via Google)",
@@ -25,30 +24,26 @@ FEEDS = [
     {"name": "The Athletic — Notre Dame (via Google)",
      "url": "https://news.google.com/rss/search?q=site:theathletic.com+Notre+Dame+football&hl=en-US&gl=US&ceid=US:en"},
 
-    # --- Recruiting / Team blogs
-    {"name": "One Foot Down (SB Nation)",
-     "url": "https://www.onefootdown.com/rss/index.xml"},
-    {"name": "Blue & Gold — On3",
-     "url": "https://www.on3.com/teams/notre-dame-fighting-irish/news/rss"},
-    {"name": "247Sports — Notre Dame",
-     "url": "https://247sports.com/college/notre-dame/Feed.rss"},
+    # Recruiting / blogs
+    {"name": "One Foot Down (SB Nation)", "url": "https://www.onefootdown.com/rss/index.xml"},
+    {"name": "Blue & Gold — On3", "url": "https://www.on3.com/teams/notre-dame-fighting-irish/news/rss"},
+    {"name": "247Sports — Notre Dame", "url": "https://247sports.com/college/notre-dame/Feed.rss"},
     {"name": "Irish Illustrated (Rivals via Google)",
      "url": "https://news.google.com/rss/search?q=site:notredame.rivals.com+football&hl=en-US&gl=US&ceid=US:en"},
 
-    # --- National team pages via Google
+    # National team pages
     {"name": "ESPN — Notre Dame (via Google)",
      "url": "https://news.google.com/rss/search?q=site:espn.com+Notre+Dame+football&hl=en-US&gl=US&ceid=US:en"},
     {"name": "AP News — Notre Dame (via Google)",
      "url": "https://news.google.com/rss/search?q=site:apnews.com+Notre+Dame+football&hl=en-US&gl=US&ceid=US:en"},
 
-    # --- Reddit (fresh chatter)
+    # Reddit
     {"name": "Reddit — r/notredame (football)",
      "url": "https://www.reddit.com/r/notredame/search.rss?q=football&restrict_sr=on&sort=new"},
     {"name": "Reddit — r/CFB (ND search)",
      "url": "https://www.reddit.com/r/CFB/search.rss?q=%22Notre+Dame%22+football&restrict_sr=on&sort=new"},
 ]
 
-# Top-row quick links — added Reddit and a few more “Purdue-style” pills
 STATIC_LINKS = [
     {"label": "Official Site", "href": "https://und.com/sports/football/"},
     {"label": "Schedule", "href": "https://und.com/sports/football/schedule/"},
