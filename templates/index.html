@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Notre Dame Football — News</title>
 
-  <!-- Favicons & PWA icons -->
+  <!-- Favicons & PWA -->
   <link rel="icon" href="/static/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
   <link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
@@ -25,18 +25,17 @@
     <audio id="fight-song" src="/static/fight-song.mp3" preload="auto"></audio>
   </header>
 
-  <nav class="links">
-    <a class="pill" href="https://und.com/sports/football/" target="_blank" rel="noopener">Official Site</a>
-    <a class="pill" href="https://und.com/sports/football/schedule/" target="_blank" rel="noopener">Schedule</a>
-    <a class="pill" href="https://und.com/sports/football/roster/" target="_blank" rel="noopener">Roster</a>
-    <a class="pill" href="https://www.espn.com/college-football/team/_/id/87/notre-dame-fighting-irish" target="_blank" rel="noopener">ESPN Team Page</a>
-    <a class="pill" href="https://247sports.com/college/notre-dame/" target="_blank" rel="noopener">247Sports</a>
-    <a class="pill" href="https://www.on3.com/teams/notre-dame-fighting-irish/" target="_blank" rel="noopener">On3 (Blue &amp; Gold)</a>
-    <a class="pill" href="https://apnews.com/hub/ap-top-25-college-football-poll" target="_blank" rel="noopener">AP Top 25</a>
-    <a class="pill" href="https://collegefootballplayoff.com/rankings" target="_blank" rel="noopener">CFP Rankings</a>
-  </nav>
+  <!-- Top links auto-filled from /feeds.json -->
+  <nav id="links" class="links"></nav>
 
-  <div id="notice" class="notice hidden">New items available — <button id="reload">refresh</button></div>
+  <!-- Controls row: Sources dropdown (Purdue-style) -->
+  <section class="controls">
+    <label for="sourceSel" class="muted">Sources:</label>
+    <select id="sourceSel" class="select">
+      <option value="__all__">All sources</option>
+    </select>
+    <div id="notice" class="notice hidden">New items available — <button id="reload" class="pill">refresh</button></div>
+  </section>
 
   <main id="feed" class="grid"></main>
 
@@ -55,6 +54,8 @@
     const elFeed = document.getElementById('feed');
     const elNotice = document.getElementById('notice');
     const elReload = document.getElementById('reload');
+    const elLinks = document.getElementById('links');
+    const elSource = document.getElementById('sourceSel');
 
     const fightBtn = document.getElementById('play-fight-song');
     const audio = document.getElementById('fight-song');
@@ -64,19 +65,30 @@
     });
 
     let lastCount = 0;
+    let currentSource = "__all__";
+    let cache = { items: [], updated: 0 };
 
-    async function load(initial=false) {
-      const res = await fetch('/items.json', { cache: 'no-store' });
-      const data = await res.json();
-      elUpdated.textContent = 'Updated: ' + fmtTime(data.updated);
-
-      if (!initial && data.count > lastCount) {
-        elNotice.classList.remove('hidden');
+    // Populate links row and sources dropdown from /feeds.json
+    async function hydrateMeta() {
+      try {
+        const meta = await (await fetch('/feeds.json', {cache:'no-store'})).json();
+        const links = meta.links || [];
+        elLinks.innerHTML = links.map(l => `<a class="pill" href="${l.href}" target="_blank" rel="noopener">${l.label}</a>`).join('');
+        const feeds = meta.feeds || [];
+        const opts = feeds.map(f => `<option value="${f.name}">${f.name}</option>`).join('');
+        elSource.insertAdjacentHTML('beforeend', opts);
+      } catch (e) {
+        console.warn('feeds.json unavailable', e);
       }
+    }
 
-      lastCount = data.count;
+    function render(items) {
+      // Filter by source if selected
+      const filtered = currentSource === "__all__"
+        ? items
+        : items.filter(i => (i.source || '').toLowerCase() === currentSource.toLowerCase());
 
-      elFeed.innerHTML = (data.items || []).map(item => `
+      elFeed.innerHTML = (filtered || []).map(item => `
         <article class="card">
           <a href="${item.link}" target="_blank" rel="noopener">
             <h3>${item.title}</h3>
@@ -91,18 +103,35 @@
       `).join('');
     }
 
+    async function load(initial=false) {
+      const res = await fetch('/items.json', { cache: 'no-store' });
+      const data = await res.json();
+      cache = data;
+      elUpdated.textContent = 'Updated: ' + fmtTime(data.updated);
+
+      if (!initial && data.count > lastCount) elNotice.classList.remove('hidden');
+      lastCount = data.count;
+
+      render(data.items || []);
+    }
+
     elReload.addEventListener('click', () => {
       elNotice.classList.add('hidden');
       load(true);
     });
 
+    elSource.addEventListener('change', (e) => {
+      currentSource = e.target.value || "__all__";
+      render(cache.items || []);
+    });
+
+    // Boot
+    hydrateMeta();
     load(true);
     setInterval(async () => {
       const res = await fetch('/items.json', { cache: 'no-store' });
       const data = await res.json();
-      if (data.count > lastCount) {
-        elNotice.classList.remove('hidden');
-      }
+      if (data.count > lastCount) elNotice.classList.remove('hidden');
     }, 5 * 60 * 1000);
   </script>
 </body>
