@@ -1,183 +1,155 @@
-/* === Base Reset === */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
+/* ===== Base Reset ===== */
 body {
-  font-family: system-ui, -apple-system, sans-serif;
-  background: #0C2340; /* ND navy background */
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #0C2340; /* ND blue background */
   color: #fff;
-  line-height: 1.4;
-  -webkit-font-smoothing: antialiased;
 }
 
-a {
-  text-decoration: none;
-  color: inherit;
+h1, h2, h3 {
+  margin: 0;
+  font-weight: 600;
 }
 
-/* === Layout === */
+/* ===== Header ===== */
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 1rem;
+  padding: 12px 16px;
   background: #0C2340;
+  color: #fff;
 }
 
-.logo {
+.header img.logo {
   height: 48px;
-  margin-right: 0.75rem;
+  margin-right: 12px;
 }
 
 .header h1 {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: 1.4rem;
   line-height: 1.2;
 }
 
-.muted {
-  font-size: 0.8rem;
-  opacity: 0.75;
+.header .muted {
+  font-size: 0.85rem;
+  color: #ccc;
 }
 
-/* === Buttons (links + fight song) === */
-.pill,
-.links a {
-  display: inline-block;
-  margin: 0.25rem;
-  padding: 0.4rem 0.85rem;
-  border-radius: 999px;
+/* ===== Buttons ===== */
+.pill, button {
   background: #C99700; /* ND gold */
-  font-size: 0.9rem;
+  color: #0C2340;       /* ND blue text */
+  border: none;
+  border-radius: 9999px;
+  padding: 6px 14px;
+  font-size: 0.95rem;
   font-weight: 600;
-  color: #0C2340;
-  transition: background 0.2s ease, transform 0.1s ease;
-  text-align: center;
-}
-
-.pill:hover,
-.links a:hover {
-  background: #e0ad00;
-  transform: translateY(-1px);
-}
-
-#play-fight-song {
-  min-width: 120px;
-  text-align: center;
-}
-
-/* prevent layout shift when text changes */
-#play-fight-song {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
+  margin: 4px;
+  cursor: pointer;
   white-space: nowrap;
 }
 
-/* === Controls (sources dropdown + notice) === */
-.controls {
+.pill:hover, button:hover {
+  opacity: 0.9;
+}
+
+/* ===== Nav Links (Fix jumble) ===== */
+.links {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  padding: 0.5rem 1rem;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 12px;
   background: #0C2340;
-  gap: 0.5rem;
 }
 
-.select {
-  font-size: 0.85rem;
-  padding: 0.3rem 0.5rem;
+.links a {
+  text-decoration: none;
+  background: #C99700;
+  color: #0C2340;
+  border-radius: 9999px;
+  padding: 6px 14px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+
+.links a:hover {
+  opacity: 0.9;
+}
+
+/* ===== Dropdown (Sources) ===== */
+select.select {
+  padding: 6px 10px;
   border-radius: 6px;
   border: 1px solid #ccc;
-  background: #fff;
-  color: #0C2340;
-  max-width: 180px; /* shorten dropdown on mobile */
+  font-size: 0.9rem;
+  margin: 8px;
+  max-width: 90%;
 }
 
-.notice {
-  font-size: 0.85rem;
-  color: #fff;
-}
-.notice.hidden {
-  display: none;
-}
-
-/* === Feed Grid === */
+/* ===== Feed Grid ===== */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1rem;
-  padding: 1rem;
+  gap: 14px;
+  padding: 16px;
 }
 
+/* ===== Article Cards ===== */
 .card {
-  background: #13294B; /* slightly lighter navy */
-  border-radius: 12px;
-  padding: 1rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-  transition: transform 0.1s ease;
-}
-
-.card:hover {
-  transform: translateY(-2px);
+  background: #13294B; /* slightly lighter ND blue */
+  border-radius: 10px;
+  padding: 14px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
 }
 
 .card h3 {
   font-size: 1rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
+  margin-bottom: 6px;
   color: #fff;
 }
 
 .card .summary {
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
-  color: #e5e5e5;
+  font-size: 0.85rem;
+  color: #ddd;
+  margin-bottom: 8px;
 }
 
 .card .meta {
   font-size: 0.75rem;
+  color: #aaa;
   display: flex;
-  gap: 0.25rem;
-  color: #bbb;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
-.card .source {
-  font-weight: 600;
-  color: #C99700;
-}
-
-/* === Footer === */
+/* ===== Footer ===== */
 .footer {
   text-align: center;
-  font-size: 0.75rem;
-  opacity: 0.6;
-  padding: 1rem;
+  font-size: 0.8rem;
+  padding: 16px;
+  color: #ccc;
 }
 
-/* === Mobile Tweaks === */
+/* ===== Mobile Tweaks ===== */
 @media (max-width: 600px) {
-  .header h1 {
-    font-size: 1rem;
+  .header {
+    flex-direction: column;
+    text-align: center;
   }
-
-  .pill,
-  .links a {
-    font-size: 0.8rem;
-    padding: 0.35rem 0.7rem;
+  .header img.logo {
+    margin-bottom: 8px;
   }
-
-  .controls {
-    flex-direction: row;
+  .links {
     justify-content: flex-start;
+    padding: 8px;
   }
-
-  .grid {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-    padding: 0.5rem;
+  .pill, .links a {
+    font-size: 0.85rem;
+    padding: 5px 12px;
   }
 }
