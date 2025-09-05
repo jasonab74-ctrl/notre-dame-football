@@ -6,7 +6,6 @@ app = Flask(__name__, template_folder="templates", static_folder="static")
 
 @app.route("/")
 def index():
-    # Serve index even if templates/index.html missing
     try:
         return render_template("index.html")
     except Exception as e:
@@ -16,17 +15,15 @@ def index():
 def items():
     path = "items.json"
     if not os.path.exists(path):
-        bootstrap = {
+        return jsonify({
             "team": "Notre Dame Fighting Irish — Football",
             "updated": int(time.time()),
             "count": 0,
             "items": []
-        }
-        return jsonify(bootstrap)
+        })
     try:
         return send_file(path, mimetype="application/json")
     except Exception:
-        # If file locked/corrupt, return safe payload
         with open(path, "r", encoding="utf-8", errors="ignore") as f:
             try:
                 data = json.load(f)
@@ -60,5 +57,4 @@ def health():
     return jsonify(status)
 
 if __name__ == "__main__":
-    # Local/dev runner (Railway can also run this if you set Start Command to python3 server.py)
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", "5000")), debug=False)
