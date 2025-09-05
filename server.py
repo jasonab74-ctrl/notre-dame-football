@@ -9,12 +9,13 @@ def log(msg: str):
 
 app = Flask(__name__, static_folder="static")
 
-HTML = f"""<!doctype html>
+# NOTE: This is NOT an f-string anymore (no leading 'f'), so JS braces won't break Python.
+HTML = """<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{APP_TITLE} — News</title>
+  <title>Notre Dame Football — News</title>
   <link rel="icon" href="/static/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
   <link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
