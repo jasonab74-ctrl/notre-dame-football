@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Notre Dame Football — News</title>
+  <link rel="icon" href="/static/notre-dame-logo.png" />
+  <link rel="apple-touch-icon" href="/static/notre-dame-logo.png" />
+  <link rel="manifest" href="/static/manifest.webmanifest" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <meta name="theme-color" content="#0C2340" />
+</head>
+<body>
+  <header class="header">
+    <img class="logo" src="/static/notre-dame-logo.png" alt="Notre Dame logo" />
+    <div>
+      <h1>Notre Dame Football</h1>
+      <div id="updated" class="muted">Updated: —</div>
+    </div>
+    <button id="play-fight-song" class="pill">Victory March</button>
+    <audio id="fight-song" src="/static/fight-song.mp3" preload="auto"></audio>
+  </header>
+
+  <nav class="links">
+    <!-- STATIC_LINKS populated server-side? We embed here to keep simple -->
+    <a class="pill" href="https://und.com/sports/football/" target="_blank" rel="noopener">Official Site</a>
+    <a class="pill" href="https://und.com/sports/football/schedule/" target="_blank" rel="noopener">Schedule</a>
+    <a class="pill" href="https://und.com/sports/football/roster/" target="_blank" rel="noopener">Roster</a>
+    <a class="pill" href="https://www.espn.com/college-football/team/_/id/87/notre-dame-fighting-irish" target="_blank" rel="noopener">ESPN Team Page</a>
+    <a class="pill" href="https://247sports.com/college/notre-dame/" target="_blank" rel="noopener">247Sports</a>
+    <a class="pill" href="https://www.on3.com/teams/notre-dame-fighting-irish/" target="_blank" rel="noopener">On3 (Blue &amp; Gold)</a>
+    <a class="pill" href="https://apnews.com/hub/ap-top-25-college-football-poll" target="_blank" rel="noopener">AP Top 25</a>
+    <a class="pill" href="https://collegefootballplayoff.com/rankings" target="_blank" rel="noopener">CFP Rankings</a>
+  </nav>
+
+  <div id="notice" class="notice hidden">New items available — <button id="reload">refresh</button></div>
+
+  <main id="feed" class="grid"></main>
+
+  <footer class="footer">
+    <span>Built with your Sports App template.</span>
+  </footer>
+
+  <script>
+    const fmtTime = (ts) => {
+      if (!ts) return "";
+      const d = new Date(ts * 1000);
+      return d.toLocaleString();
+    };
+
+    const elUpdated = document.getElementById('updated');
+    const elFeed = document.getElementById('feed');
+    const elNotice = document.getElementById('notice');
+    const elReload = document.getElementById('reload');
+
+    const fightBtn = document.getElementById('play-fight-song');
+    const audio = document.getElementById('fight-song');
+    fightBtn.addEventListener('click', () => {
+      if (audio.paused) { audio.currentTime = 0; audio.play(); fightBtn.textContent = '⏸ Victory March'; }
+      else { audio.pause(); fightBtn.textContent = 'Victory March'; }
+    });
+
+    let lastCount = 0;
+
+    async function load(initial=false) {
+      const res = await fetch('/items.json', { cache: 'no-store' });
+      const data = await res.json();
+      elUpdated.textContent = 'Updated: ' + fmtTime(data.updated);
+
+      if (!initial && data.count > lastCount) {
+        elNotice.classList.remove('hidden');
+      }
+
+      lastCount = data.count;
+
+      // Render items
+      elFeed.innerHTML = (data.items || []).map(item => `
+        <article class="card">
+          <a href="${item.link}" target="_blank" rel="noopener">
+            <h3>${item.title}</h3>
+            <p class="summary">${item.summary || ''}</p>
+            <div class="meta">
+              <span class="source">${item.source || ''}</span>
+              <span class="dot">•</span>
+              <span class="time">${fmtTime(item.published)}</span>
+            </div>
+          </a>
+        </article>
+      `).join('');
+    }
+
+    elReload.addEventListener('click', () => {
+      elNotice.classList.add('hidden');
+      load(true);
+    });
+
+    // Initial load and silent polling every 5 minutes
+    load(true);
+    setInterval(async () => {
+      const res = await fetch('/items.json', { cache: 'no-store' });
+      const data = await res.json();
+      if (data.count > lastCount) {
+        elNotice.classList.remove('hidden');
+      }
+    }, 5 * 60 * 1000);
+  </script>
+</body>
+</html>
