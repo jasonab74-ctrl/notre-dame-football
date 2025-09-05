@@ -1,21 +1,25 @@
-# server.py — resilient single-file Flask app for Railway
-import os, json, time, traceback
+# server.py — single-file Flask app (robust for Railway)
+import os
+import json
+import time
+import traceback
 from flask import Flask, jsonify, Response, send_file
 
 APP_TITLE = "Notre Dame Football"
 
-def log(msg: str):
+def log(msg: str) -> None:
     print(f"[SERVER] {msg}", flush=True)
 
 app = Flask(__name__, static_folder="static")
 
-# NOTE: This is NOT an f-string anymore (no leading 'f'), so JS braces won't break Python.
+# NOTE: This is NOT an f-string on purpose.
+# We inject APP_TITLE by replacing the __APP_TITLE__ marker at response time.
 HTML = """<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Notre Dame Football — News</title>
+  <title>__APP_TITLE__ — News</title>
   <link rel="icon" href="/static/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
   <link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
@@ -61,10 +65,12 @@ HTML = """<!doctype html>
     const fightBtn = document.getElementById('play-fight-song');
     const audio = document.getElementById('fight-song');
 
-    fightBtn?.addEventListener('click', () => {
-      if (audio.paused) { audio.currentTime = 0; audio.play(); fightBtn.textContent = '⏸ Victory March'; }
-      else { audio.pause(); fightBtn.textContent = 'Victory March'; }
-    });
+    if (fightBtn) {
+      fightBtn.addEventListener('click', () => {
+        if (audio.paused) { audio.currentTime = 0; audio.play(); fightBtn.textContent = '⏸ Victory March'; }
+        else { audio.pause(); fightBtn.textContent = 'Victory March'; }
+      });
+    }
 
     let lastCount = 0;
     let currentSource = "__all__";
@@ -126,9 +132,11 @@ HTML = """<!doctype html>
     hydrateMeta();
     load(true);
     setInterval(async () => {
-      const res = await fetch('/items.json', { cache: 'no-store' });
-      const data = await res.json();
-      if (data.count > lastCount) elNotice.classList.remove('hidden');
+      try {
+        const res = await fetch('/items.json', { cache: 'no-store' });
+        const data = await res.json();
+        if (data.count > lastCount) elNotice.classList.remove('hidden');
+      } catch (_) {}
     }, 5 * 60 * 1000);
   </script>
 </body>
@@ -137,7 +145,7 @@ HTML = """<!doctype html>
 
 @app.get("/")
 def index():
-    return Response(HTML, mimetype="text/html")
+    return Response(HTML.replace("__APP_TITLE__", APP_TITLE), mimetype="text/html")
 
 @app.get("/items.json")
 def items():
