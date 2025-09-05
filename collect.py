@@ -6,25 +6,34 @@ from urllib.parse import urlparse
 
 from feeds import FEEDS
 
-# Tweakable settings
 MAX_ITEMS = 50
+
+# Safe sources: pass unless clearly another sport
 TRUSTED_SOURCES = {
-    "One Foot Down",
-    "Blue & Gold — On3 Notre Dame",
+    "UND.com — News (via Google)",
+    "South Bend Tribune — ND Insider (via Google)",
+    "Chicago Tribune — Notre Dame (via Google)",
+    "NBC Sports — Notre Dame",
+    "CBS Sports — Notre Dame (via Google)",
+    "Yahoo Sports — Notre Dame (via Google)",
+    "USA Today — Fighting Irish Wire (via Google)",
+    "The Athletic — Notre Dame (via Google)",
+    "One Foot Down (SB Nation)",
+    "Blue & Gold — On3",
     "247Sports — Notre Dame",
-    "Official — UND.com Football (via Google)",
+    "Irish Illustrated (Rivals via Google)",
     "ESPN — Notre Dame (via Google)",
+    "AP News — Notre Dame (via Google)",
 }
 
-INCLUDE_TOKENS = [
-    "notre dame", "fighting irish", "south bend",
-    "football", "ndfb", "freeman", "marcus freeman"
-]
+# Exclude obvious other sports
 EXCLUDE_TOKENS = [
-    # hard filters for other sports/noise
     "basketball", "mbb", "wbb", "women", "softball", "baseball",
-    "volleyball", "soccer", "hockey", "lacrosse", "golf",
+    "volleyball", "soccer", "hockey", "lacrosse", "golf", "tennis",
 ]
+
+TEAM_TOKENS = ["notre dame", "fighting irish", "south bend", " nd "]
+FOOTBALL_HINTS = ["football", "ndfb", "marcus freeman", "qb", "quarterback", "linebacker"]
 
 def norm(s: str) -> str:
     return (s or "").lower()
@@ -35,37 +44,31 @@ def host_of(url: str) -> str:
     except Exception:
         return ""
 
-def allow_item(item, feed_name: str) -> bool:
-    title = norm(item.get("title"))
-    summary = norm(item.get("summary"))
+def allow_item(entry, feed_name: str) -> bool:
+    title = norm(entry.get("title"))
+    summary = norm(entry.get("summary") or entry.get("description") or "")
     text = f"{title} {summary}"
 
-    # Trusted sources pass unless explicitly excluded
-    if feed_name in TRUSTED_SOURCES:
-        for bad in EXCLUDE_TOKENS:
-            if bad in text:
-                return False
-        # If it mentions Notre Dame or Irish at all, pass
-        if "notre dame" in text or "fighting irish" in text or "nd" in text:
-            return True
+    for bad in EXCLUDE_TOKENS:
+        if bad in text:
+            return False
 
-    # Strict filter: needs BOTH a team mention and football context
-    team_hit = any(tok in text for tok in ["notre dame", "fighting irish", "south bend"])
-    football_hit = any(tok in text for tok in ["football", "ndfb"])
-    if team_hit and football_hit:
-        # make sure it isn't obviously another sport
-        for bad in EXCLUDE_TOKENS:
-            if bad in text:
-                return False
-        return True
-    return False
+    # Trusted sources: allow with team hint
+    if feed_name in TRUSTED_SOURCES:
+        if any(tok in text for tok in TEAM_TOKENS) or "notre" in text or "irish" in text:
+            return True
+        return "notre" in norm(feed_name) or "irish" in norm(feed_name)
+
+    # Others: require team + football-ish
+    team_hit = any(tok in text for tok in TEAM_TOKENS) or "notre" in text
+    footballish = "football" in text or any(tok in text for tok in FOOTBALL_HINTS)
+    return team_hit and footballish
 
 def uniq_key(link: str, title: str) -> str:
     raw = (link or "") + "|" + (title or "")
     return hashlib.md5(raw.encode("utf-8")).hexdigest()
 
 def parse_time(entry):
-    # Prefer published_parsed; fall back to now
     try:
         if getattr(entry, "published_parsed", None):
             return int(time.mktime(entry.published_parsed))
@@ -87,19 +90,15 @@ def collect():
             link = e.get("link", "").strip()
             if not title or not link:
                 continue
-
             if not allow_item(e, name):
                 continue
 
             published_ts = parse_time(e)
             summary = e.get("summary", "") or e.get("description", "")
-            source = name
             domain = host_of(link)
 
             key = uniq_key(link, title)
             if key in items_by_key:
-                # prefer earliest discovered time consistency — keep first or update older/newer?
-                # We'll keep the earliest (do nothing)
                 continue
 
             items_by_key[key] = {
@@ -107,15 +106,13 @@ def collect():
                 "link": link,
                 "summary": summary,
                 "published": published_ts,
-                "source": source,
+                "source": name,
                 "domain": domain,
             }
 
-    # Sort newest first, cap to MAX_ITEMS
     items = sorted(items_by_key.values(), key=lambda x: x["published"], reverse=True)[:MAX_ITEMS]
-
     payload = {
-        "team": "Notre Dame Fighting Irish — Football",
+        "team": "Notre Dame Football",
         "updated": int(time.time()),
         "count": len(items),
         "items": items
