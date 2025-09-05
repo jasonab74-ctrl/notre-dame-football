@@ -1,44 +1,167 @@
-# server.py — resilient Flask server (no gunicorn needed)
-from flask import Flask, render_template, send_file, jsonify
-import os, json, time
+# server.py — resilient single-file Flask app for Railway
+import os, json, time, traceback
+from flask import Flask, jsonify, Response, send_file
 
 APP_TITLE = "Notre Dame Football"
 
-app = Flask(__name__, template_folder="templates", static_folder="static")
+def log(msg: str):
+    print(f"[SERVER] {msg}", flush=True)
+
+app = Flask(__name__, static_folder="static")
+
+HTML = f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{APP_TITLE} — News</title>
+  <link rel="icon" href="/static/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
+  <link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
+  <link rel="manifest" href="/static/manifest.webmanifest">
+  <meta name="theme-color" content="#0C2340">
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header class="header">
+    <img class="logo" src="/static/notre-dame-logo.png" alt="Notre Dame logo" />
+    <div>
+      <h1>Notre Dame<br/>Football</h1>
+      <div id="updated" class="muted">Updated: —</div>
+    </div>
+    <button id="play-fight-song" class="pill">Victory March</button>
+    <audio id="fight-song" src="/static/fight-song.mp3" preload="auto"></audio>
+  </header>
+
+  <nav id="links" class="links"></nav>
+
+  <section class="controls">
+    <label for="sourceSel" class="muted">Sources:</label>
+    <select id="sourceSel" class="select">
+      <option value="__all__">All sources</option>
+    </select>
+    <div id="notice" class="notice hidden">New items available — <button id="reload" class="pill">refresh</button></div>
+  </section>
+
+  <main id="feed" class="grid"></main>
+
+  <footer class="footer">
+    <span>Built with your Sports App template.</span>
+  </footer>
+
+  <script>
+    const fmtTime = (ts) => ts ? new Date(ts * 1000).toLocaleString() : "";
+    const elUpdated = document.getElementById('updated');
+    const elFeed = document.getElementById('feed');
+    const elNotice = document.getElementById('notice');
+    const elReload = document.getElementById('reload');
+    const elLinks = document.getElementById('links');
+    const elSource = document.getElementById('sourceSel');
+    const fightBtn = document.getElementById('play-fight-song');
+    const audio = document.getElementById('fight-song');
+
+    fightBtn?.addEventListener('click', () => {
+      if (audio.paused) { audio.currentTime = 0; audio.play(); fightBtn.textContent = '⏸ Victory March'; }
+      else { audio.pause(); fightBtn.textContent = 'Victory March'; }
+    });
+
+    let lastCount = 0;
+    let currentSource = "__all__";
+    let cache = { items: [], updated: 0 };
+
+    async function hydrateMeta() {
+      try {
+        const meta = await (await fetch('/feeds.json', {cache:'no-store'})).json();
+        const links = meta.links || [];
+        elLinks.innerHTML = links.map(l => `<a class="pill" href="${l.href}" target="_blank" rel="noopener">${l.label}</a>`).join('');
+        const feeds = meta.feeds || [];
+        const opts = feeds.map(f => `<option value="${f.name}">${f.name}</option>`).join('');
+        elSource.insertAdjacentHTML('beforeend', opts);
+      } catch (e) {
+        console.warn('feeds.json unavailable', e);
+      }
+    }
+
+    function render(items) {
+      const filtered = currentSource === "__all__"
+        ? items
+        : items.filter(i => (i.source || '').toLowerCase() === currentSource.toLowerCase());
+
+      elFeed.innerHTML = (filtered || []).map(item => `
+        <article class="card">
+          <a href="${item.link}" target="_blank" rel="noopener">
+            <h3>${item.title}</h3>
+            <p class="summary">${item.summary || ''}</p>
+            <div class="meta">
+              <span class="source">${item.source || ''}</span>
+              <span class="dot">•</span>
+              <span class="time">${fmtTime(item.published)}</span>
+            </div>
+          </a>
+        </article>
+      `).join('');
+    }
+
+    async function load(initial=false) {
+      const res = await fetch('/items.json', { cache: 'no-store' });
+      const data = await res.json();
+      cache = data;
+      elUpdated.textContent = 'Updated: ' + fmtTime(data.updated);
+      if (!initial && data.count > lastCount) elNotice.classList.remove('hidden');
+      lastCount = data.count;
+      render(data.items || []);
+    }
+
+    elReload?.addEventListener('click', () => {
+      elNotice.classList.add('hidden');
+      load(true);
+    });
+
+    elSource.addEventListener('change', (e) => {
+      currentSource = e.target.value || "__all__";
+      render(cache.items || []);
+    });
+
+    hydrateMeta();
+    load(true);
+    setInterval(async () => {
+      const res = await fetch('/items.json', { cache: 'no-store' });
+      const data = await res.json();
+      if (data.count > lastCount) elNotice.classList.remove('hidden');
+    }, 5 * 60 * 1000);
+  </script>
+</body>
+</html>
+"""
 
 @app.get("/")
 def index():
-    try:
-        return render_template("index.html", title=APP_TITLE)
-    except Exception as e:
-        # Keep the app up even if template missing
-        return f"<h1>{APP_TITLE}</h1><p>Template error: {e}</p>", 200
+    return Response(HTML, mimetype="text/html")
 
 @app.get("/items.json")
 def items():
     path = "items.json"
     if not os.path.exists(path):
-        return jsonify({
-            "team": f"{APP_TITLE}",
-            "updated": int(time.time()),
-            "count": 0,
-            "items": []
-        })
+        log("items.json not found — returning empty payload")
+        return jsonify({"team": APP_TITLE, "updated": int(time.time()), "count": 0, "items": []})
     try:
         return send_file(path, mimetype="application/json")
     except Exception:
-        with open(path, "r", encoding="utf-8", errors="ignore") as f:
-            try:
+        log("send_file failed, falling back to json.load")
+        try:
+            with open(path, "r", encoding="utf-8", errors="ignore") as f:
                 data = json.load(f)
-            except Exception:
-                data = {"team": f"{APP_TITLE}", "updated": int(time.time()), "count": 0, "items": []}
+        except Exception as e:
+            log(f"items.json invalid: {e}")
+            data = {"team": APP_TITLE, "updated": int(time.time()), "count": 0, "items": []}
         return jsonify(data)
 
 @app.get("/feeds.json")
 def feeds_json():
     try:
         from feeds import FEEDS, STATIC_LINKS
-    except Exception:
+    except Exception as e:
+        log(f"feeds import failed: {e}")
         FEEDS, STATIC_LINKS = [], []
     return jsonify({"feeds": FEEDS, "links": STATIC_LINKS})
 
@@ -60,6 +183,11 @@ def health():
     return jsonify(status)
 
 if __name__ == "__main__":
-    # Railway runs this via Procfile: python3 server.py
     port = int(os.environ.get("PORT", "5000"))
-    app.run(host="0.0.0.0", port=port, debug=False)
+    log(f"Starting Flask on 0.0.0.0:{port}")
+    try:
+        app.run(host="0.0.0.0", port=port, debug=False)
+    except Exception as e:
+        log(f"CRASH on startup: {e}")
+        traceback.print_exc()
+        raise
