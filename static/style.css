@@ -11,13 +11,13 @@ h1{margin:0;font-size:1.35rem;line-height:1.15;letter-spacing:.2px;word-break:br
 .muted{color:var(--muted);font-size:.9rem;margin-top:2px}
 
 /* Pills */
-.pill{background:var(--accent);color:#0b1222;border:0;border-radius:999px;font-weight:700;text-decoration:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:10px 12px;min-height:44px;line-height:1;text-align:center;transition:transform .06s ease,opacity .15s ease;white-space:nowrap}
+.pill{background:var(--accent);color:#0b1222;border:0;border-radius:999px;font-weight:700;text-decoration:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;min-height:44px;line-height:1.2;text-align:center;transition:transform .06s ease,opacity .15s ease;white-space:normal;word-break:keep-all}
 .pill:focus{outline:3px solid rgba(201,151,0,.45);outline-offset:2px}
 .pill:hover{transform:translateY(-1px);opacity:.96}
 .pill:active{transform:translateY(0);opacity:.92}
 
-/* Top links: uniform grid */
-.links{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.08);display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px}
+/* Top links grid — make buttons wider */
+.links{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.08);display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
 .links .pill{width:100%;overflow:hidden;text-overflow:ellipsis}
 
 /* Controls */
@@ -45,13 +45,13 @@ h1{margin:0;font-size:1.35rem;line-height:1.15;letter-spacing:.2px;word-break:br
   .header{grid-template-columns:64px 1fr auto;padding:14px 16px}
   .logo{width:64px;height:64px}
   h1{font-size:1.5rem}
-  .links{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+  .links{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
   .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
 /* Desktop */
 @media (min-width:1024px){
-  .links{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
+  .links{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
   .grid{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 
