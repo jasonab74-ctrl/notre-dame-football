@@ -1,4 +1,9 @@
-# collect.py — ND Football collector with robust outlet extraction + hard dedupe
+# collect.py — ND football collector
+# - Real outlet in item.source (parsed from title suffix; fallback: <source> tag; fallback: article domain)
+# - Title cleaned (suffix removed) for display
+# - Strong dedupe (canonical URL + normalized title without outlet suffix)
+# - ND football filtering (extra strict for Google/Bing aggregators)
+
 import feedparser, json, re, time, html
 from datetime import datetime, timezone
 from urllib.parse import urlparse, urlunparse, parse_qsl, urlencode
@@ -6,7 +11,8 @@ from feeds import FEEDS
 
 MAX_ITEMS = 50
 
-# ND + football context
+# --- Filters ---------------------------------------------------------------
+
 KEYWORDS_ANY = [
     "notre dame football", "nd football", "fighting irish",
     "marcus freeman", "irish football", "south bend",
@@ -49,7 +55,7 @@ DOMAIN_LABELS = {
     "reddit.com": "Reddit",
 }
 
-# ---------------- helpers
+# --- Helpers ---------------------------------------------------------------
 
 def strip_tags(s: str) -> str:
     if not s: return ""
@@ -65,7 +71,6 @@ def unwrap_redirect(u: str) -> str:
         if p.netloc == "news.google.com" and "url" in q:
             return q["url"]
         if p.netloc in {"www.bing.com", "bing.com"}:
-            # Bing uses url= or u=
             return q.get("url") or q.get("u") or u
         return u
     except Exception:
@@ -97,7 +102,6 @@ def split_title_outlet(title: str):
     if not m:
         return title, None
     outlet = m.group(1).strip()
-    # Avoid catching trivial stubs
     if len(outlet) < 2:
         return title, None
     clean = title[:m.start()].rstrip()
@@ -163,7 +167,7 @@ def norm_title(t: str) -> str:
 def make_id(link: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", (link or "").lower()).strip("-")[:120]
 
-# ---------------- main
+# --- Main ------------------------------------------------------------------
 
 def collect():
     items = []
@@ -187,24 +191,27 @@ def collect():
             if not allowed(title, summary, feed_host):
                 continue
 
-            # Dedup 1: canonical URL
+            # 1) Dedupe by canonical URL
             if link in seen_links:
                 continue
 
-            # Pull outlet from title; if missing, try <source>; then final URL.
+            # 2) Extract outlet from title suffix; use cleaned title for display/dedupe
             title_no_suffix, outlet_from_title = split_title_outlet(title)
             base_title = title_no_suffix or title
 
-            source_from_tag = entry_source_title(e)
-            if source_from_tag and "google" not in source_from_tag.lower():
-                source_guess = source_from_tag
-            else:
-                source_guess = outlet_from_title or outlet_from_url(link, feed_name)
-
-            # Dedup 2: global normalized title (after removing outlet suffix)
+            # 3) Dedupe by normalized title (after stripping outlet suffix)
             title_key = norm_title(base_title)
             if title_key in seen_titles:
                 continue
+
+            # 4) Choose source: prefer suffix; else <source> tag; else domain
+            src_tag = entry_source_title(e)
+            if outlet_from_title:
+                source = outlet_from_title
+            elif src_tag and "google" not in src_tag.lower():
+                source = src_tag
+            else:
+                source = outlet_from_url(link, feed_name)
 
             ts = ts_from_entry(e)
 
@@ -212,7 +219,7 @@ def collect():
                 "id": make_id(link),
                 "title": base_title,
                 "link": link,
-                "source": source_guess,                    # drives dropdown
+                "source": source,                    # drives dropdown
                 "ts": float(ts),
                 "published_iso": datetime.fromtimestamp(ts, tz=timezone.utc).isoformat()
             })
