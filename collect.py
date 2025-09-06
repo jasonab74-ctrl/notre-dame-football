@@ -1,63 +1,91 @@
-import feedparser, re, json, time, datetime, hashlib, html
+# collect.py — fetch feeds and write items.json for GitHub Pages
+import json, time, hashlib
+from datetime import datetime, timezone
+import feedparser, requests
 from urllib.parse import urlparse
-from bs4 import BeautifulSoup
-from feeds.py import FEEDS  # noqa
+from feeds import FEEDS
 
-OUT = "items.json"
-MAX_ITEMS = 120
+MAX_ITEMS = 50
 
-def clean_html(text):
-    if not text:
-        return ""
-    soup = BeautifulSoup(text, "html.parser")
-    txt = soup.get_text(" ", strip=True)
-    txt = re.sub(r"\s+", " ", txt).strip()
-    return txt
-
-def source_from_link(link, default=""):
+def norm_source(name, link):
+    if name: return name.strip()
     try:
-        host = urlparse(link).netloc.lower()
-        host = host.replace("www.", "")
-        return host or default
-    except Exception:
-        return default
+        host = urlparse(link or "").hostname or ""
+        return host.replace("www.", "") or "Unknown"
+    except:
+        return "Unknown"
 
-def normalize_item(entry, feed_title=""):
-    title = html.unescape(entry.get("title", "")).strip()
-    link = entry.get("link", "").strip()
-    summary = clean_html(entry.get("summary", "") or entry.get("description", ""))
-    published_parsed = entry.get("published_parsed") or entry.get("updated_parsed")
-    if published_parsed:
-        ts = time.strftime("%Y-%m-%dT%H:%M:%S%z", published_parsed)
+def clean_text(s):
+    if not s: return ""
+    return " ".join(str(s).split())
+
+def allow_item(title, summary, source):
+    t = f"{title} {summary}".lower()
+    # positive signals
+    if ("notre dame" in t or "fighting irish" in t or "south bend" in t or "nd" in t) and "football" in t:
+        pass
+    elif any(k in (source or "").lower() for k in ["onefootdown","usatoday","on3","rivals","southbendtribune","247sports","cbssports","espn.com","reddit.com"]):
+        pass
     else:
-        ts = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
-    src = feed_title or source_from_link(link)
-    return {
-        "id": hashlib.md5((title + link).encode("utf-8")).hexdigest(),
-        "title": title,
-        "link": link,
-        "summary": summary,
-        "source": src,
-        "published": ts,
-    }
+        return False
+    # exclusions
+    exclude = ["women", "wbb", "volleyball", "softball", "basketball", "soccer"]
+    if any(x in t for x in exclude):
+        return False
+    return True
+
+def dedupe(items):
+    seen = set()
+    out = []
+    for it in items:
+        key = hashlib.md5((it.get("title","") + it.get("link","")).encode("utf-8")).hexdigest()
+        if key in seen: 
+            continue
+        seen.add(key)
+        out.append(it)
+    return out
+
+def fetch_all():
+    items = []
+    for f in FEEDS:
+        url = f["url"]
+        try:
+            if "reddit.com" in url:
+                r = requests.get(url, headers={"User-Agent":"nd-bot/1.0"}, timeout=20)
+                parsed = feedparser.parse(r.text)
+            else:
+                parsed = feedparser.parse(url)
+            feed_title = getattr(parsed.feed, "title", "") or f.get("name","")
+            for e in parsed.entries[:80]:
+                title = clean_text(getattr(e, "title", ""))
+                summary = clean_text(getattr(e, "summary", ""))
+                link = getattr(e, "link", "")
+                published = getattr(e, "published", "") or getattr(e, "updated", "")
+                source = norm_source(feed_title, link)
+                if allow_item(title, summary, source):
+                    items.append({
+                        "title": title,
+                        "summary": summary[:400],
+                        "link": link,
+                        "source": source,
+                        "published": published
+                    })
+        except Exception:
+            continue
+        time.sleep(0.4)
+    items = dedupe(items)
+    items.sort(key=lambda x: x.get("published",""), reverse=True)
+    return items[:MAX_ITEMS]
 
 def main():
-    items = []
-    for url in FEEDS:
-        feed = feedparser.parse(url)
-        ftitle = feed.get("feed", {}).get("title", "")
-        for e in feed.get("entries", []):
-            items.append(normalize_item(e, ftitle))
-    # de-dup by id preserving order
-    seen = set(); uniq = []
-    for it in items:
-        if it["id"] in seen: continue
-        seen.add(it["id"]); uniq.append(it)
-    # trim and sort by published desc (best-effort if ISO)
-    uniq = uniq[:MAX_ITEMS]
-    with open(OUT, "w", encoding="utf-8") as f:
-        json.dump(uniq, f, ensure_ascii=False, indent=2)
-    print(f"Wrote {len(uniq)} items to {OUT}")
+    items = fetch_all()
+    data = {
+        "updated": datetime.now(timezone.utc).isoformat(),
+        "items": items
+    }
+    with open("items.json","w",encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+    print(f"Wrote {len(items)} items to items.json")
 
 if __name__ == "__main__":
     main()

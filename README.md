@@ -1,12 +1,15 @@
 # Notre Dame Football — News & Feeds
 
-- Static front-end served by Flask (`server.py`) for local preview or any simple host.
-- Articles are refreshed by **GitHub Actions** every 30 minutes (see `.github/workflows/collect.yml`) which runs `collect.py` and writes `items.json` back to the repo.
-- The UI reads from `items.json` — no backend dependency in production if you serve the files statically.
+Static site on GitHub Pages. Articles are refreshed by GitHub Actions (`.github/workflows/collect.yml`)
+which runs `collect.py` and commits `items.json` back to the repo.
 
 ## Local preview
-```bash
-pip install -r requirements.txt
-python server.py
-# http://localhost:8080
 ```
+pip install -r requirements.txt
+python collect.py   # generate items.json
+python server.py    # open http://127.0.0.1:5000
+```
+
+## Deploy (GitHub Pages)
+- Settings → Pages → Deploy from branch → main / (root)
+- Optional: add `CNAME` for a custom domain, then set DNS

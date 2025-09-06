@@ -23,15 +23,23 @@
     <audio id="fightAudio" preload="none" src="static/fight-song.mp3"></audio>
   </header>
 
+  <!-- Quick links -->
   <nav class="links" id="linksRow">
+    <!-- Buttons come from STATIC_LINKS in feeds.py at build time; hardcoded here for static site -->
     <a class="pill" href="https://fightingirish.com/sports/football/schedule/" target="_blank" rel="noopener">Schedule</a>
     <a class="pill" href="https://fightingirish.com/sports/football/roster/" target="_blank" rel="noopener">Roster</a>
     <a class="pill" href="https://www.espn.com/college-football/standings" target="_blank" rel="noopener">Standings</a>
-    <a class="pill" href="https://www.irishenvy.com/forums/notre-dame-football.3/" target="_blank" rel="noopener">Irish Envy</a>
     <a class="pill" href="https://www.southbendtribune.com/sports/notre-dame/" target="_blank" rel="noopener">ND Insider</a>
-    <a class="pill" href="https://apnews.com/hub/ap-top-25-college-football-poll" target="_blank" rel="noopener">AP Poll</a>
-    <a class="pill" href="https://247sports.com/college/notre-dame/" target="_blank" rel="noopener">247Sports ND</a>
+    <a class="pill" href="https://www.irishenvy.com/forums/notre-dame-football.3/" target="_blank" rel="noopener">Irish Envy</a>
+    <a class="pill" href="https://fightingirishwire.usatoday.com/" target="_blank" rel="noopener">Fighting Irish Wire</a>
+    <a class="pill" href="https://www.onefootdown.com/" target="_blank" rel="noopener">One Foot Down</a>
+    <a class="pill" href="https://www.on3.com/teams/notre-dame-fighting-irish/" target="_blank" rel="noopener">Blue & Gold (On3)</a>
+    <a class="pill" href="https://notredame.rivals.com/" target="_blank" rel="noopener">Inside ND Sports (Rivals)</a>
     <a class="pill" href="https://www.reddit.com/r/NotreDame/" target="_blank" rel="noopener">Reddit</a>
+    <a class="pill" href="https://apnews.com/hub/ap-top-25-college-football-poll" target="_blank" rel="noopener">AP Poll</a>
+    <a class="pill" href="https://coaches.poll/college-football/" target="_blank" rel="noopener">Coaches Poll</a>
+    <a class="pill" href="https://www.cbssports.com/college-football/teams/ND/notre-dame-fighting-irish/" target="_blank" rel="noopener">CBS ND</a>
+    <a class="pill" href="https://247sports.com/college/notre-dame/" target="_blank" rel="noopener">247Sports ND</a>
   </nav>
 
   <div id="updated">Updated: <span id="updatedAt">–</span></div>
@@ -65,10 +73,7 @@
     let lastCount = 0;
 
     function fmtDate(s) {
-      try {
-        const d = new Date(s);
-        return d.toLocaleString();
-      } catch { return s || ''; }
+      try { return new Date(s).toLocaleString(); } catch { return s || ''; }
     }
 
     function render(items) {
