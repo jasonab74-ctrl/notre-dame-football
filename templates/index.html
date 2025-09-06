@@ -2,44 +2,66 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Notre Dame Football</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v={{ cache_buster }}">
 </head>
 <body>
   <header class="banner">
     <div class="banner-left">
-      <img src="{{ url_for('static', filename='nd-logo.png') }}" alt="ND Logo" class="team-logo">
+      <img class="team-logo" src="{{ url_for('static', filename='nd-logo.png') }}?v={{ cache_buster }}" alt="ND">
       <div class="team-title">
         <h1>Notre Dame Football</h1>
         <p class="updated">Updated: {{ updated }}</p>
       </div>
     </div>
-    <button id="fight-song" class="fight-button">Victory March</button>
+    <button id="fightBtn" class="fight-button" type="button">Victory March</button>
+    <audio id="fightAudio" preload="none" src="{{ url_for('static', filename='victory-march.mp3') }}"></audio>
   </header>
 
   <main>
     <section class="filters">
-      <label for="sourceFilter">News sources:</label>
-      <select id="sourceFilter">
-        <option value="all">All sources</option>
-        {% for source in sources %}
-          <option value="{{ source }}">{{ source }}</option>
-        {% endfor %}
-      </select>
+      <form method="get" id="filterForm">
+        <label for="sourceSelect">News sources:</label>
+        <select id="sourceSelect" name="source" onchange="this.form.submit()">
+          <option value="all" {{ 'selected' if selected_source=='all' else '' }}>All sources</option>
+          {% for s in sources %}
+            <option value="{{ s }}" {{ 'selected' if selected_source==s else '' }}>{{ s }}</option>
+          {% endfor %}
+        </select>
+      </form>
     </section>
 
     <section id="articles">
       {% for item in items %}
-      <div class="article">
-        <a href="{{ item.link }}" target="_blank" class="article-title">{{ item.title }}</a>
-        <p class="article-summary">{{ item.summary }}</p>
+      <article class="article" data-source="{{ item.source }}">
+        <a class="article-title" href="{{ item.link }}" target="_blank" rel="noopener">
+          {{ item.title }}
+        </a>
+        {% if item.summary %}
+          <p class="article-summary">{{ item.summary }}</p>
+        {% endif %}
         <p class="article-meta">{{ item.source }} • {{ item.published }}</p>
-      </div>
+      </article>
       {% endfor %}
+      {% if not items %}
+        <p class="empty">No articles for this source yet.</p>
+      {% endif %}
     </section>
   </main>
 
-  <script src="{{ url_for('static', filename='app.js') }}"></script>
+  <script>
+    // tiny, self-contained fight-song toggle (no external JS)
+    (function() {
+      var btn = document.getElementById('fightBtn');
+      var audio = document.getElementById('fightAudio');
+      if (!btn || !audio) return;
+      btn.addEventListener('click', function () {
+        if (audio.paused) { audio.play(); btn.classList.add('playing'); }
+        else { audio.pause(); btn.classList.remove('playing'); }
+      });
+      audio.addEventListener('ended', function() { btn.classList.remove('playing'); });
+    })();
+  </script>
 </body>
 </html>
