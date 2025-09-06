@@ -1,9 +1,8 @@
-# collect.py — ND football collector
-# - Real outlet in item.source (parsed from title suffix; fallback: <source> tag; fallback: article domain)
-# - Title cleaned (suffix removed) for display
-# - Strong dedupe (canonical URL + normalized title without outlet suffix)
-# - ND football filtering (extra strict for Google/Bing aggregators)
-
+# collect.py — ND football collector (robust outlet parsing + hard dedupe)
+# - Writes item.source as the REAL outlet (WNDU, On3, SBT, etc.)
+# - Removes outlet suffix from title for display
+# - Strong dedupe: canonical URL + normalized title
+# - ND-football-only filtering (stricter for Google/Bing)
 import feedparser, json, re, time, html
 from datetime import datetime, timezone
 from urllib.parse import urlparse, urlunparse, parse_qsl, urlencode
@@ -11,21 +10,19 @@ from feeds import FEEDS
 
 MAX_ITEMS = 50
 
-# --- Filters ---------------------------------------------------------------
-
+# ------------------- filters -------------------
 KEYWORDS_ANY = [
     "notre dame football", "nd football", "fighting irish",
     "marcus freeman", "irish football", "south bend",
-    "notre dame vs", "notre dame at", "nd vs", "nd at"
+    "notre dame vs", "notre dame at", "nd vs", "nd at",
 ]
 FOOTBALL_HINTS = [
-    "football", "ncaaf", "ncf", "qb", "quarterback",
-    "defense", "offense", "linebacker", "receiver", "running back",
-    "depth chart", "bye week"
+    "football", "ncaaf", "ncf", "qb", "quarterback", "defense", "offense",
+    "linebacker", "receiver", "running back", "depth chart", "bye week",
 ]
 EXCLUDE_ANY = [
     "women", "wbb", "volleyball", "basketball", "softball",
-    "baseball", "soccer", "lacrosse", "hockey", "wrestling"
+    "baseball", "soccer", "lacrosse", "hockey", "wrestling",
 ]
 
 AGGREGATORS = {"news.google.com", "www.bing.com", "bing.com"}
@@ -55,13 +52,21 @@ DOMAIN_LABELS = {
     "reddit.com": "Reddit",
 }
 
-# --- Helpers ---------------------------------------------------------------
+# ------------------- helpers -------------------
+NBSP = "\u00A0"
+UNICODE_SPACES = re.compile(r"[\u00A0\u1680\u2000-\u200B\u202F\u205F\u3000]")
+
+def normalize_spaces(s: str) -> str:
+    # turn all unicode spaces into ASCII space, collapse multiples
+    s = UNICODE_SPACES.sub(" ", s)
+    s = re.sub(r"\s+", " ", s)
+    return s.strip()
 
 def strip_tags(s: str) -> str:
     if not s: return ""
     s = re.sub(r"<[^>]+>", " ", s)
     s = html.unescape(s)
-    return re.sub(r"\s+", " ", s).strip()
+    return normalize_spaces(s)
 
 def unwrap_redirect(u: str) -> str:
     """Unwrap Google/Bing news links to the real article when possible."""
@@ -89,22 +94,24 @@ def clean_url(u: str) -> str:
     except Exception:
         return u
 
-# Robust outlet-in-title extractor: accepts -, – or — with flexible spaces.
+# Accept hyphen, en dash, or em dash; spaces are already normalized.
 DASH = r"[-–—]"
-OUTLET_RE = re.compile(rf"\s{DASH}\s([A-Za-z0-9&@.,'()/:+ ]+?)\s*$")
+# capture the LAST " - Outlet" piece (GN often uses that)
+OUTLET_RE = re.compile(rf"\s{DASH}\s([A-Za-z0-9&@.,'()/:+ ]+)$")
 
 def split_title_outlet(title: str):
     """
     Parse 'Headline - Outlet' / 'Headline – Outlet' / 'Headline — Outlet'
-    and return (clean_title, outlet). If no suffix, outlet=None.
+    Return (clean_title, outlet or None). Works even with NBSP once normalized.
     """
-    m = OUTLET_RE.search(title)
+    t = normalize_spaces(title)
+    m = OUTLET_RE.search(t)
     if not m:
-        return title, None
+        return t, None
     outlet = m.group(1).strip()
     if len(outlet) < 2:
-        return title, None
-    clean = title[:m.start()].rstrip()
+        return t, None
+    clean = t[:m.start()].rstrip()
     return clean, outlet
 
 def outlet_from_url(u: str, default_feed_name: str) -> str:
@@ -118,19 +125,22 @@ def outlet_from_url(u: str, default_feed_name: str) -> str:
         return default_feed_name
 
 def entry_source_title(entry) -> str | None:
-    """Pull <source> or source_detail title if present (Google News provides this)."""
+    """
+    Read <source> or source_detail (Google News includes <source url="...">Outlet</source>).
+    Use FeedParserDict .get(...) access (works more reliably across feeds).
+    """
     try:
-        src = getattr(entry, "source", None)
+        src = entry.get("source")
         if isinstance(src, dict):
             t = src.get("title") or src.get("href")
-            if t: return t
+            if t: return normalize_spaces(str(t))
     except Exception:
         pass
     try:
-        sd = getattr(entry, "source_detail", None)
+        sd = entry.get("source_detail")
         if isinstance(sd, dict):
             t = sd.get("title") or sd.get("href")
-            if t: return t
+            if t: return normalize_spaces(str(t))
     except Exception:
         pass
     return None
@@ -149,17 +159,17 @@ def allowed(title: str, summary: str, feed_host: str) -> bool:
 
 def ts_from_entry(e) -> float:
     for k in ("published_parsed", "updated_parsed"):
-        v = getattr(e, k, None)
+        v = e.get(k)
         if v:
             try: return time.mktime(v)
             except Exception: pass
     return time.time()
 
 def norm_title(t: str) -> str:
-    # normalize dashes; remove any trailing " - Outlet" piece; strip symbols; collapse space
-    t = t.lower()
+    # normalize spaces/dashes then strip a trailing " - Outlet", then sanitize
+    t = normalize_spaces(t)
     t = re.sub(r"[–—]", "-", t)
-    t = re.sub(rf"\s-\s[a-z0-9&@.,'()/:+ ]+$", "", t)
+    t = re.sub(rf"\s-\s[a-z0-9&@.,'()/:+ ]+$", "", t.lower())
     t = re.sub(r"[^a-z0-9 ]+", " ", t)
     t = re.sub(r"\s+", " ", t).strip()
     return t
@@ -167,11 +177,10 @@ def norm_title(t: str) -> str:
 def make_id(link: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", (link or "").lower()).strip("-")[:120]
 
-# --- Main ------------------------------------------------------------------
-
+# ------------------- main -------------------
 def collect():
     items = []
-    seen_links = set()   # canonical URL dedupe
+    seen_links  = set()  # canonical URL dedupe
     seen_titles = set()  # global normalized-title dedupe
 
     for feed in FEEDS:
@@ -181,30 +190,29 @@ def collect():
 
         parsed = feedparser.parse(feed_url)
         for e in parsed.entries:
-            raw_title = getattr(e, "title", "") or ""
+            raw_title = e.get("title") or ""
             title = strip_tags(raw_title)
-            link  = clean_url(getattr(e, "link", "") or "")
+            link  = clean_url(e.get("link") or "")
             if not title or not link:
                 continue
 
-            summary = strip_tags(getattr(e, "summary", "") or "")
+            summary = strip_tags(e.get("summary") or "")
             if not allowed(title, summary, feed_host):
                 continue
 
-            # 1) Dedupe by canonical URL
+            # Dedupe by canonical URL
             if link in seen_links:
                 continue
 
-            # 2) Extract outlet from title suffix; use cleaned title for display/dedupe
-            title_no_suffix, outlet_from_title = split_title_outlet(title)
-            base_title = title_no_suffix or title
+            # Extract outlet from title suffix; cleaned title for display/dedupe
+            base_title, outlet_from_title = split_title_outlet(title)
 
-            # 3) Dedupe by normalized title (after stripping outlet suffix)
+            # Dedupe by normalized title (after removing outlet suffix)
             title_key = norm_title(base_title)
             if title_key in seen_titles:
                 continue
 
-            # 4) Choose source: prefer suffix; else <source> tag; else domain
+            # Prefer outlet from title; else GN <source>; else article domain
             src_tag = entry_source_title(e)
             if outlet_from_title:
                 source = outlet_from_title
@@ -214,14 +222,13 @@ def collect():
                 source = outlet_from_url(link, feed_name)
 
             ts = ts_from_entry(e)
-
             items.append({
                 "id": make_id(link),
                 "title": base_title,
                 "link": link,
-                "source": source,                    # drives dropdown
+                "source": source,  # <-- drives dropdown
                 "ts": float(ts),
-                "published_iso": datetime.fromtimestamp(ts, tz=timezone.utc).isoformat()
+                "published_iso": datetime.fromtimestamp(ts, tz=timezone.utc).isoformat(),
             })
 
             seen_links.add(link)
