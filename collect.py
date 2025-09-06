@@ -1,7 +1,4 @@
-# collect.py — ND football collector
-# - Labels items by real outlet (parsed from title suffix or final domain)
-# - Removes duplicates (global normalized-title + canonical URL)
-# - Filters to ND football context
+# collect.py — ND Football collector with robust outlet extraction + hard dedupe
 import feedparser, json, re, time, html
 from datetime import datetime, timezone
 from urllib.parse import urlparse, urlunparse, parse_qsl, urlencode
@@ -9,22 +6,23 @@ from feeds import FEEDS
 
 MAX_ITEMS = 50
 
-# ND football keywords
+# ND + football context
 KEYWORDS_ANY = [
     "notre dame football", "nd football", "fighting irish",
     "marcus freeman", "irish football", "south bend",
     "notre dame vs", "notre dame at", "nd vs", "nd at"
 ]
 FOOTBALL_HINTS = [
-    "football", "ncaaf", "ncf", "qb", "quarterback", "defense", "offense",
-    "linebacker", "receiver", "running back", "depth chart", "bye week"
+    "football", "ncaaf", "ncf", "qb", "quarterback",
+    "defense", "offense", "linebacker", "receiver", "running back",
+    "depth chart", "bye week"
 ]
 EXCLUDE_ANY = [
-    "women", "wbb", "volleyball", "basketball", "softball", "baseball",
-    "soccer", "lacrosse", "hockey", "wrestling"
+    "women", "wbb", "volleyball", "basketball", "softball",
+    "baseball", "soccer", "lacrosse", "hockey", "wrestling"
 ]
 
-AGGREGATOR_HOSTS = {"news.google.com", "www.bing.com", "bing.com"}
+AGGREGATORS = {"news.google.com", "www.bing.com", "bing.com"}
 
 DOMAIN_LABELS = {
     "espn.com": "ESPN",
@@ -51,7 +49,7 @@ DOMAIN_LABELS = {
     "reddit.com": "Reddit",
 }
 
-# ---------- helpers
+# ---------------- helpers
 
 def strip_tags(s: str) -> str:
     if not s: return ""
@@ -60,59 +58,78 @@ def strip_tags(s: str) -> str:
     return re.sub(r"\s+", " ", s).strip()
 
 def unwrap_redirect(u: str) -> str:
-    """Unwrap Google/Bing News links to the real article when possible."""
+    """Unwrap Google/Bing news links to the real article when possible."""
     try:
         p = urlparse(u)
         q = dict(parse_qsl(p.query, keep_blank_values=True))
         if p.netloc == "news.google.com" and "url" in q:
             return q["url"]
         if p.netloc in {"www.bing.com", "bing.com"}:
-            if "url" in q: return q["url"]
-            if "u" in q:   return q["u"]
+            # Bing uses url= or u=
+            return q.get("url") or q.get("u") or u
         return u
     except Exception:
         return u
 
 def clean_url(u: str) -> str:
-    """Canonicalize final URL and drop tracking."""
+    """Canonicalize final URL and drop tracking params."""
     try:
         u = unwrap_redirect(u)
         p = urlparse(u)
-        q_pairs = [(k, v) for k, v in parse_qsl(p.query, keep_blank_values=True)
-                   if not k.lower().startswith(("utm_", "fbclid", "gclid", "ocid"))]
+        q = [(k, v) for k, v in parse_qsl(p.query, keep_blank_values=True)
+             if not k.lower().startswith(("utm_", "fbclid", "gclid", "ocid"))]
         host = (p.netloc or "").lower()
         if host.startswith("www."): host = host[4:]
-        return urlunparse((p.scheme, host, p.path, "", urlencode(q_pairs), ""))
+        return urlunparse((p.scheme, host, p.path, "", urlencode(q), ""))
     except Exception:
         return u
 
-DASH = r"[-–—]"  # hyphen/en dash/em dash
-OUTLET_SUFFIX_RE = re.compile(rf"\s{DASH}\s([A-Za-z0-9&@.'()/: +]+)$")
+# Robust outlet-in-title extractor: accepts -, – or — with flexible spaces.
+DASH = r"[-–—]"
+OUTLET_RE = re.compile(rf"\s{DASH}\s([A-Za-z0-9&@.,'()/:+ ]+?)\s*$")
 
 def split_title_outlet(title: str):
     """
-    Many GN/Bing items are 'Headline - Outlet'. Grab Outlet and return cleaned title.
-    Handles -, – and —.
+    Parse 'Headline - Outlet' / 'Headline – Outlet' / 'Headline — Outlet'
+    and return (clean_title, outlet). If no suffix, outlet=None.
     """
-    m = OUTLET_SUFFIX_RE.search(title)
+    m = OUTLET_RE.search(title)
     if not m:
         return title, None
     outlet = m.group(1).strip()
-    # ensure outlet isn't just a city/time stub
-    if len(outlet) < 2:  # too short
+    # Avoid catching trivial stubs
+    if len(outlet) < 2:
         return title, None
-    cleaned = title[:m.start()].rstrip()
-    return cleaned, outlet
+    clean = title[:m.start()].rstrip()
+    return clean, outlet
 
 def outlet_from_url(u: str, default_feed_name: str) -> str:
     try:
         host = urlparse(u).netloc.lower()
         if host.startswith("www."): host = host[4:]
-        if host and host not in AGGREGATOR_HOSTS:
+        if host and host not in AGGREGATORS:
             return DOMAIN_LABELS.get(host, host)
         return default_feed_name
     except Exception:
         return default_feed_name
+
+def entry_source_title(entry) -> str | None:
+    """Pull <source> or source_detail title if present (Google News provides this)."""
+    try:
+        src = getattr(entry, "source", None)
+        if isinstance(src, dict):
+            t = src.get("title") or src.get("href")
+            if t: return t
+    except Exception:
+        pass
+    try:
+        sd = getattr(entry, "source_detail", None)
+        if isinstance(sd, dict):
+            t = sd.get("title") or sd.get("href")
+            if t: return t
+    except Exception:
+        pass
+    return None
 
 def looks_like_football(text: str) -> bool:
     t = text.lower()
@@ -123,7 +140,7 @@ def allowed(title: str, summary: str, feed_host: str) -> bool:
     t = f"{title} {summary}".lower()
     if any(x in t for x in EXCLUDE_ANY): return False
     if not any(k in t for k in KEYWORDS_ANY): return False
-    if feed_host in AGGREGATOR_HOSTS and not looks_like_football(t): return False
+    if feed_host in AGGREGATORS and not looks_like_football(t): return False
     return True
 
 def ts_from_entry(e) -> float:
@@ -135,11 +152,10 @@ def ts_from_entry(e) -> float:
     return time.time()
 
 def norm_title(t: str) -> str:
+    # normalize dashes; remove any trailing " - Outlet" piece; strip symbols; collapse space
     t = t.lower()
-    # normalize dashes
     t = re.sub(r"[–—]", "-", t)
-    # remove trailing " - Outlet" (any dash form)
-    t = re.sub(rf"\s-\s[a-z0-9&@.'()/: +]+$", "", t)
+    t = re.sub(rf"\s-\s[a-z0-9&@.,'()/:+ ]+$", "", t)
     t = re.sub(r"[^a-z0-9 ]+", " ", t)
     t = re.sub(r"\s+", " ", t).strip()
     return t
@@ -147,12 +163,12 @@ def norm_title(t: str) -> str:
 def make_id(link: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", (link or "").lower()).strip("-")[:120]
 
-# ---------- main
+# ---------------- main
 
 def collect():
     items = []
     seen_links = set()   # canonical URL dedupe
-    seen_titles = set()  # global normalized-title dedupe (cross-feed)
+    seen_titles = set()  # global normalized-title dedupe
 
     for feed in FEEDS:
         feed_name = feed["name"]
@@ -171,35 +187,38 @@ def collect():
             if not allowed(title, summary, feed_host):
                 continue
 
-            # Dedup step 1: by canonical URL
+            # Dedup 1: canonical URL
             if link in seen_links:
                 continue
 
-            # Try to extract outlet from title suffix (GN/Bing pattern)
+            # Pull outlet from title; if missing, try <source>; then final URL.
             title_no_suffix, outlet_from_title = split_title_outlet(title)
-            # Use cleaned title for display & dedupe
             base_title = title_no_suffix or title
 
-            # Dedup step 2: by normalized title (handles -, – , — and suffixes)
-            key = norm_title(base_title)
-            if key in seen_titles:
+            source_from_tag = entry_source_title(e)
+            if source_from_tag and "google" not in source_from_tag.lower():
+                source_guess = source_from_tag
+            else:
+                source_guess = outlet_from_title or outlet_from_url(link, feed_name)
+
+            # Dedup 2: global normalized title (after removing outlet suffix)
+            title_key = norm_title(base_title)
+            if title_key in seen_titles:
                 continue
 
-            # Label source: prefer outlet parsed from title, else from final URL
-            source = outlet_from_title or outlet_from_url(link, feed_name)
-
             ts = ts_from_entry(e)
+
             items.append({
                 "id": make_id(link),
                 "title": base_title,
                 "link": link,
-                "source": source,                             # drives dropdown
+                "source": source_guess,                    # drives dropdown
                 "ts": float(ts),
                 "published_iso": datetime.fromtimestamp(ts, tz=timezone.utc).isoformat()
             })
 
             seen_links.add(link)
-            seen_titles.add(key)
+            seen_titles.add(title_key)
 
     items.sort(key=lambda x: x["ts"], reverse=True)
     items = items[:MAX_ITEMS]
