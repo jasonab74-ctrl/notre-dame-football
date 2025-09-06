@@ -3,48 +3,60 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Notre Dame Football — News and Feeds</title>
+  <title>ND Football - News & Feeds</title>
   <link rel="icon" href="/static/favicon.ico" sizes="any">
-  <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
-  <link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
-  <link rel="manifest" href="/static/manifest.webmanifest">
-  <meta name="theme-color" content="#0C2340">
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
+  <!-- ===== Banner ===== -->
   <header class="header">
     <img class="logo" src="/static/notre-dame-logo.png" alt="Notre Dame logo" />
     <div>
-      <h1>ND Football — News &amp; Feeds</h1>
+      <h1>ND Football — News & Feeds</h1>
       <div id="updated" class="muted">Updated: —</div>
     </div>
     <button id="play-fight-song" class="pill">Victory March</button>
     <audio id="fight-song" src="/static/fight-song.mp3" preload="auto"></audio>
   </header>
 
-  <nav id="links" class="links"></nav>
+  <!-- ===== Top Nav Buttons ===== -->
+  <nav id="links" class="links">
+    <a class="pill" href="https://www.onefootdown.com/" target="_blank">One Foot Down</a>
+    <a class="pill" href="https://slapthesign.com/" target="_blank">Slap the Sign</a>
+    <a class="pill" href="https://www.reddit.com/r/notredamefootball/" target="_blank">Reddit ND</a>
+    <a class="pill" href="https://www.irishenvy.com/" target="_blank">Irish Envy</a>
+    <a class="pill" href="https://www.youtube.com/channel/UCAMR05qSc5mfhVx20fDyAoQ" target="_blank">YouTube</a>
+    <a class="pill" href="https://www.espn.com/college-football/rankings" target="_blank">CFB Rankings</a>
+    <a class="pill" href="https://www.ndinsider.com/" target="_blank">ND Insider</a>
+    <a class="pill" href="https://www.espn.com/college-football/team/roster/_/id/87/notre-dame-fighting-irish" target="_blank">Roster</a>
+  </nav>
 
+  <!-- ===== Source Filter ===== -->
   <section class="controls">
     <label for="sourceSel" class="muted">News Sources:</label>
     <select id="sourceSel" class="select">
       <option value="__all__">All sources</option>
     </select>
-    <div id="notice" class="notice hidden">New items available — <button id="reload" class="pill">refresh</button></div>
+    <div id="notice" class="notice hidden">
+      New items available — <button id="reload" class="pill">refresh</button>
+    </div>
   </section>
 
+  <!-- ===== Articles ===== -->
   <main id="feed" class="grid"></main>
 
+  <!-- ===== Footer ===== -->
   <footer class="footer">
     <span>Built with your Sports App template.</span>
   </footer>
 
+  <!-- ===== Script (client logic) ===== -->
   <script>
-    const fmtTime = (ts) => ts ? new Date(ts * 1000).toLocaleString() : "";
+    const fmtTime = ts => ts ? new Date(ts * 1000).toLocaleString() : "";
     const elUpdated = document.getElementById('updated');
     const elFeed = document.getElementById('feed');
     const elNotice = document.getElementById('notice');
     const elReload = document.getElementById('reload');
-    const elLinks = document.getElementById('links');
     const elSource = document.getElementById('sourceSel');
     const fightBtn = document.getElementById('play-fight-song');
     const audio = document.getElementById('fight-song');
@@ -58,19 +70,6 @@
     let currentSource = "__all__";
     let cache = { items: [], updated: 0 };
 
-    async function hydrateMeta() {
-      try {
-        const meta = await (await fetch('/feeds.json', {cache:'no-store'})).json();
-        const links = meta.links || [];
-        elLinks.innerHTML = links.map(l => `<a class="pill" href="${l.href}" target="_blank" rel="noopener">${l.label}</a>`).join('');
-        const feeds = meta.feeds || [];
-        const opts = feeds.map(f => `<option value="${f.name}">${f.name}</option>`).join('');
-        elSource.insertAdjacentHTML('beforeend', opts);
-      } catch (e) {
-        console.warn('feeds.json unavailable', e);
-      }
-    }
-
     function render(items) {
       const filtered = currentSource === "__all__"
         ? items
@@ -78,9 +77,7 @@
 
       elFeed.innerHTML = (filtered || []).map(item => `
         <article class="card">
-          <a href="${item.link}" target="_blank" rel="noopener">
-            <h3 class="title">${item.title}</h3>
-          </a>
+          <h3><a href="${item.link}" target="_blank" rel="noopener">${item.title}</a></h3>
           <p class="summary">${item.summary || ''}</p>
           <div class="meta">
             <span class="source">${item.source || ''}</span>
@@ -92,13 +89,17 @@
     }
 
     async function load(initial=false) {
-      const res = await fetch('/items.json', { cache: 'no-store' });
-      const data = await res.json();
-      cache = data;
-      elUpdated.textContent = 'Updated: ' + fmtTime(data.updated);
-      if (!initial && data.count > lastCount) elNotice.classList.remove('hidden');
-      lastCount = data.count;
-      render(data.items || []);
+      try {
+        const res = await fetch('/items.json', { cache: 'no-store' });
+        const data = await res.json();
+        cache = data;
+        elUpdated.textContent = 'Updated: ' + fmtTime(data.updated);
+        if (!initial && data.count > lastCount) elNotice.classList.remove('hidden');
+        lastCount = data.count;
+        render(data.items || []);
+      } catch (e) {
+        console.warn("Failed to load items.json", e);
+      }
     }
 
     elReload?.addEventListener('click', () => {
@@ -111,13 +112,8 @@
       render(cache.items || []);
     });
 
-    hydrateMeta();
     load(true);
-    setInterval(async () => {
-      const res = await fetch('/items.json', { cache: 'no-store' });
-      const data = await res.json();
-      if (data.count > lastCount) elNotice.classList.remove('hidden');
-    }, 5 * 60 * 1000);
+    setInterval(load, 5 * 60 * 1000); // refresh every 5 minutes
   </script>
 </body>
 </html>
