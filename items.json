@@ -1,5 +1,5 @@
 {
-  "updated_iso": "2025-09-06T21:25:23.965958+00:00",
+  "updated_iso": "2025-09-06T21:37:41.416834+00:00",
   "count": 50,
   "items": [
     {
@@ -227,6 +227,14 @@
       "published_iso": "2025-09-03T21:04:34+00:00"
     },
     {
+      "id": "https-news-google-com-rss-articles-cbmi-gfbvv95cuxpd3zalxrtqv9cx1fxnfc0n3visxhfshvushh6dxljutvfdww2ew83mnpxrwtpcfjmytctq",
+      "title": "How one Notre Dame football player plans to give back to South Bend community",
+      "link": "https://news.google.com/rss/articles/CBMi-gFBVV95cUxPd3ZaLXRtQV9CX1FXNFc0N3ViSXhfSHVUSHh6dXljUTVfdWw2eW83MnpxRWtPcFJMYTctQ3ozRElENFF0QjJpVlg1Y1c3QWFUS25nSVItY25wTERJek1tUTkyMU0wcEFlcWJnaU1DaFRUeWhwSzg5dDZXaFVXMTR6cWlwb1dSNnhNaFI3SV9wSWlBM013UE1mZjFDOTZjR2p1THpZa0V5SlJybEhnT1h0T0hKTHlpc1psWUtvSWFNdXpuajQtcUJ1X2hBR0dzbDQ1cXFQRVFjV1ViZlFySzRZOUlMd1JDVDFqMl9TaXI0ajZ3UERoWGZUaXpn?oc=5",
+      "source": "South Bend Tribune",
+      "ts": 1756932698.0,
+      "published_iso": "2025-09-03T20:51:38+00:00"
+    },
+    {
       "id": "https-news-google-com-rss-articles-cbmi8afbvv95cuxodk5ky3zuwjnornazm01bluhyr0devwrddfvdvjbvmnd4svvrztjkvtnomnzwue55ykvvr",
       "title": "Notre Dame Football Mailbag: Mike Denbrock vs Marcus Freeman struggle for offensive identity, and the new plan for Will Black",
       "link": "https://news.google.com/rss/articles/CBMi8AFBVV95cUxOdk5kY3ZUWjNoRnAzM01BLUhYR0dEVWRDdFVDVjBvMnd4SVVRZTJkVTNOMnZWUE55YkVVRVcwLUpDU0RmWFNkMWxzdTdsWXl6QjVOQjRINmxUT1llS2VOMVdET0ZOMEdVX1FfQy1LbW54R2pLQk5pN3NNbXRqWER0Xzl1SmlFckVGV092YjVXaU40RlpUcXZBVXFWRmYyZ1huNVBXYndWU24ycGFPdGV2NUVtVDhyLU9CRmdoSFk4MDV0U2YtZEtJaUtuV19QVlJQV1lEN283MDlqOU1SbTN3OTkzQjVXMmN6VnNGQzRINTg?oc=5",
@@ -393,14 +401,6 @@
       "source": "Yahoo Sports",
       "ts": 1756702860.0,
       "published_iso": "2025-09-01T05:01:00+00:00"
-    },
-    {
-      "id": "https-news-google-com-rss-articles-cbmihajbvv95cuxoalbvrdq1zvpsqxzbbnfkwhvycwduzvjta3fuy25rzgjvmezld09vdxctzxpizzg2cvm0w",
-      "title": "Biggest winners and losers from the Notre Dame football season opening loss to the Miami Hurricanes down in Hard Rock Stadium",
-      "link": "https://news.google.com/rss/articles/CBMihAJBVV95cUxOalBvRDQ1ZVpsQXZBbnFKWHVycWdUZVJTa3FuY25rZGJVMEZLd09VdXctZXpIZzg2cVM0WC1peE1lQlRqZW1PdlBjN3BVcGgwOGJQa09iRjBBN3BNZ3Q1d3ppTk5zYUFXejlYMzBTb2dBU3lLOUFXaHMtMW5tZ1FxSnE3X29HWlhZaEt3Zmw4OWhHdXZVX1paNHRVc2VZWF9NV19uNHdIMDVkd0QwdkNGWGNtd0tSVVVOOUhrZFpiWmx3cUtFOW1fdWtkZDZuUUV5TmREcExBb2trTW9BSTZNUGFLcHNUdlk5bVl3UndtUkFVMEExaHJkU0luYm1NVGMzTndabw?oc=5",
-      "source": "A to Z Sports",
-      "ts": 1756702322.0,
-      "published_iso": "2025-09-01T04:52:02+00:00"
     }
   ]
 }
