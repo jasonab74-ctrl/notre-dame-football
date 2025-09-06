@@ -1,74 +1,100 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, viewport-fit=cover"
-    />
-    <title>{{ team_name }}</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='style.css') }}?v={{ cache_buster }}"
-    />
-  </head>
-  <body>
-    <header class="site-header">
-      <div class="brand">
-        <div class="nd-badge">ND</div>
-        <div class="titles">
-          <h1 class="site-title">Notre Dame<br />Football</h1>
-          <div class="updated">Updated: {{ updated_at }}</div>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{ title }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v={{ css_ver }}">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="banner">
+    <div class="brand">
+      <div class="nd-badge">ND</div>
+      <div>
+        <h1 class="site-title">Notre Dame<br>Football</h1>
+        <div class="updated">
+          Updated:
+          {% if updated_at %}
+            {{ updated_at.astimezone().strftime("%-m/%-d/%Y, %-I:%M:%S %p") }}
+          {% else %}
+            just now
+          {% endif %}
         </div>
       </div>
+    </div>
+    <a class="btn btn--pill btn--gold" href="https://www.youtube.com/results?search_query=notre+dame+victory+march" target="_blank" rel="noopener">Victory March</a>
+  </header>
 
-      <a
-        class="btn btn-cta"
-        href="https://www.youtube.com/watch?v=Z1ZcH6nQ9qU"
-        target="_blank"
-        rel="noopener"
-        >Victory March</a
-      >
-    </header>
+  <main class="container">
+    <!-- Quick links -->
+    <nav class="chips">
+      <a class="chip" href="https://und.com/sports/football/" target="_blank" rel="noopener">Official Site</a>
+      <a class="chip" href="https://fbschedules.com/notre-dame-fighting-irish-football-schedule/" target="_blank" rel="noopener">Schedule</a>
+      <a class="chip" href="https://und.com/sports/football/roster/" target="_blank" rel="noopener">Roster</a>
+      <a class="chip" href="https://www.espn.com/college-football/rankings" target="_blank" rel="noopener">CFB Rankings</a>
+      <a class="chip" href="https://www.ndinsider.com/" target="_blank" rel="noopener">ND Insider</a>
+      <a class="chip chip--wide" href="https://www.reddit.com/r/notredamefootball/" target="_blank" rel="noopener">Reddit — r/notredamefootball</a>
+      <a class="chip" href="https://www.youtube.com/results?search_query=notre+dame+football" target="_blank" rel="noopener">YouTube — ND Football</a>
+      <a class="chip" href="https://247sports.com/college/notre-dame/" target="_blank" rel="noopener">247Sports ND</a>
+      <a class="chip" href="https://www.espn.com/college-football/team/_/id/87/notre-dame-fighting-irish" target="_blank" rel="noopener">ESPN ND Football</a>
+      <a class="chip" href="https://www.cbssports.com/college-football/teams/ND/notre-dame-fighting-irish/" target="_blank" rel="noopener">CBS Sports ND</a>
+      <a class="chip" href="https://www.on3.com/college/notre-dame-fighting-irish/" target="_blank" rel="noopener">On3 — Blue & Gold</a>
+      <a class="chip" href="https://fightingirishwire.usatoday.com/" target="_blank" rel="noopener">Fighting Irish Wire</a>
+    </nav>
 
-    <main class="content">
-      <section class="filters">
-        <label for="source" class="label">News sources:</label>
-        <form class="source-form" method="get">
-          <select id="source" name="source" class="select">
-            <option value="" {% if not selected_source %}selected{% endif %}>
-              All sources
-            </option>
-            {% for s in sources %}
-            <option
-              value="{{ s }}"
-              {% if selected_source==s %}selected{% endif %}
-            >
-              {{ s }}
-            </option>
-            {% endfor %}
-          </select>
-        </form>
-      </section>
+    <!-- Sources filter -->
+    <section class="toolbar">
+      <label for="source" class="label">News sources:</label>
+      <form method="get" class="source-form">
+        <select id="source" name="source" class="select">
+          <option value="" {% if not selected_source %}selected{% endif %}>All sources</option>
+          {% for s in sources %}
+            <option value="{{ s }}" {% if selected_source==s %}selected{% endif %}>{{ s }}</option>
+          {% endfor %}
+        </select>
+        <button class="btn btn--pill" type="submit">Apply</button>
+        {% if selected_source %}
+          <a class="btn btn--pill btn--ghost" href="{{ url_for('index') }}">Clear</a>
+        {% endif %}
+      </form>
+    </section>
 
-      <section class="articles">
-        {% for item in items %}
+    <!-- Articles -->
+    <section class="cards">
+      {% for it in items %}
         <article class="card">
-          <a class="card-title" href="{{ item.link }}" target="_blank" rel="noopener">
-            {{ item.title }}
-          </a>
-
-          {% set clean_summary = item.summary.replace("&nbsp;", " ") %}
-          {% if clean_summary and clean_summary.strip() and clean_summary.strip() != item.title.strip() %}
-          <p class="card-summary">{{ clean_summary }}</p>
+          <h2 class="card-title">
+            {% if it.url %}
+              <a href="{{ it.url }}" target="_blank" rel="noopener">{{ it.title or "Untitled" }}</a>
+            {% else %}
+              {{ it.title or "Untitled" }}
+            {% endif %}
+          </h2>
+          {% if it.summary %}
+            <p class="card-summary">{{ it.summary }}</p>
           {% endif %}
-
           <div class="card-meta">
-            <time datetime="{{ item.published_iso }}">{{ item.published_display }}</time>
+            <span>{{ it.source or "Unknown source" }}</span>
+            {% if it.published %}
+              <span aria-hidden="true">•</span>
+              <time datetime="{{ it.published }}">
+                {{ (it.published | replace("Z","+00:00") | tojson)[1:-1] | safe }}
+              </time>
+            {% endif %}
           </div>
         </article>
-        {% endfor %}
-      </section>
-    </main>
-  </body>
+      {% else %}
+        <p class="empty">No articles found.</p>
+      {% endfor %}
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span>web-production</span>
+    </div>
+  </footer>
+</body>
 </html>
