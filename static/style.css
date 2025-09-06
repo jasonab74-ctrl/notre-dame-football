@@ -1,86 +1,170 @@
+/* ===== Notre Dame Football — full style.css ===== */
+
+/* --- Color System (ND palette) --- */
 :root{
-  --nd-blue:#0C2340;
-  --nd-gold:#C99700;
-  --bg:#0b1528;
-  --card:#0f1d38;
-  --text:#e6edf3;
-  --muted:#9fb0c7;
-  --pill-bg:#16294d;
-  --pill-border:#28457d;
-  --pill-text:#e6edf3;
-  --accent:#C99700;
-  --danger:#ff6868;
+  --navy:#0C2340;          /* ND navy */
+  --gold:#C99700;          /* ND gold */
+  --gold-600:#B18300;      /* hover/darker gold */
+  --gold-100:#F4E7BF;      /* light gold for cards */
+  --ink:#101820;           /* near black */
+  --ink-700:#1C2B4A;       /* dark navy ink */
+  --muted:#7A8AA1;         /* muted text */
+  --ring:rgba(201,151,0,.35);
+  --bg:#07172E;            /* page deep navy */
+  --card-shadow:0 4px 18px rgba(0,0,0,.25);
 }
 
+/* Reset-ish */
 *{box-sizing:border-box}
-html,body{height:100%;margin:0;padding:0;overflow-x:hidden;background:var(--bg);color:var(--text);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,"Helvetica Neue",Arial,sans-serif}
+html,body{height:100%}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
+  background:var(--bg);
+  color:#E9EEF5;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
 
+/* Links */
+a{color:inherit;text-decoration:underline}
+a:hover{opacity:.9}
+
+/* Layout container */
+.container{max-width:1200px;margin:0 auto;padding:16px}
+
+/* --- Header (no flashy effects; fixed height to prevent “jump”) --- */
 .header{
-  display:flex;align-items:center;gap:12px;
-  padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.08);
-  position:sticky;top:0;z-index:50;background:linear-gradient(180deg,rgba(12,35,64,0.97),rgba(12,35,64,0.92));
-  backdrop-filter:saturate(1.2) blur(6px);
+  display:flex;align-items:center;gap:16px;
+  min-height:112px;               /* stabilizes layout on iOS */
+  padding:20px 16px 8px;
+  background:linear-gradient(180deg,rgba(12,35,64,.98),rgba(12,35,64,.92));
+  border-bottom:1px solid rgba(255,255,255,.06);
+  position:relative;
 }
-.logo{width:52px;height:52px;object-fit:contain}
-h1{margin:0;font-weight:800;letter-spacing:.3px;font-size:22px;line-height:1.05}
-.muted{color:var(--muted);font-size:12px}
+.header .logo{width:72px;height:auto;flex:0 0 auto}
+.header h1{
+  margin:0;
+  font-weight:800;
+  font-size:28px;
+  line-height:1.05;
+}
+.header .muted{
+  color:#AFC2DA;
+  font-size:14px;
+  margin-top:4px;
+}
 
-.links{
-  display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px 2px;
-}
+/* Gold “pill” button (fight song + top links) */
 .pill{
+  appearance:none;border:none;cursor:pointer;
   display:inline-flex;align-items:center;justify-content:center;
-  padding:8px 12px;border-radius:999px;border:1px solid var(--pill-border);
-  background:var(--pill-bg);color:var(--pill-text);text-decoration:none;
-  font-weight:600;font-size:14px;white-space:nowrap;user-select:none;cursor:pointer;
-  transition:transform .06s ease, background .2s ease, border-color .2s ease;
+  padding:10px 16px;border-radius:9999px;
+  background:var(--gold);color:var(--ink);font-weight:700;
+  text-decoration:none;gap:8px;box-shadow:0 1px 0 rgba(0,0,0,.25) inset;
+  transition:transform .02s ease-in-out,background-color .15s ease;
 }
+.pill:hover{background:var(--gold-600)}
 .pill:active{transform:translateY(1px)}
-.pill:hover{background:#1e3566;border-color:#3a5aa6}
+.pill:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
 
-.controls{
-  position:sticky;top:64px;z-index:40;background:linear-gradient(180deg,rgba(12,35,64,0.96),rgba(12,35,64,0.92));
-  padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.06);
-  display:flex;align-items:center;gap:10px;flex-wrap:nowrap;overflow:hidden;
+/* Top links row */
+.links{
+  display:flex;flex-wrap:wrap;gap:14px 18px;
+  padding:14px 16px 8px;
 }
-.controls .select{
-  max-width:min(420px,60vw);
-  width:100%;
-  padding:8px 10px;border-radius:10px;border:1px solid var(--pill-border);
-  background:var(--card);color:var(--text);font-weight:600;
+.links .pill{
+  background:#1E3A61;color:#D8E3F0;border:1px solid rgba(255,255,255,.06);
+}
+.links .pill:hover{background:#23436F}
+
+/* --- Controls: “News sources” --- */
+.controls{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 16px 6px;margin-top:4px;
+  border-top:1px solid rgba(255,255,255,.06);
+  border-bottom:1px solid rgba(255,255,255,.06);
+  background:rgba(10,25,48,.6);
+}
+.controls label{color:#C8D6E6;font-size:14px;white-space:nowrap}
+.select, select{
+  appearance:none;
+  width:100%;max-width:420px;
+  padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.08);
+  background:#0F223F;color:#E9EEF5;font-weight:600;
 }
 .notice{margin-left:auto;font-size:14px}
 .notice.hidden{display:none}
 
+/* --- Card grid --- */
 .grid{
-  display:grid;gap:12px;padding:12px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  display:grid;gap:18px;padding:18px 16px 44px;
+  grid-template-columns:repeat(12,minmax(0,1fr));
 }
 .card{
-  background:var(--card);border:1px solid rgba(255,255,255,0.06);
-  border-radius:14px;padding:14px;transition:transform .06s ease, border-color .2s ease, background .2s ease;
+  grid-column:span 12;
+  background:var(--gold-100);
+  color:var(--ink);            /* dark text on light gold */
+  border-radius:18px;
+  padding:16px 18px;
+  box-shadow:var(--card-shadow);
 }
 .card a{text-decoration:none;color:inherit;display:block}
-.card:hover{border-color:rgba(201,151,0,0.45);background:rgba(12,35,64,0.75)}
-.card h3{margin:0 0 6px;font-size:17px;line-height:1.25;font-weight:800;color:#fff}
-.card .summary{margin:0 0 10px;color:#cbd6e5;font-size:14px}
-.meta{display:flex;align-items:center;gap:6px;color:#aab8cf;font-size:12px}
-.meta .dot{opacity:.6}
+.card h3{
+  margin:0 0 8px 0;
+  font-size:22px;line-height:1.15;font-weight:800;
+  color:var(--ink);text-decoration:underline;
+  text-underline-offset:3px;
+}
+.card .summary{
+  margin:0 0 10px 0;
+  color:#2e2e2e;               /* readable dark body */
+  font-size:16px;
+}
+.card .meta{
+  display:flex;flex-wrap:wrap;gap:10px;
+  color:#3C3C3C;font-weight:600;font-size:14px;
+}
+.card .source{color:#1C2B4A}
+.card .time{color:#333}
+.card .dot{opacity:.5}
 
-.footer{padding:24px 16px;color:#93a6c4;font-size:13px;text-align:center;opacity:.8}
+/* --- Small footer (if any) --- */
+.footer{padding:18px 16px 28px;color:#AFC2DA}
 
-/* Mobile tweaks */
-@media (max-width:640px){
-  .header{gap:10px;padding:10px 12px}
-  .logo{width:46px;height:46px}
-  h1{font-size:20px}
-  .controls{top:58px;gap:8px}
-  .controls .select{max-width:62vw}
-  .pill{font-size:13px;padding:7px 10px}
-  .grid{gap:10px;padding:10px}
-  .card{padding:12px}
-  .card h3{font-size:16px}
-  .card .summary{font-size:13px}
+/* --- Mobile tweaks --- */
+@media (min-width:680px){
+  .header .logo{width:80px}
+  .header h1{font-size:32px}
+  .grid{grid-template-columns:repeat(12,minmax(0,1fr))}
+  .card{grid-column:span 6}
+}
+@media (min-width:1024px){
+  .card{grid-column:span 4}
 }
 
-/* Prevent select long text from causing horizontal scroll on some Android browsers */
-.select, select { -webkit-tap-highlight-color: transparent; }
+/* Prevent header/layout flicker on iOS Safari */
+.header, .controls{
+  transform:translateZ(0); /* promote to its own layer */
+  will-change:auto;        /* avoid continuous repaint */
+}
+img{contain:content}
+
+/* Reduce motion: no transitions */
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+
+/* Utility */
+.muted{color:#AFC2DA}
+
+/* Ensure long words/links don’t overflow */
+.card h3, .card .summary{word-wrap:break-word;overflow-wrap:anywhere}
+
+/* Hide the red refresh notice shadow-jump on mobile when it appears */
+#notice{transition:none}
+
+/* Buttons used inside the notice row should remain gold/black */
+.controls .pill{background:var(--gold);color:var(--ink)}
+.controls .pill:hover{background:var(--gold-600)}
