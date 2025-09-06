@@ -1,31 +1,22 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "[BOOT] PWD: $(pwd)"
-echo "[BOOT] Python: $(python3 --version || python --version || true)"
-echo "[BOOT] Listing repo root:"
-ls -la
+# Always run from the app root
+cd "$(dirname "$0")"
 
-# Sanity: make sure server.py and 'app' exist before we even try to bind.
-if [[ ! -f "server.py" ]]; then
-  echo "[BOOT][FATAL] server.py not found at repo root. Did the repo get nested?"
-  exit 9
-fi
+echo "[BOOT] Using Python: $(python3 --version)"
+echo "[BOOT] Binding on 0.0.0.0:${PORT:-8000}"
 
-# Ensure PORT is set by Railway; default to 5000 for local runs.
-export PORT="${PORT:-5000}"
-echo "[BOOT] Binding on 0.0.0.0:${PORT}"
-
-# Single, deterministic launcher: Gunicorn with light concurrency.
-# (gthread keeps memory low; timeout generous for slow cold starts)
+# Gunicorn tuned for small Railway dynos and Flask
+# - gthread avoids the old gevent headaches
+# - 2 workers, 8 threads keeps memory modest
+# - longer timeout keeps health checks happy during short GC pauses
 exec gunicorn \
   -w 2 \
-  -k gthread \
   --threads 8 \
-  --timeout 120 \
-  --graceful-timeout 30 \
+  -k gthread \
+  --timeout 60 \
+  --graceful-timeout 20 \
   --keep-alive 5 \
-  --access-logfile - \
-  --error-logfile - \
-  -b 0.0.0.0:"${PORT}" \
+  -b 0.0.0.0:"${PORT:-8000}" \
   server:app
