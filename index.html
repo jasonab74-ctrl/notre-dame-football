@@ -27,9 +27,7 @@
 
   <div class="controls">
     <label for="srcSel">News sources:</label>
-    <select id="srcSel">
-      <option value="*">All sources</option>
-    </select>
+    <select id="srcSel"><option value="*">All sources</option></select>
   </div>
 
   <main class="grid" id="grid"></main>
@@ -51,7 +49,7 @@
       songBtn: document.getElementById('songBtn'),
     };
 
-    // Inline the same STATIC_LINKS as feeds.py
+    // Inline same STATIC_LINKS as feeds.py
     const STATIC_LINKS = [
       {"label":"Schedule","url":"https://fightingirish.com/sports/football/schedule/"},
       {"label":"Roster","url":"https://fightingirish.com/sports/football/roster/"},
@@ -64,8 +62,7 @@
       {"label":"Blue & Gold (On3)","url":"https://www.on3.com/teams/notre-dame-fighting-irish/"},
       {"label":"Inside ND Sports (Rivals)","url":"https://notredame.rivals.com/"},
       {"label":"247Sports ND","url":"https://247sports.com/college/notre-dame/"},
-      {"label":"CBS ND","url":"https://www.cbssports.com/college-football/teams/ND/notre-dame-fighting-irish/"},
-      {"label":"Reddit","url":"https://www.reddit.com/r/NotreDame/"}
+      {"label":"CBS ND","url":"https://www.cbssports.com/college-football/teams/ND/notre-dame-fighting-irish/"}
     ];
 
     function buildLinks(){
@@ -73,7 +70,20 @@
     }
 
     function escapeHtml(s){return (s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]))}
-    function fmtTime(ts){return new Date(ts*1000).toLocaleString()}
+
+    function parseDate(item){
+      if (typeof item.ts === 'number') return new Date(item.ts*1000);
+      if (item.ts) {
+        const n = Number(item.ts);
+        if (!Number.isNaN(n)) return new Date(n*1000);
+      }
+      if (item.published_iso) return new Date(item.published_iso);
+      return new Date();
+    }
+    function fmtDate(item){
+      const d = parseDate(item);
+      return d.toLocaleString();
+    }
 
     let all = {items:[]};
 
@@ -83,23 +93,29 @@
       els.grid.innerHTML = items.map(it => `
         <article class="card">
           <a class="title" href="${it.link}" target="_blank" rel="noopener">${escapeHtml(it.title)}</a>
-          <div class="meta">${escapeHtml(it.source)} • ${fmtTime(it.ts)}</div>
+          <div class="meta">${escapeHtml(it.source || 'Unknown')} • ${escapeHtml(fmtDate(it))}</div>
         </article>
       `).join('');
     }
 
     async function load(){
-      const r = await fetch('items.json?ts='+Date.now());
+      const r = await fetch('items.json?cb='+Date.now());
       const j = await r.json();
       all = j;
       els.updated.textContent = 'Updated: ' + new Date().toLocaleString();
-      const set = new Set(j.items.map(i => i.source));
-      els.srcSel.innerHTML = `<option value="*">All sources</option>` + [...set].map(s=>`<option>${escapeHtml(s)}</option>`).join('');
+
+      // Build source dropdown from underlying outlets
+      const set = new Set(j.items.map(i => i.source).filter(Boolean));
+      const options = ['<option value="*">All sources</option>']
+        .concat([...set].sort().map(s => `<option>${escapeHtml(s)}</option>`));
+      els.srcSel.innerHTML = options.join('');
+
       render();
     }
 
-    // Auto-refresh every 5m
+    // Auto-refresh every 5 minutes
     setInterval(load, 5*60*1000);
+
     els.srcSel.addEventListener('change', render);
     els.songBtn.addEventListener('click', () => {
       if (els.song.paused){ els.song.play(); els.songBtn.textContent='Pause'; }
