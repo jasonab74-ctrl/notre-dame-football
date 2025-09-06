@@ -1,145 +1,130 @@
-:root {
-  --primary: #0C2340;
-  --secondary: #C99700;
-  --muted: #666;
-  --bg: #f8f8f8;
-  --card-bg: #fff;
-  --border: #ddd;
+/* ===== Notre Dame Football — UI styles (accessible & stable) ===== */
+
+/* Theme tokens */
+:root{
+  --bg:#0d2942;          /* deep navy */
+  --card:#0f3352;        /* slightly lighter navy for cards */
+  --pill:#c69a12;        /* ND gold */
+  --pill-text:#112233;   /* deep text on gold */
+  --text:#f4f6fa;        /* off-white for body text */
+  --muted:#a9b7c7;       /* muted gray-blue */
+  --link:#e8eef7;        /* links on cards */
+  --link-dim:#c8d4e3;
+  --accent:#f5cc4a;      /* hover ring on gold pills */
+  --border:#1a446a;
+  --shadow: 0 2px 8px rgba(0,0,0,.25);
+  --radius:14px;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+/* Base */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: system-ui,-apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
 }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: var(--bg);
-  color: var(--primary);
-  line-height: 1.4;
+/* Layout wrappers */
+.header{
+  display:flex; align-items:center; gap:16px;
+  padding:20px clamp(16px, 4vw, 28px) 8px;
+}
+.logo{ width:72px; height:auto }
+.header h1{
+  margin:0; line-height:1.05; font-size:clamp(28px, 5vw, 40px); font-weight:800;
+}
+.header .muted{ color:var(--muted); margin-top:6px; font-size:14px }
+
+.links{
+  display:flex; flex-wrap:wrap; gap:12px;
+  padding:8px clamp(16px, 4vw, 28px) 16px;
+  border-top:1px solid var(--border);
 }
 
-.header {
-  display: flex;
-  align-items: center;
-  padding: 1rem;
-  background: var(--primary);
-  color: white;
+/* Pills (top buttons) */
+.pill{
+  appearance:none; border:0; cursor:pointer;
+  background:var(--pill); color:var(--pill-text);
+  font-weight:700; letter-spacing:.2px;
+  padding:12px 18px; border-radius:999px;
+  box-shadow:var(--shadow);
+  transition:transform .06s ease, box-shadow .06s ease, filter .15s ease;
+  text-decoration:none; display:inline-flex; align-items:center; gap:8px;
+  white-space:nowrap;
+}
+.pill:focus-visible{ outline:2px solid var(--accent); outline-offset:2px }
+.pill:hover{ filter:saturate(1.05) brightness(1.02) }
+.pill:active{ transform:translateY(1px) }
+
+/* Controls row */
+.controls{
+  display:flex; align-items:center; gap:12px;
+  padding:8px clamp(16px, 4vw, 28px) 12px;
+  border-top:1px solid var(--border);
+}
+.muted{ color:var(--muted); font-size:14px }
+
+.select{
+  background:#0b233a; color:var(--text);
+  border:1px solid var(--border); border-radius:10px;
+  padding:10px 12px; font-weight:600;
 }
 
-.header .logo {
-  height: 64px;
-  margin-right: 1rem;
+/* Notice “new items available” bar */
+.notice{
+  background:#103a60; color:var(--text);
+  border:1px solid var(--border);
+  padding:8px 10px; border-radius:10px;
+}
+.hidden{ display:none }
+
+/* Grid of cards */
+.grid{
+  padding:14px clamp(16px, 4vw, 28px) 40px;
+  display:grid; grid-template-columns:repeat(1, minmax(0,1fr)); gap:14px;
+}
+@media (min-width:720px){ .grid{ grid-template-columns:repeat(2, minmax(0,1fr)); } }
+@media (min-width:1080px){ .grid{ grid-template-columns:repeat(3, minmax(0,1fr)); } }
+
+.card{
+  background:var(--card); border:1px solid var(--border);
+  border-radius:16px; padding:14px 16px; box-shadow:var(--shadow);
+}
+.card a{ color:inherit; text-decoration:none; display:block }
+.card h3{
+  margin:0 0 8px; font-size:18px; line-height:1.25; font-weight:800;
+  color:var(--link);
+}
+.card .summary{
+  margin:0 0 8px; color:var(--link-dim); font-size:14px; line-height:1.35;
+}
+.card .meta{
+  color:var(--muted); font-size:13px; display:flex; gap:8px; align-items:center;
+}
+.card .dot{ opacity:.6 }
+
+.card a:hover h3{ text-decoration:underline }
+
+/* Footer */
+.footer{
+  padding:28px; color:var(--muted); font-size:13px;
+  text-align:center; border-top:1px solid var(--border)
 }
 
-h1 {
-  font-size: 1.5rem;
-  font-weight: bold;
+/* Mobile polish */
+@media (max-width:480px){
+  .header{ align-items:flex-start }
+  .logo{ width:56px }
+  .pill{ padding:11px 16px; font-size:16px }
+  .controls{ position:sticky; top:0; z-index:3; backdrop-filter:saturate(110%) blur(4px); background:rgba(13,41,66,.75) }
 }
 
-.muted {
-  color: var(--muted);
-  font-size: 0.8rem;
-}
-
-.links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: var(--bg);
-}
-
-.pill {
-  display: inline-block;
-  padding: 0.4rem 0.8rem;
-  border-radius: 999px;
-  background: var(--secondary);
-  color: var(--primary);
-  font-weight: 600;
-  font-size: 0.9rem;
-  text-decoration: none;
-  border: none;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.pill:hover {
-  opacity: 0.9;
-}
-
-.controls {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.5rem 1rem;
-  background: #fff;
-  border-bottom: 1px solid var(--border);
-}
-
-.select {
-  padding: 0.3rem;
-  font-size: 0.9rem;
-}
-
-.notice {
-  background: var(--secondary);
-  color: var(--primary);
-  padding: 0.3rem 0.6rem;
-  border-radius: 4px;
-  font-size: 0.85rem;
-}
-
-.notice.hidden {
-  display: none;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1rem;
-  padding: 1rem;
-}
-
-.card {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.1s ease;
-}
-
-.card:hover {
-  transform: translateY(-2px);
-}
-
-.card h3 {
-  font-size: 1rem;
-  margin-bottom: 0.5rem;
-  color: var(--primary);
-}
-
-.card .summary {
-  font-size: 0.9rem;
-  color: #222;
-  margin-bottom: 0.5rem;
-}
-
-.card .meta {
-  font-size: 0.8rem;
-  color: var(--muted);
-  display: flex;
-  gap: 0.3rem;
-  margin-top: auto;
-}
-
-.footer {
-  padding: 1rem;
-  text-align: center;
-  font-size: 0.8rem;
-  color: var(--muted);
-  border-top: 1px solid var(--border);
+/* Fight song button variant */
+#play-fight-song.pill{ position:relative; padding-left:16px; padding-right:16px }
+#play-fight-song.pill::before{
+  content:"♪"; font-weight:900; margin-right:6px;
 }
