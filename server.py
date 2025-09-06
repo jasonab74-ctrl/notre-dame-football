@@ -1,120 +1,137 @@
-import os
 import json
-from datetime import datetime, timezone
-from flask import Flask, render_template, request, send_from_directory, abort, make_response
-
-APP_TITLE = "Notre Dame Football"
-ITEMS_PATH = os.path.join(os.path.dirname(__file__), "items.json")
+import os
+from datetime import datetime
+from flask import Flask, render_template, send_from_directory, request
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 
+# --- Helpers ---------------------------------------------------------------
+
+def clean_summary(text: str) -> str:
+    if not text:
+        return ""
+    # Replace common HTML non-breaking spaces and collapse excess whitespace
+    cleaned = (
+        text.replace("&nbsp;", " ")
+            .replace("\u00a0", " ")
+            .replace("&amp;", "&")
+    )
+    return " ".join(cleaned.split())
+
+def fmt_ts(ts: str) -> str:
+    """
+    Accepts an ISO-like timestamp string (e.g., '2025-09-06T12:00:10+00:00')
+    and renders 'Sep 6, 2025, 12:00 PM' in the server's local time.
+    Falls back gracefully if parsing fails.
+    """
+    if not ts:
+        return ""
+    try:
+        # Try multiple common formats
+        for fmt in ("%Y-%m-%dT%H:%M:%S%z",
+                    "%Y-%m-%dT%H:%M:%S.%f%z",
+                    "%Y-%m-%d %H:%M:%S%z",
+                    "%Y-%m-%dT%H:%M:%S",
+                    "%Y-%m-%d %H:%M:%S"):
+            try:
+                dt = datetime.strptime(ts, fmt)
+                break
+            except ValueError:
+                dt = None
+        if dt is None:
+            # Last-ditch: strip timezone colon if present and try again
+            if ts.endswith(":00"):
+                ts2 = ts[:-3] + ts[-3:]  # naive tweak; keep original if fails
+            else:
+                ts2 = ts
+            dt = datetime.fromisoformat(ts2.replace("Z", "+00:00"))
+        return dt.strftime("%b %-d, %Y, %-I:%M %p") if os.name != "nt" else dt.strftime("%b %d, %Y, %I:%M %p").lstrip("0").replace(" 0", " ")
+    except Exception:
+        # Show raw if we truly cannot parse
+        return ts
 
 def load_items():
-    """Load articles from items.json safely."""
-    if not os.path.exists(ITEMS_PATH):
+    path = os.path.join(os.path.dirname(__file__), "items.json")
+    if not os.path.exists(path):
         return []
-    try:
-        with open(ITEMS_PATH, "r", encoding="utf-8") as f:
-            data = json.load(f)
-        # Expect list of dicts; tolerate single dict wrapper like {"items":[...]}
-        if isinstance(data, dict) and "items" in data and isinstance(data["items"], list):
-            data = data["items"]
-        if not isinstance(data, list):
-            return []
-        norm = []
-        for it in data:
-            if not isinstance(it, dict):
-                continue
-            title = (it.get("title") or "").strip()
-            url = (it.get("url") or it.get("link") or "").strip()
-            source = (it.get("source") or it.get("site") or "").strip()
-            summary = (it.get("summary") or it.get("description") or "").strip()
-            # published can be epoch int/str or ISO string
-            published_raw = it.get("published") or it.get("published_at") or it.get("date")
-            published = None
-            if published_raw:
-                try:
-                    if isinstance(published_raw, (int, float)) or (isinstance(published_raw, str) and published_raw.isdigit()):
-                        published = datetime.fromtimestamp(int(published_raw), tz=timezone.utc)
-                    else:
-                        published = datetime.fromisoformat(str(published_raw).replace("Z", "+00:00"))
-                except Exception:
-                    published = None
-            norm.append({
-                "title": title,
-                "url": url,
-                "source": source,
-                "summary": summary,
-                "published": published.isoformat() if published else None
-            })
-        return norm
-    except Exception:
-        # If items file is malformed, fail closed but keep site up
-        return []
+    with open(path, "r", encoding="utf-8") as f:
+        data = json.load(f)
 
+    # Normalize items
+    items = []
+    for it in data:
+        items.append({
+            "title": it.get("title", "").strip(),
+            "link": it.get("link") or it.get("url") or "#",
+            "summary": clean_summary(it.get("summary", it.get("description", ""))),
+            "source": it.get("source", it.get("site", "Google News")),
+            "published_raw": it.get("published") or it.get("date") or "",
+            "published": fmt_ts(it.get("published") or it.get("date") or "")
+        })
+    return items
 
-def css_version():
-    """Use the style.css mtime as a cache-busting version token."""
-    try:
-        path = os.path.join(app.static_folder, "style.css")
-        mtime = os.path.getmtime(path)
-        return int(mtime)
-    except Exception:
-        return 1
+def build_nav():
+    # Keep exactly your current set; adjust labels/urls only if you want later
+    return [
+        ("Official Site", "https://fightingirish.com/sports/football/"),
+        ("Schedule", "https://www.espn.com/college-football/team/schedule/_/id/87/notre-dame-fighting-irish"),
+        ("Roster", "https://www.espn.com/college-football/team/roster/_/id/87/notre-dame-fighting-irish"),
+        ("CFB Rankings", "https://www.espn.com/college-football/rankings"),
+        ("ND Insider", "https://www.ndinsider.com/"),
+        ("Reddit — r/notredamefootball", "https://www.reddit.com/r/notredamefootball/"),
+        ("YouTube — ND Football", "https://www.youtube.com/channel/UCAMR05qSc5mfhVx20fDyAoQ"),
+        ("247Sports ND", "https://247sports.com/college/notre-dame/"),
+        ("ESPN ND Football", "https://www.espn.com/college-football/team/_/id/87/notre-dame-fighting-irish"),
+        ("CBS Sports ND", "https://www.cbssports.com/college-football/teams/ND/notre-dame-fighting-irish/"),
+        ("On3 — Blue & Gold", "https://www.on3.com/teams/notre-dame-fighting-irish/"),
+        ("The Athletic — ND", "https://theathletic.com/college-football/team/notre-dame-fighting-irish/"),
+        ("Fighting Irish Wire", "https://fightingirishwire.usatoday.com/")
+    ]
 
+def build_sources(items):
+    # Unique source names for the dropdown
+    names = sorted({it["source"] for it in items if it.get("source")})
+    return ["All sources"] + names
 
-@app.after_request
-def no_cache(resp):
-    """
-    Disable caching for HTML/JSON responses so updates always show,
-    but let static assets be cached (we bust with ?v= token).
-    """
-    ct = resp.headers.get("Content-Type", "")
-    if "text/html" in ct or "application/json" in ct:
-        resp.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
-        resp.headers["Pragma"] = "no-cache"
-        resp.headers["Expires"] = "0"
-    return resp
-
-
-@app.route("/healthz")
-def healthz():
-    return "ok", 200
-
+# --- Routes ----------------------------------------------------------------
 
 @app.route("/")
 def index():
     items = load_items()
 
-    # collect distinct sources
-    sources = sorted({(it.get("source") or "").strip() for it in items if (it.get("source") or "").strip()})
-    selected = request.args.get("source", "").strip()
-    if selected:
-        items = [it for it in items if (it.get("source") or "").strip() == selected]
+    # filter by ?source=Name (optional)
+    source = request.args.get("source")
+    if source and source != "All sources":
+        items = [it for it in items if it.get("source") == source]
 
-    # human-friendly time for “Updated”
-    updated_ts = None
-    try:
-        # latest published if available
-        published_list = [
-            datetime.fromisoformat(p) for p in [it.get("published") for it in items] if p
-        ]
-        if published_list:
-            updated_ts = max(published_list)
-    except Exception:
-        updated_ts = None
+    # pick a display timestamp: newest item or now if empty
+    if items and items[0].get("published"):
+        updated_display = items[0]["published"]
+    else:
+        updated_display = datetime.utcnow().strftime("%b %d, %Y, %I:%M %p").lstrip("0").replace(" 0", " ")
 
     return render_template(
         "index.html",
-        title=APP_TITLE,
-        items=items,
-        sources=sources,
-        selected_source=selected,
-        css_ver=css_version(),
-        updated_at=updated_ts
+        title="Notre Dame Football",
+        updated=updated_display,
+        nav_links=build_nav(),
+        sources=build_sources(load_items()),
+        current_source=source or "All sources",
+        items=items
     )
 
+# Static (cache headers kept short so CSS/JS changes show up)
+@app.after_request
+def add_cache_headers(resp):
+    if request.path.startswith("/static/"):
+        resp.headers["Cache-Control"] = "public, max-age=120"
+    return resp
 
+@app.route("/favicon.ico")
+def favicon():
+    return send_from_directory(app.static_folder, "favicon.ico")
+
+# Railway/Heroku style entrypoint
 if __name__ == "__main__":
-    # Dev run (Railway will use Procfile/gunicorn)
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    port = int(os.environ.get("PORT", "8080"))
+    app.run(host="0.0.0.0", port=port)
