@@ -4,118 +4,99 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Notre Dame Football — News & Feeds</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v={{version}}">
+  <link rel="stylesheet" href="/static/style.css?v={{ build_id }}">
 </head>
 <body>
-  <header class="banner">
+
+<header class="hero">
+  <div class="hero-inner">
     <div class="brand">
-      <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/ND_logo_monogram.svg" alt="ND" />
-      <div class="titles">
-        <h1>Notre Dame</h1>
-        <h1>Football</h1>
-        <div class="updated">Updated: {{ last_updated_iso }}</div>
+      <div class="nd-mark" aria-hidden="true">ND</div>
+      <div>
+        <h1 class="site-title">Notre Dame<br/>Football</h1>
+        <div class="updated">Updated: {{ updated_iso }}</div>
       </div>
     </div>
-    <button id="fightBtn" class="pill pill--cta" type="button" aria-pressed="false">Victory March</button>
-    <audio id="fightSong" preload="auto">
-      <source src="https://upload.wikimedia.org/wikipedia/commons/5/57/Victory_March.ogg" type="audio/ogg">
-    </audio>
-  </header>
+    <button id="songBtn" class="pill pill--alt" type="button">Victory March</button>
+    <!-- If you add the file /static/victory_march.mp3 this will play; if missing, it just does nothing. -->
+    <audio id="song" preload="none" src="/static/victory_march.mp3"></audio>
+  </div>
+</header>
 
-  <main class="container">
-    <section id="linksRow" class="links-row"></section>
+<main class="wrap">
+  <!-- Quick Links row (edit/remove buttons as you wish; these are static and safe) -->
+  <nav class="quicklinks">
+    <a class="pill" href="https://fightingirish.com/sports/football/" target="_blank" rel="noopener">Official Site</a>
+    <a class="pill" href="https://fightingirish.com/sports/football/schedule/" target="_blank" rel="noopener">Schedule</a>
+    <a class="pill" href="https://fightingirish.com/sports/football/roster/" target="_blank" rel="noopener">Roster</a>
+    <a class="pill" href="https://www.ncaa.com/rankings/football/fbs/associated-press" target="_blank" rel="noopener">CFB Rankings</a>
+    <a class="pill" href="https://www.ndinsider.com/" target="_blank" rel="noopener">ND Insider</a>
+    <a class="pill" href="https://www.reddit.com/r/notredamefootball/" target="_blank" rel="noopener">Reddit — r/notredamefootball</a>
+    <a class="pill" href="https://www.youtube.com/channel/UCAMR05qSc5mfhVx20fDyAoQ" target="_blank" rel="noopener">YouTube — ND Football</a>
+    <a class="pill" href="https://247sports.com/college/notre-dame/" target="_blank" rel="noopener">247Sports ND</a>
+    <a class="pill" href="https://www.espn.com/college-football/team/_/id/87/notre-dame-fighting-irish" target="_blank" rel="noopener">ESPN ND Football</a>
+    <a class="pill" href="https://www.cbssports.com/college-football/teams/ND/notre-dame-fighting-irish/" target="_blank" rel="noopener">CBS Sports ND</a>
+    <a class="pill" href="https://www.on3.com/teams/notre-dame-fighting-irish/" target="_blank" rel="noopener">On3 — Blue & Gold</a>
+    <a class="pill" href="https://theathletic.com/college-football/team/notre-dame-fighting-irish/" target="_blank" rel="noopener">The Athletic — ND</a>
+    <a class="pill" href="https://fightingirishwire.usatoday.com/" target="_blank" rel="noopener">Fighting Irish Wire</a>
+  </nav>
 
-    <div class="filters">
-      <label for="sourceSelect" class="label">News sources:</label>
-      <div class="select-wrap">
-        <select id="sourceSelect">
-          <option value="__all__">All sources</option>
-        </select>
-      </div>
-      <button id="refreshBtn" class="pill pill--ghost" type="button">refresh</button>
-    </div>
+  <!-- Articles -->
+  <section class="articles" aria-live="polite">
+    {% if items and items|length > 0 %}
+      {% for it in items %}
+        <article class="card">
+          <h2 class="card__title">
+            {% if it.link %}
+              <a class="card__link" href="{{ it.link }}" target="_blank" rel="noopener">{{ it.title or 'Untitled' }}</a>
+            {% else %}
+              <span class="card__link--nolink">{{ it.title or 'Untitled' }}</span>
+            {% endif %}
+          </h2>
 
-    <section id="feed" class="feed">
-      {% for it in initial_items %}
-      <article class="card" data-src="{{ it.get('source','').strip() }}">
-        <a class="card__title" target="_blank" rel="noopener" href="{{ it.get('url','#') }}">{{ it.get('title','') }}</a>
-        {% if it.get('summary') %}
-        <p class="card__summary">{{ it.get('summary') }}</p>
-        {% endif %}
-        <div class="card__meta">
-          <span class="card__chip">{{ it.get('source','') }}</span>
-          <span class="dot">•</span>
-          <time>{{ it.get('published','') }}</time>
-        </div>
-      </article>
-      {% endfor %}
-    </section>
-  </main>
+          {% if it.summary or it.snippet %}
+            <p class="card__summary">{{ (it.summary or it.snippet) }}</p>
+          {% endif %}
 
-  <script>
-    // -------------------
-    // Fight Song (no jump)
-    // -------------------
-    const fightBtn = document.getElementById('fightBtn');
-    const audio = document.getElementById('fightSong');
-    fightBtn.addEventListener('click', () => {
-      const playing = !audio.paused && !audio.ended;
-      if (playing) { audio.pause(); fightBtn.classList.remove('playing'); fightBtn.textContent = 'Victory March'; }
-      else { try { audio.currentTime = 0; audio.play(); } catch(_) {} fightBtn.classList.add('playing'); fightBtn.textContent = '⏸ Victory March'; }
-    });
-
-    // -------------------
-    // Data hydration
-    // -------------------
-    const feedEl = document.getElementById('feed');
-    const sourceSel = document.getElementById('sourceSelect');
-    const linksRow = document.getElementById('linksRow');
-    const refreshBtn = document.getElementById('refreshBtn');
-
-    function renderItems(items) {
-      const src = sourceSel.value;
-      const rows = (src === '__all__') ? items : items.filter(x => (x.source||'') === src);
-      feedEl.innerHTML = rows.map(it => `
-        <article class="card" data-src="${(it.source||'').trim()}">
-          <a class="card__title" target="_blank" rel="noopener" href="${it.url || '#'}">${it.title || ''}</a>
-          ${it.summary ? `<p class="card__summary">${it.summary}</p>` : ``}
           <div class="card__meta">
-            <span class="card__chip">${it.source || ''}</span><span class="dot">•</span>
-            <time>${it.published || ''}</time>
+            <span class="meta__source">{{ it.source or it.site or 'Google News' }}</span>
+            {% if it.published or it.published_at or it.date %}
+              <span class="meta__dot">•</span>
+              <time>{{ (it.published or it.published_at or it.date) }}</time>
+            {% endif %}
           </div>
         </article>
-      `).join('');
-    }
+      {% endfor %}
+    {% else %}
+      <p class="empty">No articles yet.</p>
+    {% endif %}
+  </section>
+</main>
 
-    async function loadFeedsMeta() {
+<script>
+  // Tiny, safe JS: toggle song without page “jumpiness”
+  (function () {
+    const btn = document.getElementById('songBtn');
+    const audio = document.getElementById('song');
+    if (!btn || !audio) return;
+
+    let playing = false;
+    btn.addEventListener('click', async () => {
       try {
-        const meta = await (await fetch('/feeds.json',{cache:'no-store'})).json();
-        // Links row
-        const links = meta.links || [];
-        linksRow.innerHTML = links.map(l => `<a class="pill pill--link" target="_blank" rel="noopener" href="${l.href}">${l.label}</a>`).join('');
-        // Sources dropdown
-        const feeds = meta.feeds || [];
-        const opts = ['<option value="__all__">All sources</option>']
-          .concat(feeds.map(f => `<option value="${f.name}">${f.name}</option>`));
-        sourceSel.innerHTML = opts.join('');
-      } catch (e) { console.warn('feeds.json load failed', e); }
-    }
-
-    async function loadItems() {
-      try {
-        const data = await (await fetch('/items.json',{cache:'no-store'})).json();
-        renderItems(data.items || []);
-      } catch (e) { console.warn('items.json load failed', e); }
-    }
-
-    sourceSel.addEventListener('change', loadItems);
-    refreshBtn.addEventListener('click', loadItems);
-
-    // Initial hydrate
-    loadFeedsMeta().then(loadItems);
-  </script>
+        if (!playing) {
+          await audio.play();
+          playing = true;
+          btn.textContent = 'Pause Victory March';
+        } else {
+          audio.pause();
+          playing = false;
+          btn.textContent = 'Victory March';
+        }
+      } catch (_) {
+        // Ignore play() promise rejections on mobile until user interacts again
+      }
+    });
+  })();
+</script>
 </body>
 </html>
