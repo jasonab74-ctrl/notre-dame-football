@@ -1,81 +1,128 @@
-/* ==== Base ==== */
-:root{
-  --nd-navy: #0e2a47;
-  --nd-navy-2:#0b223a;
-  --gold:    #e3c34b;      /* button gold */
-  --lt-gold: #f3e4b2;      /* card background */
-  --text:    #0a0a0a;      /* dark text */
-  --muted:   #5c748e;
-  --white:   #ffffff;
-  --shadow:  0 6px 18px rgba(0,0,0,.18);
-  --radius:  18px;
+/* Reset */
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #0B2340; /* ND blue */
+  color: #111;
 }
 
-*{box-sizing:border-box}
-html,body{margin:0;padding:0;background:var(--nd-navy-2);color:var(--white);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial}
-img{max-width:100%;display:block}
-
-/* ==== Header (non-sticky; no jump) ==== */
-.site-header{
-  display:flex; align-items:center; justify-content:space-between;
-  gap:16px; padding:20px 16px 10px; background:linear-gradient(180deg,var(--nd-navy) 0%, var(--nd-navy-2) 100%);
-  border-bottom:1px solid rgba(255,255,255,.08);
+/* Header */
+header {
+  background-color: #0B2340;
+  color: white;
+  padding: 10px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 2px solid #B9975B; /* ND gold accent */
 }
-.brand{display:flex; gap:14px; align-items:center}
-.brand-mark{width:72px; height:72px}
-.brand-text{display:flex; flex-direction:column}
-.site-title{margin:0; font-size:28px; font-weight:800; letter-spacing:.2px}
-.site-subtitle{margin-top:2px; font-weight:600; color:rgba(255,255,255,.85)}
-.site-updated{margin-top:4px; color:rgba(255,255,255,.7); font-size:14px}
 
-/* ==== Pills / Buttons ==== */
-.pill{
-  display:inline-block; padding:12px 18px; margin:8px; border-radius:999px;
-  background:var(--gold); color:var(--text); text-decoration:none; font-weight:800;
-  border:2px solid rgba(0,0,0,.22); box-shadow:0 2px 0 rgba(0,0,0,.18) inset;
-  white-space:nowrap;
+header img.logo {
+  height: 40px;   /* Smaller logo */
+  width: auto;
+  margin-right: 10px;
 }
-.pill:focus,.pill:hover{filter:brightness(0.95)}
-.pill--cta{padding:12px 16px}
 
-/* Quick links row */
-.quick-links{padding:6px 12px 8px}
-
-/* ==== Filter bar ==== */
-.filters{display:flex; align-items:center; gap:10px; padding:8px 12px 6px; border-top:1px solid rgba(255,255,255,.06)}
-.filter-label{color:rgba(255,255,255,.8); font-weight:700}
-.filter-select-wrap{position:relative; flex:1; max-width:520px}
-.filter-select-wrap select{
-  width:100%; appearance:none; -webkit-appearance:none;
-  padding:10px 36px 10px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.18);
-  background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.04));
-  color:#fff; font-weight:700;
+header .title-group {
+  flex-grow: 1;
 }
-.select-caret{position:absolute; right:12px; top:50%; transform:translateY(-50%); pointer-events:none; opacity:.9}
 
-/* ==== Cards ==== */
-.feed{padding:10px 12px 28px; display:grid; grid-template-columns:1fr; gap:16px}
-.card{
-  background:var(--lt-gold); color:var(--text); border-radius:22px; padding:18px 18px 16px;
-  box-shadow:var(--shadow); border:1px solid rgba(0,0,0,.06)
+header h1 {
+  margin: 0;
+  font-size: 1.2em;
+  font-weight: bold;
 }
-.card-title{margin:2px 0 10px}
-.card-title a{
-  color:var(--text); text-decoration:none; font-weight:900; font-size:22px;
+
+header p {
+  margin: 0;
+  font-size: 0.8em;
+  opacity: 0.8;
 }
-.card-title a:hover{opacity:.9}
-.card-summary{margin:0 0 12px; color:#2c2c2c; font-size:16px}
-.card-meta{display:flex; gap:8px; flex-wrap:wrap; align-items:center; color:#3a3a3a; font-weight:700}
-.meta-dot{opacity:.65}
 
-/* ==== Footer ==== */
-.site-footer{padding:18px 12px 28px; color:rgba(255,255,255,.7); text-align:center}
-.footline{opacity:.8; font-size:14px}
+/* Fight Song Button */
+header .fight-song {
+  background-color: #B9975B;
+  color: #111;
+  border: none;
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 0.9em;
+  cursor: pointer;
+  font-weight: bold;
+}
 
-/* ==== Mobile tweaks ==== */
-@media (max-width: 480px){
-  .brand-mark{width:60px; height:60px}
-  .site-title{font-size:24px}
-  .pill{margin:6px; padding:11px 16px}
-  .card-title a{font-size:20px}
+/* Buttons (links) */
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px;
+  justify-content: center;
+}
+
+.buttons a {
+  background-color: #B9975B; /* ND gold */
+  color: #111; /* Dark text */
+  padding: 8px 14px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 0.9em;
+}
+
+/* Dropdown label */
+label {
+  font-weight: bold;
+  margin: 10px;
+  display: block;
+  color: white;
+}
+
+/* Dropdown */
+select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  margin: 0 10px 15px;
+}
+
+/* Article cards */
+.card {
+  background-color: #F5E6C8; /* Light gold */
+  color: #111; /* Dark font */
+  border-radius: 12px;
+  padding: 12px 15px;
+  margin: 10px;
+}
+
+.card h2 {
+  margin: 0 0 8px;
+  font-size: 1.05em;
+  font-weight: bold;
+  color: #111;
+  text-decoration: none; /* no underline */
+}
+
+.card h2 a {
+  color: #111;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.card p {
+  margin: 4px 0;
+  font-size: 0.9em;
+  color: #222;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  color: #999;
+  font-size: 0.8em;
+  margin: 20px 0;
 }
