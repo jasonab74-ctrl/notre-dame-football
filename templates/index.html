@@ -1,100 +1,66 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{{ title }}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v={{ css_ver }}">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{{ title }} — News & Feeds</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=nd-7">
 </head>
 <body>
+
+  <!-- Banner -->
   <header class="banner">
     <div class="brand">
       <div class="nd-badge">ND</div>
-      <div>
-        <h1 class="site-title">Notre Dame<br>Football</h1>
-        <div class="updated">
-          Updated:
-          {% if updated_at %}
-            {{ updated_at.astimezone().strftime("%-m/%-d/%Y, %-I:%M:%S %p") }}
-          {% else %}
-            just now
-          {% endif %}
-        </div>
+      <div class="brand-text">
+        <h1 class="app-title">Notre Dame<br>Football</h1>
+        <div class="updated">Updated: {{ updated }}</div>
       </div>
     </div>
-    <a class="btn btn--pill btn--gold" href="https://www.youtube.com/results?search_query=notre+dame+victory+march" target="_blank" rel="noopener">Victory March</a>
+    <a class="song-chip" href="https://open.spotify.com/track/0JBnB1xB2AqJpQb5i8g5iE" target="_blank" rel="noopener">
+      Victory March
+    </a>
   </header>
 
-  <main class="container">
-    <!-- Quick links -->
-    <nav class="chips">
-      <a class="chip" href="https://und.com/sports/football/" target="_blank" rel="noopener">Official Site</a>
-      <a class="chip" href="https://fbschedules.com/notre-dame-fighting-irish-football-schedule/" target="_blank" rel="noopener">Schedule</a>
-      <a class="chip" href="https://und.com/sports/football/roster/" target="_blank" rel="noopener">Roster</a>
-      <a class="chip" href="https://www.espn.com/college-football/rankings" target="_blank" rel="noopener">CFB Rankings</a>
-      <a class="chip" href="https://www.ndinsider.com/" target="_blank" rel="noopener">ND Insider</a>
-      <a class="chip chip--wide" href="https://www.reddit.com/r/notredamefootball/" target="_blank" rel="noopener">Reddit — r/notredamefootball</a>
-      <a class="chip" href="https://www.youtube.com/results?search_query=notre+dame+football" target="_blank" rel="noopener">YouTube — ND Football</a>
-      <a class="chip" href="https://247sports.com/college/notre-dame/" target="_blank" rel="noopener">247Sports ND</a>
-      <a class="chip" href="https://www.espn.com/college-football/team/_/id/87/notre-dame-fighting-irish" target="_blank" rel="noopener">ESPN ND Football</a>
-      <a class="chip" href="https://www.cbssports.com/college-football/teams/ND/notre-dame-fighting-irish/" target="_blank" rel="noopener">CBS Sports ND</a>
-      <a class="chip" href="https://www.on3.com/college/notre-dame-fighting-irish/" target="_blank" rel="noopener">On3 — Blue & Gold</a>
-      <a class="chip" href="https://fightingirishwire.usatoday.com/" target="_blank" rel="noopener">Fighting Irish Wire</a>
-    </nav>
+  <!-- Quick Links -->
+  <section class="links">
+    {% for label, href in nav_links %}
+    <a class="chip" href="{{ href }}" target="_blank" rel="noopener">{{ label }}</a>
+    {% endfor %}
+  </section>
 
-    <!-- Sources filter -->
-    <section class="toolbar">
-      <label for="source" class="label">News sources:</label>
-      <form method="get" class="source-form">
-        <select id="source" name="source" class="select">
-          <option value="" {% if not selected_source %}selected{% endif %}>All sources</option>
-          {% for s in sources %}
-            <option value="{{ s }}" {% if selected_source==s %}selected{% endif %}>{{ s }}</option>
-          {% endfor %}
-        </select>
-        <button class="btn btn--pill" type="submit">Apply</button>
-        {% if selected_source %}
-          <a class="btn btn--pill btn--ghost" href="{{ url_for('index') }}">Clear</a>
+  <!-- Source Filter -->
+  <section class="filter">
+    <label for="source" class="filter-label">News sources:</label>
+    <form method="get">
+      <select id="source" name="source" class="select">
+        {% for s in sources %}
+        <option value="{{ s }}" {% if s == current_source %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+      </select>
+    </form>
+  </section>
+
+  <!-- Articles -->
+  <main class="articles">
+    {% for it in items %}
+      <article class="card">
+        <h2 class="card-title">
+          <a class="card-link" href="{{ it.link }}" target="_blank" rel="noopener">{{ it.title }}</a>
+        </h2>
+        {% if it.summary %}
+          <p class="card-summary">{{ it.summary }}</p>
         {% endif %}
-      </form>
-    </section>
-
-    <!-- Articles -->
-    <section class="cards">
-      {% for it in items %}
-        <article class="card">
-          <h2 class="card-title">
-            {% if it.url %}
-              <a href="{{ it.url }}" target="_blank" rel="noopener">{{ it.title or "Untitled" }}</a>
-            {% else %}
-              {{ it.title or "Untitled" }}
-            {% endif %}
-          </h2>
-          {% if it.summary %}
-            <p class="card-summary">{{ it.summary }}</p>
-          {% endif %}
-          <div class="card-meta">
-            <span>{{ it.source or "Unknown source" }}</span>
-            {% if it.published %}
-              <span aria-hidden="true">•</span>
-              <time datetime="{{ it.published }}">
-                {{ (it.published | replace("Z","+00:00") | tojson)[1:-1] | safe }}
-              </time>
-            {% endif %}
-          </div>
-        </article>
-      {% else %}
-        <p class="empty">No articles found.</p>
-      {% endfor %}
-    </section>
+        <div class="meta">
+          <span class="meta-source">{{ it.source }}</span>
+          <span class="dot">•</span>
+          <time class="meta-time">{{ it.published }}</time>
+        </div>
+      </article>
+    {% endfor %}
   </main>
 
-  <footer class="footer">
-    <div class="container footer-inner">
-      <span>web-production</span>
-    </div>
-  </footer>
+  <footer class="foot-space"></footer>
+
 </body>
 </html>
