@@ -1,53 +1,34 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Notre Dame Football — News & Feeds</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Notre Dame Football</title>
   <link rel="icon" href="static/favicon.ico">
   <link rel="apple-touch-icon" href="static/apple-touch-icon.png">
-  <link rel="manifest" href="static/manifest.json">
   <link rel="stylesheet" href="static/style.css">
-  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#0C2340">
 </head>
 <body>
   <header>
-    <img class="logo" src="static/notre-dame-logo.png" alt="ND" />
+    <img src="static/notre-dame-logo.png" class="logo" alt="ND">
     <div class="titles">
       <div class="brand">Notre Dame Football</div>
-      <div class="subtitle">Live news feed • auto-refreshing</div>
+      <div class="subtitle">Live news feed · auto-refreshing</div>
     </div>
     <div class="actions">
-      <button class="pill" id="fightBtn" title="Play fight song">Victory March</button>
+      <button class="pill" id="songBtn">Victory March</button>
     </div>
-    <audio id="fightAudio" preload="none" src="static/fight-song.mp3"></audio>
   </header>
 
-  <!-- Quick links -->
-  <nav class="links" id="linksRow">
-    <!-- Buttons come from STATIC_LINKS in feeds.py at build time; hardcoded here for static site -->
-    <a class="pill" href="https://fightingirish.com/sports/football/schedule/" target="_blank" rel="noopener">Schedule</a>
-    <a class="pill" href="https://fightingirish.com/sports/football/roster/" target="_blank" rel="noopener">Roster</a>
-    <a class="pill" href="https://www.espn.com/college-football/standings" target="_blank" rel="noopener">Standings</a>
-    <a class="pill" href="https://www.southbendtribune.com/sports/notre-dame/" target="_blank" rel="noopener">ND Insider</a>
-    <a class="pill" href="https://www.irishenvy.com/forums/notre-dame-football.3/" target="_blank" rel="noopener">Irish Envy</a>
-    <a class="pill" href="https://fightingirishwire.usatoday.com/" target="_blank" rel="noopener">Fighting Irish Wire</a>
-    <a class="pill" href="https://www.onefootdown.com/" target="_blank" rel="noopener">One Foot Down</a>
-    <a class="pill" href="https://www.on3.com/teams/notre-dame-fighting-irish/" target="_blank" rel="noopener">Blue & Gold (On3)</a>
-    <a class="pill" href="https://notredame.rivals.com/" target="_blank" rel="noopener">Inside ND Sports (Rivals)</a>
-    <a class="pill" href="https://www.reddit.com/r/NotreDame/" target="_blank" rel="noopener">Reddit</a>
-    <a class="pill" href="https://apnews.com/hub/ap-top-25-college-football-poll" target="_blank" rel="noopener">AP Poll</a>
-    <a class="pill" href="https://coaches.poll/college-football/" target="_blank" rel="noopener">Coaches Poll</a>
-    <a class="pill" href="https://www.cbssports.com/college-football/teams/ND/notre-dame-fighting-irish/" target="_blank" rel="noopener">CBS ND</a>
-    <a class="pill" href="https://247sports.com/college/notre-dame/" target="_blank" rel="noopener">247Sports ND</a>
-  </nav>
+  <nav class="links" id="quickLinks"></nav>
 
-  <div id="updated">Updated: <span id="updatedAt">–</span></div>
+  <div id="updated">Updated: —</div>
 
-  <div style="padding: 0 16px 8px;">
-    <label for="sourceSel" style="font-size:12px; opacity:.85;">News sources:</label>
-    <select id="sourceSel">
-      <option value="">All sources</option>
+  <div class="controls">
+    <label for="srcSel">News sources:</label>
+    <select id="srcSel">
+      <option value="*">All sources</option>
     </select>
   </div>
 
@@ -55,97 +36,78 @@
 
   <footer>
     <div>Auto-checking for new items…</div>
-    <div><a href="items.json" target="_blank" rel="noopener">items.json</a></div>
+    <a href="items.json">items.json</a>
   </footer>
 
+  <audio id="song" preload="none" src="static/fight-song.mp3"></audio>
+
   <script>
-    const fightBtn = document.getElementById('fightBtn');
-    const fightAudio = document.getElementById('fightAudio');
-    fightBtn.addEventListener('click', () => {
-      if (fightAudio.paused) { fightAudio.play().catch(()=>{}); } else { fightAudio.pause(); fightAudio.currentTime = 0; }
+    const els = {
+      grid: document.getElementById('grid'),
+      updated: document.getElementById('updated'),
+      srcSel: document.getElementById('srcSel'),
+      links: document.getElementById('quickLinks'),
+      song: document.getElementById('song'),
+      songBtn: document.getElementById('songBtn'),
+    };
+
+    // Inline the same STATIC_LINKS as feeds.py
+    const STATIC_LINKS = [
+      {"label":"Schedule","url":"https://fightingirish.com/sports/football/schedule/"},
+      {"label":"Roster","url":"https://fightingirish.com/sports/football/roster/"},
+      {"label":"AP Poll","url":"https://apnews.com/hub/ap-top-25-college-football-poll"},
+      {"label":"Coaches Poll","url":"https://www.usatoday.com/sports/ncaaf/polls/coaches-poll/"},
+      {"label":"ND Insider","url":"https://www.southbendtribune.com/sports/notre-dame/"},
+      {"label":"Irish Envy","url":"https://www.irishenvy.com/forums/notre-dame-football.3/"},
+      {"label":"Fighting Irish Wire","url":"https://fightingirishwire.usatoday.com/"},
+      {"label":"One Foot Down","url":"https://www.onefootdown.com/"},
+      {"label":"Blue & Gold (On3)","url":"https://www.on3.com/teams/notre-dame-fighting-irish/"},
+      {"label":"Inside ND Sports (Rivals)","url":"https://notredame.rivals.com/"},
+      {"label":"247Sports ND","url":"https://247sports.com/college/notre-dame/"},
+      {"label":"CBS ND","url":"https://www.cbssports.com/college-football/teams/ND/notre-dame-fighting-irish/"},
+      {"label":"Reddit","url":"https://www.reddit.com/r/NotreDame/"}
+    ];
+
+    function buildLinks(){
+      els.links.innerHTML = STATIC_LINKS.map(l => `<a class="pill" href="${l.url}" target="_blank" rel="noopener">${l.label}</a>`).join('');
+    }
+
+    function escapeHtml(s){return (s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]))}
+    function fmtTime(ts){return new Date(ts*1000).toLocaleString()}
+
+    let all = {items:[]};
+
+    function render(){
+      const src = els.srcSel.value;
+      const items = all.items.filter(i => src === '*' || i.source === src);
+      els.grid.innerHTML = items.map(it => `
+        <article class="card">
+          <a class="title" href="${it.link}" target="_blank" rel="noopener">${escapeHtml(it.title)}</a>
+          <div class="meta">${escapeHtml(it.source)} • ${fmtTime(it.ts)}</div>
+        </article>
+      `).join('');
+    }
+
+    async function load(){
+      const r = await fetch('items.json?ts='+Date.now());
+      const j = await r.json();
+      all = j;
+      els.updated.textContent = 'Updated: ' + new Date().toLocaleString();
+      const set = new Set(j.items.map(i => i.source));
+      els.srcSel.innerHTML = `<option value="*">All sources</option>` + [...set].map(s=>`<option>${escapeHtml(s)}</option>`).join('');
+      render();
+    }
+
+    // Auto-refresh every 5m
+    setInterval(load, 5*60*1000);
+    els.srcSel.addEventListener('change', render);
+    els.songBtn.addEventListener('click', () => {
+      if (els.song.paused){ els.song.play(); els.songBtn.textContent='Pause'; }
+      else { els.song.pause(); els.songBtn.textContent='Victory March'; }
     });
 
-    const grid = document.getElementById('grid');
-    const sourceSel = document.getElementById('sourceSel');
-    const updatedAt = document.getElementById('updatedAt');
-
-    let allItems = [];
-    let lastCount = 0;
-
-    function fmtDate(s) {
-      try { return new Date(s).toLocaleString(); } catch { return s || ''; }
-    }
-
-    function render(items) {
-      grid.innerHTML = '';
-      items.forEach(it => {
-        const a = document.createElement('a');
-        a.className = 'card';
-        a.href = it.link || '#';
-        a.target = '_blank';
-        a.rel = 'noopener';
-        a.innerHTML = `
-          <div class="title">${(it.title||'').replace(/</g,'&lt;')}</div>
-          ${it.summary ? `<div>${(it.summary||'').replace(/</g,'&lt;')}</div>` : ''}
-          <div class="meta">
-            <span>${(it.source||'').replace(/</g,'&lt;')}</span>
-            <span class="dot"></span>
-            <span>${fmtDate(it.published)}</span>
-          </div>
-        `;
-        grid.appendChild(a);
-      });
-    }
-
-    function populateSourceFilter(items) {
-      const set = new Set(items.map(i => i.source).filter(Boolean));
-      const current = sourceSel.value;
-      sourceSel.innerHTML = '<option value="">All sources</option>';
-      [...set].sort().forEach(src => {
-        const opt = document.createElement('option');
-        opt.value = src; opt.textContent = src;
-        sourceSel.appendChild(opt);
-      });
-      if ([...set].includes(current)) sourceSel.value = current;
-    }
-
-    async function load() {
-      try {
-        const res = await fetch('items.json', {cache: 'no-cache'});
-        const data = await res.json();
-        allItems = data.items || [];
-        updatedAt.textContent = data.updated || new Date().toLocaleString();
-        populateSourceFilter(allItems);
-        const filtered = sourceSel.value ? allItems.filter(i => i.source === sourceSel.value) : allItems;
-        render(filtered);
-        lastCount = allItems.length;
-      } catch (e) {
-        updatedAt.textContent = 'failed to load';
-        console.error(e);
-      }
-    }
-
-    sourceSel.addEventListener('change', () => {
-      const filtered = sourceSel.value ? allItems.filter(i => i.source === sourceSel.value) : allItems;
-      render(filtered);
-    });
-
+    buildLinks();
     load();
-    setInterval(async () => {
-      try {
-        const res = await fetch('items.json', {cache: 'no-cache'});
-        const data = await res.json();
-        const count = (data.items || []).length;
-        if (count > lastCount) {
-          allItems = data.items;
-          updatedAt.textContent = data.updated || new Date().toLocaleString();
-          populateSourceFilter(allItems);
-          const filtered = sourceSel.value ? allItems.filter(i => i.source === sourceSel.value) : allItems;
-          render(filtered);
-          lastCount = count;
-        }
-      } catch {}
-    }, 300000);
   </script>
 </body>
 </html>
