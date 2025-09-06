@@ -1,4 +1,4 @@
-# collect.py — fetch & filter ND football, dedupe, label by real outlet, write items.json
+# collect.py — fetch ND football news, unwrap aggregator links, dedupe, label by real outlet
 import feedparser, json, re, time, html
 from datetime import datetime, timezone
 from urllib.parse import urlparse, urlunparse, parse_qsl, urlencode
@@ -6,21 +6,23 @@ from feeds import FEEDS
 
 MAX_ITEMS = 50
 
-# Require football context; allow common ND terms and key people
+# ND + football context
 KEYWORDS_ANY = [
     "notre dame football", "nd football", "fighting irish",
-    "marcus freeman", "golden domers", "south bend", "irish football",
-    "freeman", "notre dame vs", "notre dame at", "nd vs", "nd at"
+    "marcus freeman", "irish football", "south bend",
+    "notre dame vs", "notre dame at", "nd vs", "nd at"
 ]
-# Must include at least one of these football hints if the feed is an aggregator
-FOOTBALL_HINTS = ["football", "ncaa", "ncaaf", "ncf", "qb", "defense", "offense", "linebacker", "wide receiver", "running back"]
-
+FOOTBALL_HINTS = [
+    "football", "ncaaf", "ncf", "qb", "quarterback", "defense", "offense",
+    "linebacker", "receiver", "running back", "depth chart", "bye week"
+]
 EXCLUDE_ANY = [
-    "women", "wbb", "volleyball", "basketball", "softball",
-    "baseball", "soccer", "lacrosse", "hockey", "wrestling"
+    "women", "wbb", "volleyball", "basketball", "softball", "baseball",
+    "soccer", "lacrosse", "hockey", "wrestling"
 ]
 
-# Pretty outlet names for common domains
+AGGREGATOR_HOSTS = {"news.google.com", "www.bing.com", "bing.com"}
+
 DOMAIN_LABELS = {
     "espn.com": "ESPN",
     "cbssports.com": "CBS Sports",
@@ -28,8 +30,8 @@ DOMAIN_LABELS = {
     "blueandgold.com": "Blue & Gold (On3)",
     "on3.com": "On3",
     "southbendtribune.com": "South Bend Tribune",
-    "usatoday.com": "USA Today",
     "fightingirishwire.usatoday.com": "Fighting Irish Wire",
+    "usatoday.com": "USA Today",
     "si.com": "Sports Illustrated",
     "sports.yahoo.com": "Yahoo Sports",
     "yahoo.com": "Yahoo",
@@ -37,8 +39,8 @@ DOMAIN_LABELS = {
     "foxsports.com": "FOX Sports",
     "onefootdown.com": "One Foot Down",
     "fightingirish.com": "FightingIrish.com",
-    "notredame.rivals.com": "Inside ND Sports (Rivals)",
     "insideindsports.com": "Inside ND Sports",
+    "notredame.rivals.com": "Inside ND Sports (Rivals)",
     "wndu.com": "WNDU",
     "theathletic.com": "The Athletic",
     "apnews.com": "AP News",
@@ -46,137 +48,139 @@ DOMAIN_LABELS = {
     "reddit.com": "Reddit",
 }
 
-AGGREGATOR_HOSTS = {"news.google.com", "www.bing.com", "bing.com"}
-
-def strip_tags(text: str) -> str:
-    if not text:
-        return ""
-    text = re.sub(r"<[^>]+>", " ", text)
-    text = html.unescape(text)
-    return re.sub(r"\s+", " ", text).strip()
+def strip_tags(s: str) -> str:
+    if not s: return ""
+    s = re.sub(r"<[^>]+>", " ", s)
+    s = html.unescape(s)
+    return re.sub(r"\s+", " ", s).strip()
 
 def unwrap_redirect(u: str) -> str:
-    """Unwrap Google/Bing news redirectors to the real article URL when present."""
+    """Unwrap Google/Bing news links to the real article when possible."""
     try:
         p = urlparse(u)
         q = dict(parse_qsl(p.query, keep_blank_values=True))
-        if p.netloc in {"news.google.com"} and "url" in q:
+        if p.netloc == "news.google.com" and "url" in q:
             return q["url"]
-        if p.netloc in {"www.bing.com", "bing.com"} and "url" in q:
-            return q["url"]
+        if p.netloc in {"www.bing.com", "bing.com"}:
+            # Bing uses url= or u=
+            if "url" in q: return q["url"]
+            if "u" in q:   return q["u"]
         return u
     except Exception:
         return u
 
 def clean_url(u: str) -> str:
-    """Canonicalize and drop tracking params from the final URL."""
+    """Canonicalize final URL and drop tracking."""
     try:
         u = unwrap_redirect(u)
         p = urlparse(u)
-        q_pairs = [(k, v) for k, v in parse_qsl(p.query, keep_blank_values=True)
-                   if not k.lower().startswith(("utm_", "fbclid", "gclid", "ocid"))]
-        return urlunparse((p.scheme, p.netloc.lower(), p.path, "", urlencode(q_pairs), ""))
+        q = [(k, v) for k, v in parse_qsl(p.query, keep_blank_values=True)
+             if not k.lower().startswith(("utm_", "fbclid", "gclid", "ocid"))]
+        host = (p.netloc or "").lower()
+        if host.startswith("www."): host = host[4:]
+        return urlunparse((p.scheme, host, p.path, "", urlencode(q), ""))
     except Exception:
         return u
 
-def outlet_label_from_url(u: str) -> str:
+def outlet_label(u: str, entry, default_feed_name: str) -> str:
+    """Prefer real outlet (domain). If still an aggregator, fall back to <source> tag."""
     try:
         host = urlparse(u).netloc.lower()
-        host = host[4:] if host.startswith("www.") else host
-        return DOMAIN_LABELS.get(host, host)
+        if host.startswith("www."): host = host[4:]
+        if host and host not in AGGREGATOR_HOSTS:
+            return DOMAIN_LABELS.get(host, host)
+        # Fall back to <source> / source_detail from the feed (Google News provides this)
+        src = entry.get("source") or entry.get("source_detail") or {}
+        if isinstance(src, dict):
+            title = src.get("title") or src.get("href")
+            if title:
+                # If it's a URL, map to domain label
+                if "://" in title:
+                    try:
+                        h = urlparse(title).netloc.lower()
+                        if h.startswith("www."): h = h[4:]
+                        return DOMAIN_LABELS.get(h, h or default_feed_name)
+                    except Exception:
+                        pass
+                return title
+        return default_feed_name
     except Exception:
-        return "Unknown"
+        return default_feed_name
 
 def looks_like_football(text: str) -> bool:
     t = text.lower()
-    if "football" in t:
-        return True
+    if "football" in t: return True
     return any(k in t for k in FOOTBALL_HINTS)
 
-def allow_item(title: str, summary: str, link: str, feed_host: str) -> bool:
-    """Stricter filter for aggregator feeds: require ND + football context."""
+def allowed(title: str, summary: str, feed_host: str) -> bool:
     t = f"{title} {summary}".lower()
-    if any(x in t for x in EXCLUDE_ANY):
-        return False
-    # Must be ND-related
-    if not any(k in t for k in KEYWORDS_ANY):
-        return False
-    # If aggregator, also require an explicit football-ish hint
-    if feed_host in AGGREGATOR_HOSTS and not looks_like_football(t):
-        return False
+    if any(x in t for x in EXCLUDE_ANY): return False
+    if not any(k in t for k in KEYWORDS_ANY): return False
+    if feed_host in AGGREGATOR_HOSTS and not looks_like_football(t): return False
     return True
 
 def ts_from_entry(e) -> float:
     for k in ("published_parsed", "updated_parsed"):
         v = getattr(e, k, None)
         if v:
-            try:
-                return time.mktime(v)
-            except Exception:
-                pass
+            try: return time.mktime(v)
+            except Exception: pass
     return time.time()
-
-def make_id(link: str) -> str:
-    return re.sub(r"[^a-z0-9]+", "-", (link or "").lower()).strip("-")[:120]
 
 def norm_title(t: str) -> str:
     t = t.lower()
     t = re.sub(r"[^a-z0-9 ]+", " ", t)
     t = re.sub(r"\s+", " ", t).strip()
-    # drop trailing site separators like " - on3" that slip into some titles
-    t = re.sub(r"\s-\s[a-z0-9 ]+$", "", t)
+    t = re.sub(r"\s-\s[a-z0-9 ]+$", "", t)  # drop trailing " - Site"
     return t
+
+def make_id(link: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", (link or "").lower()).strip("-")[:120]
 
 def collect():
     items = []
-    seen_links = set()             # canonical link dedupe
-    seen_title_key = set()         # domain+norm_title dedupe
+    seen_links = set()          # canonical URL dedupe
+    seen_titles = set()         # global normalized title dedupe
 
     for feed in FEEDS:
-        feed_name, feed_url = feed["name"], feed["url"]
+        feed_name = feed["name"]
+        feed_url  = feed["url"]
         feed_host = urlparse(feed_url).netloc.lower()
+
         parsed = feedparser.parse(feed_url)
-
         for e in parsed.entries:
-            raw_title = getattr(e, "title", "") or ""
-            title = strip_tags(raw_title)
-            raw_link = getattr(e, "link", "") or ""
-            link = clean_url(raw_link)
-            if not title or not link:
+            title = strip_tags(getattr(e, "title", "") or "")
+            link  = clean_url(getattr(e, "link", "") or "")
+            if not title or not link: 
                 continue
 
-            # stricter allowlist
-            summary = strip_tags(getattr(e, "summary", ""))
-            if not allow_item(title, summary, link, feed_host):
+            summary = strip_tags(getattr(e, "summary", "") or "")
+            if not allowed(title, summary, feed_host):
                 continue
 
-            # dedupe: canonical link
+            # DEDUPE 1: by canonical URL
             if link in seen_links:
                 continue
 
-            # dedupe: per-domain normalized title
-            domain = urlparse(link).netloc.lower()
-            domain = domain[4:] if domain.startswith("www.") else domain
-            title_key = f"{domain}::{norm_title(title)}"
-            if title_key in seen_title_key:
+            # DEDUPE 2: by normalized title across ALL outlets
+            key = norm_title(title)
+            if key in seen_titles:
                 continue
 
             ts = ts_from_entry(e)
-            source = outlet_label_from_url(link)
+            source = outlet_label(link, e, feed_name)
 
             items.append({
                 "id": make_id(link),
                 "title": title,
                 "link": link,
-                "source": source,                          # used in dropdown
-                "ts": float(ts),                           # epoch seconds
+                "source": source,                    # used in dropdown
+                "ts": float(ts),
                 "published_iso": datetime.fromtimestamp(ts, tz=timezone.utc).isoformat()
             })
-
             seen_links.add(link)
-            seen_title_key.add(title_key)
+            seen_titles.add(key)
 
-    # newest first + cap
     items.sort(key=lambda x: x["ts"], reverse=True)
     items = items[:MAX_ITEMS]
 
