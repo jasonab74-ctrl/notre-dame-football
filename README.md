@@ -1,11 +1,12 @@
-# Notre Dame Football — Sports News Bot
+# Notre Dame Football — News & Feeds
 
-Purdue-style Flask app that fetches and filters Notre Dame **football** news and renders a clean, mobile-first feed.
+- Static front-end served by Flask (`server.py`) for local preview or any simple host.
+- Articles are refreshed by **GitHub Actions** every 30 minutes (see `.github/workflows/collect.yml`) which runs `collect.py` and writes `items.json` back to the repo.
+- The UI reads from `items.json` — no backend dependency in production if you serve the files statically.
 
-## Run locally
-
+## Local preview
 ```bash
 pip install -r requirements.txt
-python3 collect.py      # fetch feeds → items.json
-python3 server.py       # open http://127.0.0.1:5000
-
+python server.py
+# http://localhost:8080
+```

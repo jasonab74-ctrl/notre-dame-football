@@ -1,1 +1,10 @@
-{"team":"Notre Dame Football","updated":0,"count":0,"items":[]}
+[
+  {
+    "id": "demo1",
+    "title": "Welcome to ND Football feed",
+    "link": "https://und.com/",
+    "summary": "Once GitHub Automation runs, this placeholder will be replaced with live items.",
+    "source": "und.com",
+    "published": "2025-09-06T00:00:00Z"
+  }
+]

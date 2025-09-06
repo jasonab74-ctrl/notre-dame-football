@@ -1,18 +1,11 @@
+# Feeds used by collect.py. Add/remove as needed.
 FEEDS = [
-    {"name": "One Foot Down", "url": "https://www.onefootdown.com/rss/index.xml"},
-    {"name": "Irish Sports Daily", "url": "https://irishsportsdaily.com/rss"},
-    {"name": "NDNation", "url": "https://ndnation.com/feed/"},
-    {"name": "InsideNDSports (Rivals)", "url": "https://notredame.rivals.com/rss"},
-    {"name": "247Sports – Notre Dame", "url": "https://247sports.com/college/notre-dame/rss/"},
-    {"name": "ESPN – Notre Dame Football", "url": "https://www.espn.com/espn/rss/ncf/team/_/id/87"},
-    {"name": "On3 (Blue & Gold)", "url": "https://www.on3.com/college/notre-dame/rss/"},
-    {"name": "The Athletic – Notre Dame Football", "url": "https://theathletic.com/team/notre-dame-fighting-irish/feed/"},
-    {"name": "Fighting Irish Wire", "url": "https://fightingirishwire.usatoday.com/feed/"}
-]
+    # Google News topic feed scoped to ND football keywords (broad net)
+    "https://news.google.com/rss/search?q=%22Notre+Dame+Fighting+Irish+football%22&hl=en-US&gl=US&ceid=US:en",
 
-STATIC_LINKS = [
-    {"label": "Official Site", "href": "https://und.com/sports/football/"},
-    {"label": "Reddit — r/NotreDameFootball", "href": "https://www.reddit.com/r/notredamefootball/"},
-    {"label": "Irish Envy", "href": "https://www.irishenvy.com/"},
-    {"label": "Schedule", "href": "https://fbschedules.com/notre-dame-football-schedule/"},
+    # Site-specific feeds (some publishers gate their feeds; these are best-effort).
+    "https://www.on3.com/teams/notre-dame-fighting-irish/football/feed/",
+    "https://fightingirishwire.usatoday.com/feed/",
+    "https://www.espn.com/college-football/team/_/id/87/notre-dame-fighting-irish/rss",
+    "https://247sports.com/college/notre-dame/Article/feed/",
 ]
