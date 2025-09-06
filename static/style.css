@@ -22,7 +22,7 @@ header {
 }
 
 header img.logo {
-  height: 40px;   /* Smaller logo */
+  height: 40px;
   width: auto;
   margin-right: 10px;
 }
@@ -99,20 +99,21 @@ select {
   margin: 10px;
 }
 
+/* Article title */
 .card h2 {
   margin: 0 0 8px;
   font-size: 1.05em;
   font-weight: bold;
-  color: #111;
-  text-decoration: none; /* no underline */
 }
 
+/* Make the clickable title bold dark blue and not underlined */
 .card h2 a {
-  color: #111;
+  color: #0B2340;  /* ND dark blue */
   font-weight: bold;
-  text-decoration: none;
+  text-decoration: none; /* removes underline */
 }
 
+/* Summary text */
 .card p {
   margin: 4px 0;
   font-size: 0.9em;
