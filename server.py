@@ -1,221 +1,99 @@
-# server.py — stable single-file Flask app for Railway (no-jump fight-song, compact sources bar)
-import os, json, time, traceback
-from flask import Flask, jsonify, Response, send_file, request
+from __future__ import annotations
+import os, json, time
+from datetime import datetime, timezone
+from flask import Flask, render_template, jsonify, make_response, send_from_directory
 
-APP_TITLE = "Notre Dame Football"
+APP_NAME = "Notre Dame Football — News & Feeds"
 
-def log(msg: str):
-    print(f"[SERVER] {msg}", flush=True)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_PATH = os.path.join(BASE_DIR, "items.json")   # expected to exist already
 
-app = Flask(__name__, static_folder="static")
+app = Flask(__name__, static_folder="static", template_folder="templates")
 
-HTML = """<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Notre Dame Football — News & Feeds</title>
-  <meta name="theme-color" content="#0C2340">
-  <link rel="icon" href="/static/favicon.ico" sizes="any">
-  <link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
-  <link rel="manifest" href="/static/manifest.webmanifest">
-  <link rel="stylesheet" href="/static/style.css" />
-</head>
-<body>
-  <header class="header">
-    <img class="logo" src="/static/notre-dame-logo.png" alt="Notre Dame logo"/>
-    <div>
-      <h1>Notre Dame<br/>Football</h1>
-      <div id="updated" class="muted">Updated: —</div>
-    </div>
-    <button id="play-fight-song" class="pill" aria-pressed="false" aria-label="Play Victory March">Victory March</button>
-    <audio id="fight-song" src="/static/fight-song.mp3" preload="auto"></audio>
-  </header>
+# Disable static caching so new CSS/JS takes effect immediately in Railway
+app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 
-  <nav id="links" class="links"></nav>
+# A build/version token used for cache-busting query strings
+BUILD_ID = os.environ.get("BUILD_ID") or str(int(time.time()))
 
-  <section class="controls">
-    <label for="sourceSel" class="muted">News sources:</label>
-    <select id="sourceSel" class="select">
-      <option value="__all__">All sources</option>
-    </select>
-    <div id="notice" class="notice hidden">New items available — <button id="reload" class="pill">refresh</button></div>
-  </section>
+def _read_items() -> list[dict]:
+    """Read items.json; normalize minimal fields so template never breaks."""
+    if not os.path.exists(DATA_PATH):
+        return []
+    try:
+        with open(DATA_PATH, "r", encoding="utf-8") as f:
+            raw = json.load(f)
+    except Exception:
+        return []
 
-  <main id="feed" class="grid"></main>
+    items = []
+    for it in raw:
+        title = it.get("title") or it.get("headline") or "Untitled"
+        link = it.get("link") or it.get("url") or "#"
+        source = (it.get("source") or it.get("site") or "").strip()
+        summary = (it.get("summary") or it.get("description") or "").strip()
+        # published can be iso, epoch, or missing
+        pub = it.get("published") or it.get("date") or it.get("time") or ""
+        published_ts = None
+        if isinstance(pub, (int, float)):
+            try:
+                published_ts = datetime.fromtimestamp(float(pub), tz=timezone.utc)
+            except Exception:
+                published_ts = None
+        elif isinstance(pub, str):
+            for fmt in ("%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%dT%H:%M:%S.%f%z",
+                        "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S"):
+                try:
+                    published_ts = datetime.strptime(pub, fmt)
+                    if published_ts.tzinfo is None:
+                        published_ts = published_ts.replace(tzinfo=timezone.utc)
+                    break
+                except Exception:
+                    continue
 
-  <footer class="footer">
-    <span>Built with the Sports App template.</span>
-  </footer>
-
-  <script>
-    const fmtTime = (ts) => ts ? new Date(ts * 1000).toLocaleString() : "";
-    const elUpdated = document.getElementById('updated');
-    const elFeed = document.getElementById('feed');
-    const elNotice = document.getElementById('notice');
-    const elReload = document.getElementById('reload');
-    const elLinks = document.getElementById('links');
-    const elSource = document.getElementById('sourceSel');
-    const fightBtn = document.getElementById('play-fight-song');
-    const audio = document.getElementById('fight-song');
-
-    // No-jump play/pause: keep label constant, toggle aria-pressed, blur to avoid mobile jank
-    fightBtn?.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      try {
-        if (audio.paused) {
-          audio.currentTime = 0;
-          const p = audio.play();
-          if (p && p.catch) p.catch(() => {});
-          fightBtn.setAttribute('aria-pressed','true');
-          fightBtn.setAttribute('aria-label','Pause Victory March');
-        } else {
-          audio.pause();
-          fightBtn.setAttribute('aria-pressed','false');
-          fightBtn.setAttribute('aria-label','Play Victory March');
-        }
-      } catch (err) {}
-      setTimeout(() => fightBtn.blur(), 0);
-    });
-
-    let lastCount = 0;
-    let currentSource = "__all__";
-    let cache = { items: [], updated: 0 };
-
-    async function hydrateMeta() {
-      try {
-        const meta = await (await fetch('/feeds.json', {cache:'no-store'})).json();
-        const links = meta.links || [];
-        elLinks.innerHTML = links.map(l => `<a class="pill" href="${l.href}" target="_blank" rel="noopener">${l.label}</a>`).join('');
-        const feeds = meta.feeds || [];
-        const opts = feeds.map(f => `<option value="${f.name}">${f.name}</option>`).join('');
-        elSource.insertAdjacentHTML('beforeend', opts);
-      } catch (e) {
-        console.warn('feeds.json unavailable', e);
-      }
-    }
-
-    function render(items) {
-      const filtered = currentSource === "__all__"
-        ? items
-        : items.filter(i => (i.source || '').toLowerCase() === currentSource.toLowerCase());
-
-      elFeed.innerHTML = (filtered || []).map(item => `
-        <article class="card">
-          <a href="${item.link}" target="_blank" rel="noopener">
-            <h3>${item.title || ''}</h3>
-            <p class="summary">${item.summary || ''}</p>
-            <div class="meta">
-              <span class="source">${item.source || ''}</span>
-              <span class="dot">•</span>
-              <span class="time">${item.published ? new Date(item.published * 1000).toLocaleString() : ''}</span>
-            </div>
-          </a>
-        </article>
-      `).join('');
-    }
-
-    async function load(initial=false) {
-      const res = await fetch('/items.json', { cache: 'no-store' });
-      const data = await res.json();
-      cache = data;
-      elUpdated.textContent = 'Updated: ' + fmtTime(data.updated);
-      if (!initial && data.count > lastCount) elNotice.classList.remove('hidden');
-      lastCount = data.count;
-      render(data.items || []);
-    }
-
-    elReload?.addEventListener('click', () => {
-      elNotice.classList.add('hidden');
-      load(true);
-    });
-
-    elSource.addEventListener('change', (e) => {
-      currentSource = e.target.value || "__all__";
-      render(cache.items || []);
-    });
-
-    hydrateMeta();
-    load(true);
-
-    // Lightweight check: show banner if new items; no forced refresh
-    setInterval(async () => {
-      try {
-        const res = await fetch('/items.json', { cache: 'no-store' });
-        const data = await res.json();
-        if (data.count > lastCount) elNotice.classList.remove('hidden');
-      } catch (e) {}
-    }, 180000);
-  </script>
-</body>
-</html>
-"""
+        items.append({
+            "title": title.strip(),
+            "link": link,
+            "source": source or "Google News",
+            "summary": summary,
+            "published_iso": published_ts.astimezone(timezone.utc).isoformat(timespec="seconds") if published_ts else "",
+            "published_display": published_ts.astimezone(timezone.utc).strftime("%-m/%-d/%Y, %-I:%M %p") if published_ts else "",
+        })
+    return items
 
 @app.after_request
-def add_cors(resp):
-    try:
-        if resp.mimetype in ("application/json", "text/json") or request.path.startswith("/static/teams/"):
-            resp.headers["Access-Control-Allow-Origin"] = "*"
-            resp.headers["Cache-Control"] = "max-age=60"
-    except Exception:
-        pass
+def _no_store(resp):
+    """Stop intermediaries from caching HTML/JSON. Static files already set to 0 max age."""
+    if resp.content_type and ("text/html" in resp.content_type or "application/json" in resp.content_type):
+        resp.headers["Cache-Control"] = "no-store, max-age=0"
+        resp.headers["Pragma"] = "no-cache"
     return resp
 
-@app.get("/")
+@app.route("/")
 def index():
-    return Response(HTML, mimetype="text/html")
+    items = _read_items()
+    updated_at = datetime.now(timezone.utc).strftime("%-m/%-d/%Y, %-I:%M:%S %p")
+    return render_template(
+        "index.html",
+        app_name=APP_NAME,
+        updated_at=updated_at,
+        items=items,
+        build_id=BUILD_ID,
+    )
 
-@app.get("/items.json")
-def items_json():
-    path = "items.json"
-    if not os.path.exists(path):
-        log("items.json not found — returning empty payload")
-        return jsonify({"team": APP_TITLE, "updated": int(time.time()), "count": 0, "items": []})
-    try:
-        return send_file(path, mimetype="application/json")
-    except Exception:
-        log("send_file failed, falling back to json.load")
-        try:
-            with open(path, "r", encoding="utf-8", errors="ignore") as f:
-                data = json.load(f)
-        except Exception as e:
-            log(f"items.json invalid: {e}")
-            data = {"team": APP_TITLE, "updated": int(time.time()), "count": 0, "items": []}
-        return jsonify(data)
+@app.route("/api/articles")
+def api_articles():
+    return jsonify({"items": _read_items(), "build_id": BUILD_ID})
 
-@app.get("/feeds.json")
-def feeds_json():
-    try:
-        from feeds import FEEDS, STATIC_LINKS
-    except Exception as e:
-        log(f"feeds import failed: {e}")
-        FEEDS, STATIC_LINKS = [], []
-    return jsonify({"feeds": FEEDS, "links": STATIC_LINKS})
-
-@app.get("/health")
+@app.route("/health")
 def health():
-    out = {"ok": True, "now": int(time.time()), "updated": 0, "count": 0}
-    try:
-        if os.path.exists("items.json"):
-            with open("items.json", "r", encoding="utf-8") as f:
-                data = json.load(f)
-                out["updated"] = int(data.get("updated") or 0)
-                out["count"] = int(data.get("count") or 0)
-        else:
-            out["ok"] = False
-            out["note"] = "items.json not found"
-    except Exception as e:
-        out["ok"] = False
-        out["error"] = str(e)
-    return jsonify(out)
+    return "ok"
+
+# Optional: serve /favicon.ico if you dropped one in /static
+@app.route("/favicon.ico")
+def favicon():
+    return send_from_directory(app.static_folder, "favicon.ico")
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", "5000"))
-    log(f"Starting Flask on 0.0.0.0:{port}")
-    try:
-        app.run(host="0.0.0.0", port=port, debug=False)
-    except Exception as e:
-        log(f"CRASH on startup: {e}")
-        traceback.print_exc()
-        raise
+    # For local dev only; on Railway use gunicorn as you already do
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", "8080")))
