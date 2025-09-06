@@ -1,25 +1,20 @@
-# server.py — stable Flask app for Railway + Gunicorn
-import os
-import json
-import time
-import traceback
-from flask import Flask, jsonify, Response, send_file, request
+# server.py — single-file Flask app
+import os, json, time, traceback
+from flask import Flask, jsonify, Response, send_file
 
 APP_TITLE = "Notre Dame Football"
 
 def log(msg: str):
     print(f"[SERVER] {msg}", flush=True)
 
-# Serve /static/** from ./static
 app = Flask(__name__, static_folder="static")
 
-# Use a plain string with a token so JavaScript { } does NOT collide with Python formatting.
-_HTML = r"""<!doctype html>
+HTML = f"""<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>%%TITLE%% — News</title>
+  <title>{APP_TITLE} — News</title>
   <link rel="icon" href="/static/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
   <link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
@@ -65,10 +60,7 @@ _HTML = r"""<!doctype html>
     const fightBtn = document.getElementById('play-fight-song');
     const audio = document.getElementById('fight-song');
 
-    // Keep page from "jumping" on iOS when playing/pausing the audio button
-    fightBtn?.addEventListener('click', (e) => {
-      e.preventDefault();
-      document.activeElement?.blur?.();
+    fightBtn?.addEventListener('click', () => {
       if (audio.paused) { audio.currentTime = 0; audio.play(); fightBtn.textContent = '⏸ Victory March'; }
       else { audio.pause(); fightBtn.textContent = 'Victory March'; }
     });
@@ -79,7 +71,7 @@ _HTML = r"""<!doctype html>
 
     async function hydrateMeta() {
       try {
-        const meta = await (await fetch('/feeds.json', {cache: 'no-store'})).json();
+        const meta = await (await fetch('/feeds.json', {cache:'no-store'})).json();
         const links = meta.links || [];
         elLinks.innerHTML = links.map(l => `<a class="pill" href="${l.href}" target="_blank" rel="noopener">${l.label}</a>`).join('');
         const feeds = meta.feeds || [];
@@ -90,24 +82,42 @@ _HTML = r"""<!doctype html>
       }
     }
 
+    function cleanSummary(title, summary) {
+      let s = (summary || "").trim();
+      if (!s) return "";
+      // If identical to title or begins with title, drop it
+      const t = (title || "").trim();
+      if (t && (s === t || s.toLowerCase().startsWith(t.toLowerCase()))) s = "";
+      // Strip repeated whitespace and trailing source fragments
+      s = s.replace(/\\s+/g,' ').replace(/\\s*[|—-]\\s*[^|—-]+$/,'').trim();
+      // Clamp length
+      const MAX = 220;
+      if (s.length > MAX) s = s.slice(0, MAX-1).trim() + "…";
+      return s;
+    }
+
     function render(items) {
       const filtered = currentSource === "__all__"
         ? items
         : items.filter(i => (i.source || '').toLowerCase() === currentSource.toLowerCase());
 
-      elFeed.innerHTML = (filtered || []).map(item => `
+      elFeed.innerHTML = (filtered || []).map(item => {
+        const title = item.title || '';
+        const summary = cleanSummary(title, item.summary);
+        const summaryHtml = summary ? `<p class="summary">${summary}</p>` : '';
+        return `
         <article class="card">
           <a href="${item.link}" target="_blank" rel="noopener">
-            <h3>${item.title}</h3>
-            <p class="summary">${item.summary || ''}</p>
+            <h3>${title}</h3>
+            ${summaryHtml}
             <div class="meta">
               <span class="source">${item.source || ''}</span>
               <span class="dot">•</span>
               <span class="time">${fmtTime(item.published)}</span>
             </div>
           </a>
-        </article>
-      `).join('');
+        </article>`;
+      }).join('');
     }
 
     async function load(initial=false) {
@@ -130,7 +140,6 @@ _HTML = r"""<!doctype html>
       render(cache.items || []);
     });
 
-    // Initial load + gentle poller (client-side only; does not affect server stability)
     hydrateMeta();
     load(true);
     setInterval(async () => {
@@ -138,56 +147,42 @@ _HTML = r"""<!doctype html>
         const res = await fetch('/items.json', { cache: 'no-store' });
         const data = await res.json();
         if (data.count > lastCount) elNotice.classList.remove('hidden');
-      } catch (e) {}
+      } catch {}
     }, 5 * 60 * 1000);
   </script>
 </body>
 </html>
 """
 
-@app.after_request
-def add_cors_and_cache(resp):
-    # Allow JSON to be fetched from other origins (static sites, etc.)
-    if resp.mimetype in ("application/json", "text/json") or request.path.startswith("/static/teams/"):
-        resp.headers["Access-Control-Allow-Origin"] = "*"
-        # keep caches short so /items.json feels fresh but won’t thrash
-        resp.headers["Cache-Control"] = "max-age=60"
-    return resp
-
 @app.get("/")
 def index():
-    html = _HTML.replace("%%TITLE%%", APP_TITLE)
-    return Response(html, mimetype="text/html")
+    return Response(HTML, mimetype="text/html")
 
 @app.get("/items.json")
-def items_json():
+def items():
     path = "items.json"
     if not os.path.exists(path):
         log("items.json not found — returning empty payload")
         return jsonify({"team": APP_TITLE, "updated": int(time.time()), "count": 0, "items": []})
     try:
-        # send_file is fastest and streams correctly
-        return send_file(path, mimetype="application/json", conditional=True)
-    except Exception as e:
-        # Fallback: load + jsonify if send_file ever trips
-        log(f"send_file failed ({e}), falling back to json.load")
+        return send_file(path, mimetype="application/json")
+    except Exception:
+        log("send_file failed, falling back to json.load")
         try:
             with open(path, "r", encoding="utf-8", errors="ignore") as f:
                 data = json.load(f)
-        except Exception as e2:
-            log(f"items.json invalid: {e2}")
+        except Exception as e:
+            log(f"items.json invalid: {e}")
             data = {"team": APP_TITLE, "updated": int(time.time()), "count": 0, "items": []}
         return jsonify(data)
 
 @app.get("/feeds.json")
-def feeds_meta():
-    # Optional: if feeds.py exists, expose FEEDS + STATIC_LINKS to paint source list and top buttons
-    FEEDS, STATIC_LINKS = [], []
+def feeds_json():
     try:
-        from feeds import FEEDS as F, STATIC_LINKS as L  # type: ignore
-        FEEDS, STATIC_LINKS = F or [], L or []
+        from feeds import FEEDS, STATIC_LINKS
     except Exception as e:
-        log(f"feeds import failed (non-fatal): {e}")
+        log(f"feeds import failed: {e}")
+        FEEDS, STATIC_LINKS = [], []
     return jsonify({"feeds": FEEDS, "links": STATIC_LINKS})
 
 @app.get("/health")
@@ -201,19 +196,18 @@ def health():
                 status["count"] = int(data.get("count") or 0)
         else:
             status["ok"] = False
-            status["note"] = "items.json not found yet (run collect.py or your scheduled job)"
+            status["note"] = "items.json not found yet (run collect.py or cron)"
     except Exception as e:
         status["ok"] = False
         status["error"] = str(e)
     return jsonify(status)
 
-# NOTE:
-# We do NOT start Flask's development server here in production.
-# Gunicorn (from the Procfile) will import `app` from this module and run it.
-# You can still run locally with: python3 server.py
 if __name__ == "__main__":
-    # Local/dev only
     port = int(os.environ.get("PORT", "5000"))
-    log(f"Starting local dev server on http://127.0.0.1:{port}")
-    # No debug=True to mirror prod behavior
-    app.run(host="0.0.0.0", port=port)
+    log(f"Starting Flask on 0.0.0.0:{port}")
+    try:
+        app.run(host="0.0.0.0", port=port, debug=False)
+    except Exception as e:
+        log(f"CRASH on startup: {e}")
+        traceback.print_exc()
+        raise
