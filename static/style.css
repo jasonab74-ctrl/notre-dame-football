@@ -14,12 +14,12 @@ header {
   justify-content: space-between;
   background: #0c2340;
   color: white;
-  padding: 12px 16px;   /* reduce padding */
-  min-height: 60px;     /* reduce tall spacing */
+  padding: 12px 16px;
+  min-height: 60px;   /* reduced height */
 }
 
 header img {
-  height: 40px; /* smaller ND logo */
+  height: 40px;       /* smaller ND logo */
   margin-right: 10px;
 }
 
@@ -53,17 +53,17 @@ button.fight-song:hover {
 .nav-buttons {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 10px;        /* more consistent spacing */
+  gap: 8px 10px;
   padding: 12px 16px;
 }
 
 .nav-buttons a {
   background: #C99700;  /* ND gold */
-  color: #111;
-  padding: 6px 12px;    /* slightly smaller padding */
+  color: #111 !important;
+  padding: 6px 12px;
   border-radius: 20px;
-  text-decoration: none;
-  font-size: 14px;      /* smaller font size */
+  text-decoration: none !important;
+  font-size: 14px;
   font-weight: 600;
   white-space: nowrap;
 }
@@ -101,16 +101,15 @@ select {
   margin: 0 0 6px 0;
   color: #0c2340;      /* ND dark blue */
   font-weight: 700;
-  text-decoration: none; /* remove underline */
 }
 
 .article h2 a {
-  color: #0c2340;
-  text-decoration: none;
+  color: #0c2340 !important;
+  text-decoration: none !important; /* no underline */
 }
 
 .article h2 a:hover {
-  text-decoration: underline; /* hover only */
+  text-decoration: underline;
 }
 
 .article p {
