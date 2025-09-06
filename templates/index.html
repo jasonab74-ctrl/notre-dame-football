@@ -1,67 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Notre Dame Football</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v={{ cache_buster }}">
+  <title>Notre Dame Football — News & Feeds</title>
+  <link rel="preload" href="{{ url_for('static', filename='style.css') }}?v=25" as="style">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=25">
 </head>
 <body>
-  <header class="banner">
-    <div class="banner-left">
-      <img class="team-logo" src="{{ url_for('static', filename='nd-logo.png') }}?v={{ cache_buster }}" alt="ND">
-      <div class="team-title">
-        <h1>Notre Dame Football</h1>
-        <p class="updated">Updated: {{ updated }}</p>
+
+  <!-- Compact banner -->
+  <header class="site-header">
+    <div class="brand">
+      <div class="nd-badge">ND</div>
+      <div class="brand-text">
+        <h1>Notre Dame<br><span>Football</span></h1>
+        <div class="updated">Updated: {{ last_updated }}</div>
       </div>
     </div>
-    <button id="fightBtn" class="fight-button" type="button">Victory March</button>
-    <audio id="fightAudio" preload="none" src="{{ url_for('static', filename='victory-march.mp3') }}"></audio>
+
+    <a class="pill pill-cta" href="{{ victory_url }}" target="_blank" rel="noopener">
+      Victory March
+    </a>
   </header>
 
-  <main>
+  <main class="container">
+
+    <!-- Quick links row (unchanged list; render only what you keep server-side) -->
+    <nav class="quick-links">
+      {% for link in links %}
+        <a class="pill" href="{{ link.href }}" target="_blank" rel="noopener">{{ link.label }}</a>
+      {% endfor %}
+    </nav>
+
+    <!-- Sources filter -->
     <section class="filters">
-      <form method="get" id="filterForm">
-        <label for="sourceSelect">News sources:</label>
-        <select id="sourceSelect" name="source" onchange="this.form.submit()">
-          <option value="all" {{ 'selected' if selected_source=='all' else '' }}>All sources</option>
-          {% for s in sources %}
-            <option value="{{ s }}" {{ 'selected' if selected_source==s else '' }}>{{ s }}</option>
-          {% endfor %}
-        </select>
-      </form>
+      <label for="sourceSelect">News sources:</label>
+      <select id="sourceSelect" name="source" onchange="location.href='?source='+encodeURIComponent(this.value)">
+        <option value="" {{ '' == active_source and 'selected' or '' }}>All sources</option>
+        {% for src in sources %}
+          <option value="{{ src.id }}" {{ src.id == active_source and 'selected' or '' }}>{{ src.label }}</option>
+        {% endfor %}
+      </select>
     </section>
 
-    <section id="articles">
+    <!-- Articles list -->
+    <section class="feed">
       {% for item in items %}
-      <article class="article" data-source="{{ item.source }}">
-        <a class="article-title" href="{{ item.link }}" target="_blank" rel="noopener">
-          {{ item.title }}
-        </a>
-        {% if item.summary %}
-          <p class="article-summary">{{ item.summary }}</p>
-        {% endif %}
-        <p class="article-meta">{{ item.source }} • {{ item.published }}</p>
-      </article>
+        <article class="card">
+          <h2 class="card-title">
+            <a href="{{ item.url }}" target="_blank" rel="noopener">{{ item.title }}</a>
+          </h2>
+
+          {% if item.summary %}
+            <p class="card-summary">{{ item.summary }}</p>
+          {% endif %}
+
+          <div class="card-meta">
+            <!-- single line: when we pulled it; fall back to published -->
+            {% set pulled = item.added_at or item.collected_at or item.fetched_at %}
+            {% set when = pulled or item.published or item.date %}
+            <span class="meta-dot"></span>
+            <time datetime="{{ when }}">{{ when }}</time>
+          </div>
+        </article>
       {% endfor %}
-      {% if not items %}
-        <p class="empty">No articles for this source yet.</p>
-      {% endif %}
     </section>
+
+    {% if not items or items|length == 0 %}
+      <p class="empty">No articles found for this source.</p>
+    {% endif %}
+
   </main>
 
-  <script>
-    // tiny, self-contained fight-song toggle (no external JS)
-    (function() {
-      var btn = document.getElementById('fightBtn');
-      var audio = document.getElementById('fightAudio');
-      if (!btn || !audio) return;
-      btn.addEventListener('click', function () {
-        if (audio.paused) { audio.play(); btn.classList.add('playing'); }
-        else { audio.pause(); btn.classList.remove('playing'); }
-      });
-      audio.addEventListener('ended', function() { btn.classList.remove('playing'); });
-    })();
-  </script>
 </body>
 </html>
