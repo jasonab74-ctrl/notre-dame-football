@@ -23,7 +23,6 @@
     <audio id="fightAudio" preload="none" src="static/fight-song.mp3"></audio>
   </header>
 
-  <!-- Quick links (static buttons) -->
   <nav class="links" id="linksRow">
     <a class="pill" href="https://fightingirish.com/sports/football/schedule/" target="_blank" rel="noopener">Schedule</a>
     <a class="pill" href="https://fightingirish.com/sports/football/roster/" target="_blank" rel="noopener">Roster</a>
@@ -55,7 +54,6 @@
     const fightBtn = document.getElementById('fightBtn');
     const fightAudio = document.getElementById('fightAudio');
     fightBtn.addEventListener('click', () => {
-      if (!fightAudio.src || fightAudio.src.endsWith('/')) return;
       if (fightAudio.paused) { fightAudio.play().catch(()=>{}); } else { fightAudio.pause(); fightAudio.currentTime = 0; }
     });
 
@@ -127,7 +125,6 @@
       render(filtered);
     });
 
-    // Initial load + periodic check
     load();
     setInterval(async () => {
       try {
@@ -135,7 +132,6 @@
         const data = await res.json();
         const count = (data.items || []).length;
         if (count > lastCount) {
-          // New items — refresh UI
           allItems = data.items;
           updatedAt.textContent = data.updated || new Date().toLocaleString();
           populateSourceFilter(allItems);
@@ -144,7 +140,7 @@
           lastCount = count;
         }
       } catch {}
-    }, 300000); // 5 minutes
+    }, 300000);
   </script>
 </body>
 </html>
