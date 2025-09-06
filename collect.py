@@ -1,91 +1,92 @@
-# collect.py — fetch feeds and write items.json for GitHub Pages
-import json, time, hashlib
+# collect.py — fetch & filter, write items.json (ND football)
+import feedparser, json, re, time, html
 from datetime import datetime, timezone
-import feedparser, requests
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urlunparse, parse_qsl, urlencode
 from feeds import FEEDS
 
 MAX_ITEMS = 50
 
-def norm_source(name, link):
-    if name: return name.strip()
+KEYWORDS_ANY = [
+    "notre dame football", "fighting irish", "nd football",
+    "marcus freeman", "south bend", "golden domers"
+]
+EXCLUDE_ANY = [
+    "women", "wbb", "volleyball", "basketball", "softball",
+    "baseball", "soccer", "lacrosse", "hockey"
+]
+
+# Sources that can bypass strict keyword checks
+TRUSTED = {f["name"] for f in FEEDS}
+
+def strip_tags(text: str) -> str:
+    if not text:
+        return ""
+    text = re.sub(r"<[^>]+>", " ", text)
+    text = html.unescape(text)
+    return re.sub(r"\s+", " ", text).strip()
+
+def clean_url(u: str) -> str:
     try:
-        host = urlparse(link or "").hostname or ""
-        return host.replace("www.", "") or "Unknown"
-    except:
-        return "Unknown"
+        p = urlparse(u)
+        q = [(k, v) for k, v in parse_qsl(p.query, keep_blank_values=True)
+             if not k.lower().startswith(("utm_", "fbclid", "gclid", "ocid"))]
+        return urlunparse((p.scheme, p.netloc, p.path, "", urlencode(q), ""))
+    except Exception:
+        return u
 
-def clean_text(s):
-    if not s: return ""
-    return " ".join(str(s).split())
-
-def allow_item(title, summary, source):
+def allow_item(title: str, summary: str, source: str) -> bool:
     t = f"{title} {summary}".lower()
-    # positive signals
-    if ("notre dame" in t or "fighting irish" in t or "south bend" in t or "nd" in t) and "football" in t:
-        pass
-    elif any(k in (source or "").lower() for k in ["onefootdown","usatoday","on3","rivals","southbendtribune","247sports","cbssports","espn.com","reddit.com"]):
-        pass
-    else:
+    if any(x in t for x in EXCLUDE_ANY):
         return False
-    # exclusions
-    exclude = ["women", "wbb", "volleyball", "softball", "basketball", "soccer"]
-    if any(x in t for x in exclude):
-        return False
-    return True
+    if source in TRUSTED:
+        return True
+    return any(k in t for k in KEYWORDS_ANY)
 
-def dedupe(items):
-    seen = set()
-    out = []
-    for it in items:
-        key = hashlib.md5((it.get("title","") + it.get("link","")).encode("utf-8")).hexdigest()
-        if key in seen: 
-            continue
-        seen.add(key)
-        out.append(it)
-    return out
+def ts_from_entry(e) -> float:
+    for k in ("published_parsed", "updated_parsed"):
+        if getattr(e, k, None):
+            try:
+                return time.mktime(getattr(e, k))
+            except Exception:
+                pass
+    return time.time()
 
-def fetch_all():
-    items = []
-    for f in FEEDS:
-        url = f["url"]
-        try:
-            if "reddit.com" in url:
-                r = requests.get(url, headers={"User-Agent":"nd-bot/1.0"}, timeout=20)
-                parsed = feedparser.parse(r.text)
-            else:
-                parsed = feedparser.parse(url)
-            feed_title = getattr(parsed.feed, "title", "") or f.get("name","")
-            for e in parsed.entries[:80]:
-                title = clean_text(getattr(e, "title", ""))
-                summary = clean_text(getattr(e, "summary", ""))
-                link = getattr(e, "link", "")
-                published = getattr(e, "published", "") or getattr(e, "updated", "")
-                source = norm_source(feed_title, link)
-                if allow_item(title, summary, source):
-                    items.append({
-                        "title": title,
-                        "summary": summary[:400],
-                        "link": link,
-                        "source": source,
-                        "published": published
-                    })
-        except Exception:
-            continue
-        time.sleep(0.4)
-    items = dedupe(items)
-    items.sort(key=lambda x: x.get("published",""), reverse=True)
-    return items[:MAX_ITEMS]
+def make_id(link: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", (link or "").lower()).strip("-")[:120]
 
-def main():
-    items = fetch_all()
-    data = {
-        "updated": datetime.now(timezone.utc).isoformat(),
-        "items": items
-    }
-    with open("items.json","w",encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-    print(f"Wrote {len(items)} items to items.json")
+def collect():
+    items, seen = [], set()
+    for feed in FEEDS:
+        name, url = feed["name"], feed["url"]
+        parsed = feedparser.parse(url)
+        for e in parsed.entries:
+            title = strip_tags(getattr(e, "title", ""))
+            link  = clean_url(getattr(e, "link", ""))
+            if not title or not link or (title, link) in seen:
+                continue
+            summary = strip_tags(getattr(e, "summary", ""))
+            if not allow_item(title, summary, name):
+                continue
+            ts = ts_from_entry(e)
+            items.append({
+                "id": make_id(link),
+                "title": title,
+                "link": link,
+                "source": name,
+                "ts": ts,
+                "published_iso": datetime.fromtimestamp(ts, tz=timezone.utc).isoformat()
+            })
+            seen.add((title, link))
+
+    items.sort(key=lambda x: x["ts"], reverse=True)
+    items = items[:MAX_ITEMS]
+
+    with open("items.json", "w", encoding="utf-8") as f:
+        json.dump({
+            "updated_iso": datetime.now(tz=timezone.utc).isoformat(),
+            "count": len(items),
+            "items": items
+        }, f, ensure_ascii=False, indent=2)
 
 if __name__ == "__main__":
-    main()
+    collect()
