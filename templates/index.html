@@ -4,242 +4,228 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Notre Dame Football — News & Feeds</title>
-  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
-  <link rel="apple-touch-icon" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
-  <link rel="manifest" href="{{ url_for('static', filename='manifest.webmanifest') }}">
-
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="icon" href="/static/favicon.ico" />
+  <link rel="apple-touch-icon" href="/static/apple-touch-icon.png" />
+  <link rel="manifest" href="/static/manifest.webmanifest" />
+  <link rel="stylesheet" href="/static/style.css?v=20250906a" />
 </head>
 <body>
-
-  <!-- Top Banner (compact, no layout jump) -->
-  <header class="topbar">
+  <header class="site-header">
     <div class="brand">
-      <img id="brand-logo"
-           src="{{ url_for('static', filename='logo.png') }}"
-           alt="Notre Dame logo"
-           onerror="this.style.display='none'">
-      <div class="brand-text">
-        <h1 class="app-title">Notre Dame<br>Football</h1>
-        <div class="updated">
-          Updated:
-          <span id="updated-at">—</span>
+      <img class="brand-logo" src="/static/purdue-logo.png" alt="ND" />
+      <div class="brand-titles">
+        <h1 class="brand-title">Notre Dame Football</h1>
+        <div class="brand-updated">
+          Updated: <span id="last-updated">—</span>
         </div>
       </div>
     </div>
 
-    <div class="fight-song">
-      <button id="fight-btn" class="btn pill gold">Victory March</button>
-      <audio id="fight-audio" preload="auto"
-             src="{{ url_for('static', filename='fight-song.mp3') }}"></audio>
-    </div>
+    <button id="fight-song" class="pill pill--cta" aria-pressed="false">
+      Victory March
+    </button>
+    <audio id="audio" preload="none" src="/static/fight-song.mp3"></audio>
   </header>
 
-  <!-- Quick Links (gold buttons with black text) -->
-  <nav class="quick-links container">
-    <a class="btn pill gold" href="https://und.com/sports/football/" target="_blank" rel="noopener">Official Site</a>
-    <a class="btn pill gold" href="https://fightingirish.com/sports/football/schedule/" target="_blank" rel="noopener">Schedule</a>
-    <a class="btn pill gold" href="https://fightingirish.com/sports/football/roster/" target="_blank" rel="noopener">Roster</a>
+  <main class="content">
+    <!-- top link grid -->
+    <nav class="quick-links" aria-label="Quick links">
+      <a class="pill" href="https://und.com/sports/football/" target="_blank" rel="noopener">Official Site</a>
+      <a class="pill" href="https://und.com/sports/football/schedule/" target="_blank" rel="noopener">Schedule</a>
+      <a class="pill" href="https://und.com/sports/football/roster/" target="_blank" rel="noopener">Roster</a>
 
-    <a class="btn pill gold" href="https://www.cbssports.com/college-football/rankings/" target="_blank" rel="noopener">CFB Rankings</a>
-    <a class="btn pill gold" href="https://www.ndinsider.com/" target="_blank" rel="noopener">ND Insider</a>
+      <a class="pill" href="https://www.cbssports.com/college-football/rankings/" target="_blank" rel="noopener">CFB Rankings</a>
+      <a class="pill" href="https://www.ndinsider.com/" target="_blank" rel="noopener">ND Insider</a>
 
-    <a class="btn pill gold" href="https://www.reddit.com/r/notredamefootball/" target="_blank" rel="noopener">Reddit — r/notredamefootball</a>
-    <a class="btn pill gold" href="https://www.youtube.com/channel/UCAMR05qSc5mfhVx20fDyAoQ" target="_blank" rel="noopener">YouTube — ND Football</a>
+      <a class="pill" href="https://www.reddit.com/r/notredamefootball/" target="_blank" rel="noopener">Reddit — r/notredamefootball</a>
+      <a class="pill" href="https://www.youtube.com/channel/UCAMR05qSc5mfhVx20fDyAoQ" target="_blank" rel="noopener">YouTube — ND Football</a>
 
-    <a class="btn pill gold" href="https://247sports.com/college/notre-dame/" target="_blank" rel="noopener">247Sports ND</a>
-    <a class="btn pill gold" href="https://www.espn.com/college-football/team/_/id/87/notre-dame-fighting-irish" target="_blank" rel="noopener">ESPN ND Football</a>
-    <a class="btn pill gold" href="https://www.cbssports.com/college-football/teams/ND/notre-dame-fighting-irish/" target="_blank" rel="noopener">CBS Sports ND</a>
-    <a class="btn pill gold" href="https://www.on3.com/teams/notre-dame-fighting-irish/" target="_blank" rel="noopener">On3 — Blue & Gold</a>
-    <a class="btn pill gold" href="https://theathletic.com/college-football/team/notre-dame-fighting-irish/" target="_blank" rel="noopener">The Athletic — ND</a>
-    <a class="btn pill gold" href="https://fightingirishwire.usatoday.com/" target="_blank" rel="noopener">Fighting Irish Wire</a>
-  </nav>
+      <a class="pill" href="https://247sports.com/college/notre-dame/" target="_blank" rel="noopener">247Sports ND</a>
+      <a class="pill" href="https://www.espn.com/college-football/team/_/id/87/notre-dame-fighting-irish" target="_blank" rel="noopener">ESPN ND Football</a>
 
-  <!-- Controls -->
-  <section class="container controls">
-    <label class="control-label" for="source-filter">News sources:</label>
-    <div class="select-row">
-      <select id="source-filter" class="select">
-        <option value="all" selected>All sources</option>
-      </select>
-      <button id="refresh-new" class="btn pill gold outline" hidden>refresh</button>
-    </div>
-  </section>
+      <a class="pill" href="https://www.cbssports.com/college-football/teams/ND/notre-dame-fighting-irish/" target="_blank" rel="noopener">CBS Sports ND</a>
+      <a class="pill" href="https://www.on3.com/teams/notre-dame-fighting-irish/" target="_blank" rel="noopener">On3 — Blue &amp; Gold</a>
+      <a class="pill" href="https://theathletic.com/college-football/team/notre-dame-fighting-irish/" target="_blank" rel="noopener">The Athletic — ND</a>
+      <a class="pill" href="https://fightingirishwire.usatoday.com/" target="_blank" rel="noopener">Fighting Irish Wire</a>
+    </nav>
 
-  <!-- Feed -->
-  <main id="feed" class="container cards"></main>
+    <!-- filters / refresh -->
+    <section class="controls">
+      <label class="label" for="source-select">News sources:</label>
+      <div class="select-wrap">
+        <select id="source-select" class="select">
+          <option value="all">All sources</option>
+        </select>
+      </div>
 
-  <!-- Footer note -->
-  <footer class="container footer-note">
-    <small id="env-note"></small>
-  </footer>
+      <div class="refresh-wrap" id="refresh-wrap" hidden>
+        <span class="new-items-label">New items available —</span>
+        <button id="refresh-btn" class="pill pill--ghost">refresh</button>
+      </div>
+    </section>
+
+    <!-- feed -->
+    <section id="feed" class="feed" aria-live="polite"></section>
+
+    <footer class="site-footer">
+      <div id="app-url"></div>
+    </footer>
+  </main>
 
   <script>
-    // ---------- Config ----------
-    const DATA_URL = "{{ url_for('static', filename='items.json') }}"; // server’s JSON
-    const MAX_TITLE_LEN = 140; // visual clamp only
+    // ---------- tiny helpers ----------
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
 
-    // ---------- DOM ----------
-    const updatedAtEl = document.getElementById('updated-at');
-    const feedEl      = document.getElementById('feed');
-    const sourceSel   = document.getElementById('source-filter');
-    const refreshNew  = document.getElementById('refresh-new');
-    const fightBtn    = document.getElementById('fight-btn');
-    const fightAudio  = document.getElementById('fight-audio');
-
-    // ---------- State ----------
-    let items = [];
-    let lastHash = '';
-    let knownSources = new Set();
-
-    // ---------- Utils ----------
-    const fmtTime = (iso) => {
+    const fmtAgo = (iso) => {
       try {
         const d = new Date(iso);
-        return isNaN(d) ? '' : d.toLocaleString();
-      } catch { return ''; }
+        const now = new Date();
+        const ms = now - d;
+        const mins = Math.floor(ms/60000);
+        if (mins < 1) return 'just now';
+        if (mins < 60) return mins + 'm ago';
+        const hrs = Math.floor(mins/60);
+        if (hrs < 24) return hrs + 'h ago';
+        const days = Math.floor(hrs/24);
+        return days + 'd ago';
+      } catch (_) { return ''; }
     };
 
-    const hashPayload = (arr) => {
-      try {
-        return btoa(unescape(encodeURIComponent(JSON.stringify(arr.map(i => [i.title, i.link])))));
-      } catch { return String(arr.length); }
-    };
+    const safeText = (s) => (s ?? '').toString();
 
-    // Truncate visually (keeps whole string intact for link/tooltip)
-    const clamp = (s, n) => (s && s.length > n) ? s.slice(0, n - 1) + '…' : s || '';
+    // ---------- fight song (no layout jump) ----------
+    (function initAudio(){
+      const btn = $('#fight-song');
+      const audio = $('#audio');
+      let playing = false;
 
-    // ---------- Rendering ----------
-    function renderItems() {
-      const sel = sourceSel.value;
-      const list = (sel === 'all') ? items : items.filter(i =>
-        (i.source || '').toLowerCase() === sel.toLowerCase()
-      );
-
-      feedEl.innerHTML = '';
-      list.forEach((it) => {
-        const card = document.createElement('article');
-        card.className = 'card';
-
-        const title = document.createElement('a');
-        title.className = 'card-title';
-        title.textContent = clamp(it.title, MAX_TITLE_LEN);
-        title.href = it.link || '#';
-        title.target = '_blank';
-        title.rel = 'noopener';
-
-        const summary = document.createElement('p');
-        summary.className = 'card-summary';
-        summary.textContent = it.summary || it.subtitle || '';
-
-        const meta = document.createElement('div');
-        meta.className = 'card-meta';
-        const left = document.createElement('span');
-        left.textContent = (it.source || '').trim();
-        const right = document.createElement('span');
-        right.textContent = fmtTime(it.published || it.date || it.updated);
-
-        meta.appendChild(left);
-        meta.appendChild(document.createTextNode(' • '));
-        meta.appendChild(right);
-
-        card.appendChild(title);
-        if (summary.textContent) card.appendChild(summary);
-        card.appendChild(meta);
-        feedEl.appendChild(card);
-      });
-    }
-
-    function renderSources() {
-      // keep existing options, just append any new
-      [...knownSources].sort((a, b) => a.localeCompare(b)).forEach(src => {
-        if (![...sourceSel.options].some(o => o.value.toLowerCase() === src.toLowerCase())) {
-          const opt = document.createElement('option');
-          opt.value = src;
-          opt.textContent = src;
-          sourceSel.appendChild(opt);
+      btn.addEventListener('click', () => {
+        if (!playing) {
+          audio.currentTime = 0;
+          audio.play().then(()=>{
+            playing = true;
+            btn.setAttribute('aria-pressed', 'true');
+            btn.textContent = 'Pause';
+          }).catch(()=>{ /* ignore */ });
+        } else {
+          audio.pause();
+          playing = false;
+          btn.setAttribute('aria-pressed', 'false');
+          btn.textContent = 'Victory March';
         }
       });
-    }
 
-    // ---------- Data ----------
-    async function fetchItems() {
+      audio.addEventListener('ended', () => {
+        playing = false;
+        btn.setAttribute('aria-pressed', 'false');
+        btn.textContent = 'Victory March';
+      });
+    })();
+
+    // ---------- data + render ----------
+    const DATA_URL = '/items.json';
+    let allItems = [];
+    let lastRenderedAt = 0;
+
+    async function loadItems() {
       const res = await fetch(DATA_URL, { cache: 'no-store' });
-      if (!res.ok) throw new Error('Failed to fetch items.json');
-      return await res.json();
+      if (!res.ok) throw new Error('Failed to load items');
+      const data = await res.json();
+
+      // Expect shape: { items: [...], updated: <epoch or iso> }
+      allItems = Array.isArray(data.items) ? data.items : [];
+      const updated = data.updated
+        ? (isFinite(data.updated) ? new Date(data.updated*1000) : new Date(data.updated))
+        : new Date();
+      $('#last-updated').textContent = updated.toLocaleString();
+
+      // sources list
+      const uniqueSources = Array.from(new Set(allItems.map(i => safeText(i.source).trim()).filter(Boolean))).sort();
+      const select = $('#source-select');
+      select.innerHTML = '<option value="all">All sources</option>' +
+        uniqueSources.map(s => `<option value="${s}">${s}</option>`).join('');
+
+      render();
+      lastRenderedAt = Date.now();
     }
 
-    async function loadInitial() {
-      try {
-        const data = await fetchItems();
-        items = Array.isArray(data.items) ? data.items : data;
-        items.forEach(i => { if (i.source) knownSources.add(i.source); });
-        renderSources();
-        renderItems();
-        updatedAtEl.textContent = fmtTime(data.updated || new Date().toISOString());
-        lastHash = hashPayload(items);
-      } catch (e) {
-        console.error(e);
-      }
+    function render() {
+      const root = $('#feed');
+      const selected = $('#source-select').value;
+      const items = allItems
+        .filter(i => selected === 'all' ? true : safeText(i.source).trim() === selected)
+        .slice(0, 50);
+
+      root.innerHTML = items.map(renderCard).join('');
     }
 
-    // Poll quietly for new content; if new, show the refresh pill
+    function renderCard(item) {
+      const title = safeText(item.title);
+      const url = item.link || item.url || '#';
+      const summary = safeText(item.summary || item.description || '');
+      const source = safeText(item.source || item.by || 'News');
+      const stamp = item.published || item.pubDate || item.date || item.ts || item.time;
+
+      const meta = `${source} • ${fmtAgo(stamp)}`;
+
+      return `
+        <article class="card">
+          <a class="card__title" href="${url}" target="_blank" rel="noopener">${title}</a>
+          ${summary ? `<p class="card__summary">${summary}</p>` : ''}
+          <div class="card__meta">${meta}</div>
+        </article>
+      `;
+    }
+
+    // source filter
+    $('#source-select').addEventListener('change', render);
+
+    // new-items polling (lightweight; doesn’t touch server routes)
+    let pollTimer = null;
     async function pollForNew() {
       try {
-        const data = await fetchItems();
-        const arr = Array.isArray(data.items) ? data.items : data;
-        const newHash = hashPayload(arr);
-        if (newHash !== lastHash) {
-          refreshNew.hidden = false;
-          refreshNew.dataset.payload = JSON.stringify({arr, updated: data.updated});
+        const res = await fetch(DATA_URL, { cache: 'no-store' });
+        if (!res.ok) return;
+        const data = await res.json();
+        const latestUpdated = data.updated
+          ? (isFinite(data.updated) ? data.updated*1000 : Date.parse(data.updated))
+          : Date.now();
+        if (latestUpdated > lastRenderedAt) {
+          // show refresh chip, stash new data for when user taps
+          window.__pendingData = data;
+          $('#refresh-wrap').hidden = false;
         }
-      } catch {
-        /* ignore network blips */
-      }
+      } catch (_) { /* ignore */ }
     }
 
-    // ---------- Interactions ----------
-    sourceSel.addEventListener('change', renderItems);
-
-    refreshNew.addEventListener('click', () => {
-      try {
-        const payload = JSON.parse(refreshNew.dataset.payload || '{}');
-        if (Array.isArray(payload.arr)) {
-          items = payload.arr;
-          items.forEach(i => { if (i.source) knownSources.add(i.source); });
-          renderSources();
-          renderItems();
-          updatedAtEl.textContent = fmtTime(payload.updated || new Date().toISOString());
-          lastHash = hashPayload(items);
-        }
-      } catch {}
-      refreshNew.hidden = true;
-    });
-
-    // Fight song: play/pause without moving layout
-    fightBtn.addEventListener('click', async () => {
-      try {
-        if (fightAudio.paused) {
-          await fightAudio.play();
-          fightBtn.textContent = 'Pause';
-        } else {
-          fightAudio.pause();
-          fightBtn.textContent = 'Victory March';
-        }
-      } catch (e) {
-        console.error(e);
+    $('#refresh-btn').addEventListener('click', () => {
+      const data = window.__pendingData;
+      if (data && Array.isArray(data.items)) {
+        allItems = data.items;
+        const updated = data.updated
+          ? (isFinite(data.updated) ? new Date(data.updated*1000) : new Date(data.updated))
+          : new Date();
+        $('#last-updated').textContent = updated.toLocaleString();
+        render();
+        lastRenderedAt = Date.now();
       }
-    });
-    fightAudio.addEventListener('ended', () => {
-      fightBtn.textContent = 'Victory March';
+      $('#refresh-wrap').hidden = true;
+      window.__pendingData = null;
     });
 
-    // ---------- Boot ----------
-    loadInitial();
-    // Light poll every 60s; this won’t redeploy or hit your server hard
-    setInterval(pollForNew, 60000);
-    // small footer hint
-    document.getElementById('env-note').textContent = window.location.host;
+    // boot
+    (async function boot(){
+      try {
+        await loadItems();
+      } catch (e) {
+        $('#feed').innerHTML = `<div class="empty">Unable to load items.</div>`;
+      }
+      // light poll every 60s
+      pollTimer = setInterval(pollForNew, 60000);
+      // footer url
+      $('#app-url').textContent = location.hostname + location.pathname;
+    })();
   </script>
 </body>
 </html>
