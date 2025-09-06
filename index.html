@@ -1,89 +1,150 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ND Football — News & Feeds</title>
-  <link rel="stylesheet" href="/static/style.css?v=20250906">
-  <link rel="preload" href="/static/fight-song.mp3" as="audio">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Notre Dame Football — News & Feeds</title>
+  <link rel="icon" href="static/favicon.ico">
+  <link rel="apple-touch-icon" href="static/apple-touch-icon.png">
+  <link rel="manifest" href="static/manifest.json">
+  <link rel="stylesheet" href="static/style.css">
+  <meta name="color-scheme" content="light dark" />
 </head>
 <body>
-  <header class="banner">
-    <div class="brand">
-      <div class="logo">ND</div>
-      <div class="title">
-        <h1>Notre Dame Football</h1>
-        <div class="updated">Updated: {{ updated }}</div>
-      </div>
+  <header>
+    <img class="logo" src="static/notre-dame-logo.png" alt="ND" />
+    <div class="titles">
+      <div class="brand">Notre Dame Football</div>
+      <div class="subtitle">Live news feed • auto-refreshing</div>
     </div>
-    <button id="fight-btn" class="pill">Victory March</button>
-    <audio id="fight-audio" src="/static/fight-song.mp3" preload="auto"></audio>
+    <div class="actions">
+      <button class="pill" id="fightBtn" title="Play fight song">Victory March</button>
+    </div>
+    <audio id="fightAudio" preload="none" src="static/fight-song.mp3"></audio>
   </header>
 
-  <main class="container">
-    <section class="filters">
-      <label for="sourceFilter">News sources:</label>
-      <select id="sourceFilter">
-        <option value="">All sources</option>
-        {% for s in sources %}
-          <option value="{{ s }}">{{ s }}</option>
-        {% endfor %}
-      </select>
-    </section>
+  <!-- Quick links (static buttons) -->
+  <nav class="links" id="linksRow">
+    <a class="pill" href="https://fightingirish.com/sports/football/schedule/" target="_blank" rel="noopener">Schedule</a>
+    <a class="pill" href="https://fightingirish.com/sports/football/roster/" target="_blank" rel="noopener">Roster</a>
+    <a class="pill" href="https://www.espn.com/college-football/standings" target="_blank" rel="noopener">Standings</a>
+    <a class="pill" href="https://www.irishenvy.com/forums/notre-dame-football.3/" target="_blank" rel="noopener">Irish Envy</a>
+    <a class="pill" href="https://www.southbendtribune.com/sports/notre-dame/" target="_blank" rel="noopener">ND Insider</a>
+    <a class="pill" href="https://apnews.com/hub/ap-top-25-college-football-poll" target="_blank" rel="noopener">AP Poll</a>
+    <a class="pill" href="https://247sports.com/college/notre-dame/" target="_blank" rel="noopener">247Sports ND</a>
+    <a class="pill" href="https://www.reddit.com/r/NotreDame/" target="_blank" rel="noopener">Reddit</a>
+  </nav>
 
-    <section id="feed" class="feed">
-      {% for it in items %}
-      <article class="card" data-source="{{ it.source }}">
-        <a href="{{ it.link }}" class="title-link" target="_blank" rel="noopener">
-          {{ it.title }}
-        </a>
-        {% if it.summary %}
-        <p class="summary">{{ it.summary }}</p>
-        {% endif %}
-        <div class="meta">
-          <span class="source">{{ it.source }}</span>
-          <span class="dot">•</span>
-          <time>{{ it.published }}</time>
-        </div>
-      </article>
-      {% endfor %}
-    </section>
-  </main>
+  <div id="updated">Updated: <span id="updatedAt">–</span></div>
 
-<script>
-// Fight song play/pause without layout shift
-const btn = document.getElementById('fight-btn');
-const audio = document.getElementById('fight-audio');
-let playing = false;
-btn.addEventListener('click', async () => {
-  try {
-    if (!playing) {
-      await audio.play();
-      playing = true;
-      btn.textContent = 'Pause';
-    } else {
-      audio.pause();
-      playing = false;
-      btn.textContent = 'Victory March';
+  <div style="padding: 0 16px 8px;">
+    <label for="sourceSel" style="font-size:12px; opacity:.85;">News sources:</label>
+    <select id="sourceSel">
+      <option value="">All sources</option>
+    </select>
+  </div>
+
+  <main class="grid" id="grid"></main>
+
+  <footer>
+    <div>Auto-checking for new items…</div>
+    <div><a href="items.json" target="_blank" rel="noopener">items.json</a></div>
+  </footer>
+
+  <script>
+    const fightBtn = document.getElementById('fightBtn');
+    const fightAudio = document.getElementById('fightAudio');
+    fightBtn.addEventListener('click', () => {
+      if (!fightAudio.src || fightAudio.src.endsWith('/')) return;
+      if (fightAudio.paused) { fightAudio.play().catch(()=>{}); } else { fightAudio.pause(); fightAudio.currentTime = 0; }
+    });
+
+    const grid = document.getElementById('grid');
+    const sourceSel = document.getElementById('sourceSel');
+    const updatedAt = document.getElementById('updatedAt');
+
+    let allItems = [];
+    let lastCount = 0;
+
+    function fmtDate(s) {
+      try {
+        const d = new Date(s);
+        return d.toLocaleString();
+      } catch { return s || ''; }
     }
-  } catch(e) {
-    console.error(e);
-  }
-});
-audio.addEventListener('ended', ()=>{
-  playing = false;
-  btn.textContent = 'Victory March';
-});
 
-// Source filter
-const sel = document.getElementById('sourceFilter');
-sel.addEventListener('change', () => {
-  const val = sel.value.trim();
-  document.querySelectorAll('.card').forEach(c => {
-    if (!val || c.dataset.source === val) c.style.display = '';
-    else c.style.display = 'none';
-  });
-});
-</script>
+    function render(items) {
+      grid.innerHTML = '';
+      items.forEach(it => {
+        const a = document.createElement('a');
+        a.className = 'card';
+        a.href = it.link || '#';
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.innerHTML = `
+          <div class="title">${(it.title||'').replace(/</g,'&lt;')}</div>
+          ${it.summary ? `<div>${(it.summary||'').replace(/</g,'&lt;')}</div>` : ''}
+          <div class="meta">
+            <span>${(it.source||'').replace(/</g,'&lt;')}</span>
+            <span class="dot"></span>
+            <span>${fmtDate(it.published)}</span>
+          </div>
+        `;
+        grid.appendChild(a);
+      });
+    }
+
+    function populateSourceFilter(items) {
+      const set = new Set(items.map(i => i.source).filter(Boolean));
+      const current = sourceSel.value;
+      sourceSel.innerHTML = '<option value="">All sources</option>';
+      [...set].sort().forEach(src => {
+        const opt = document.createElement('option');
+        opt.value = src; opt.textContent = src;
+        sourceSel.appendChild(opt);
+      });
+      if ([...set].includes(current)) sourceSel.value = current;
+    }
+
+    async function load() {
+      try {
+        const res = await fetch('items.json', {cache: 'no-cache'});
+        const data = await res.json();
+        allItems = data.items || [];
+        updatedAt.textContent = data.updated || new Date().toLocaleString();
+        populateSourceFilter(allItems);
+        const filtered = sourceSel.value ? allItems.filter(i => i.source === sourceSel.value) : allItems;
+        render(filtered);
+        lastCount = allItems.length;
+      } catch (e) {
+        updatedAt.textContent = 'failed to load';
+        console.error(e);
+      }
+    }
+
+    sourceSel.addEventListener('change', () => {
+      const filtered = sourceSel.value ? allItems.filter(i => i.source === sourceSel.value) : allItems;
+      render(filtered);
+    });
+
+    // Initial load + periodic check
+    load();
+    setInterval(async () => {
+      try {
+        const res = await fetch('items.json', {cache: 'no-cache'});
+        const data = await res.json();
+        const count = (data.items || []).length;
+        if (count > lastCount) {
+          // New items — refresh UI
+          allItems = data.items;
+          updatedAt.textContent = data.updated || new Date().toLocaleString();
+          populateSourceFilter(allItems);
+          const filtered = sourceSel.value ? allItems.filter(i => i.source === sourceSel.value) : allItems;
+          render(filtered);
+          lastCount = count;
+        }
+      } catch {}
+    }, 300000); // 5 minutes
+  </script>
 </body>
 </html>
