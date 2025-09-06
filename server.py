@@ -1,4 +1,4 @@
-# server.py — resilient single-file Flask app for Railway
+# server.py — stable single-file Flask app for Railway
 import os, json, time, traceback
 from flask import Flask, jsonify, Response, send_file, request
 
@@ -9,22 +9,22 @@ def log(msg: str):
 
 app = Flask(__name__, static_folder="static")
 
-HTML = f"""<!doctype html>
+# ---------- HTML (inline) ----------
+HTML = """<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{APP_TITLE} — News</title>
+  <title>Notre Dame Football — News & Feeds</title>
+  <meta name="theme-color" content="#0C2340">
   <link rel="icon" href="/static/favicon.ico" sizes="any">
-  <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
   <link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
   <link rel="manifest" href="/static/manifest.webmanifest">
-  <meta name="theme-color" content="#0C2340">
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
   <header class="header">
-    <img class="logo" src="/static/notre-dame-logo.png" alt="Notre Dame logo" />
+    <img class="logo" src="/static/notre-dame-logo.png" alt="Notre Dame logo"/>
     <div>
       <h1>Notre Dame<br/>Football</h1>
       <div id="updated" class="muted">Updated: —</div>
@@ -46,7 +46,7 @@ HTML = f"""<!doctype html>
   <main id="feed" class="grid"></main>
 
   <footer class="footer">
-    <span>Built with your Sports App template.</span>
+    <span>Built with the Sports App template.</span>
   </footer>
 
   <script>
@@ -60,9 +60,12 @@ HTML = f"""<!doctype html>
     const fightBtn = document.getElementById('play-fight-song');
     const audio = document.getElementById('fight-song');
 
+    // Fight song: no layout reflow/jank
     fightBtn?.addEventListener('click', () => {
-      if (audio.paused) { audio.currentTime = 0; audio.play(); fightBtn.textContent = '⏸ Victory March'; }
-      else { audio.pause(); fightBtn.textContent = 'Victory March'; }
+      try {
+        if (audio.paused) { audio.currentTime = 0; audio.play(); fightBtn.textContent = '⏸ Victory March'; }
+        else { audio.pause(); fightBtn.textContent = 'Victory March'; }
+      } catch(e) {}
     });
 
     let lastCount = 0;
@@ -73,9 +76,9 @@ HTML = f"""<!doctype html>
       try {
         const meta = await (await fetch('/feeds.json', {cache:'no-store'})).json();
         const links = meta.links || [];
-        elLinks.innerHTML = links.map(l => `<a class="pill" href="\${l.href}" target="_blank" rel="noopener">\${l.label}</a>`).join('');
+        elLinks.innerHTML = links.map(l => `<a class="pill" href="${l.href}" target="_blank" rel="noopener">${l.label}</a>`).join('');
         const feeds = meta.feeds || [];
-        const opts = feeds.map(f => `<option value="\${f.name}">\${f.name}</option>`).join('');
+        const opts = feeds.map(f => `<option value="${f.name}">${f.name}</option>`).join('');
         elSource.insertAdjacentHTML('beforeend', opts);
       } catch (e) {
         console.warn('feeds.json unavailable', e);
@@ -89,13 +92,13 @@ HTML = f"""<!doctype html>
 
       elFeed.innerHTML = (filtered || []).map(item => `
         <article class="card">
-          <a href="\${item.link}" target="_blank" rel="noopener">
-            <h3>\${item.title}</h3>
-            <p class="summary">\${item.summary || ''}</p>
+          <a href="${item.link}" target="_blank" rel="noopener">
+            <h3>${item.title || ''}</h3>
+            <p class="summary">${item.summary || ''}</p>
             <div class="meta">
-              <span class="source">\${item.source || ''}</span>
+              <span class="source">${item.source || ''}</span>
               <span class="dot">•</span>
-              <span class="time">\${fmtTime(item.published)}</span>
+              <span class="time">${item.published ? new Date(item.published * 1000).toLocaleString() : ''}</span>
             </div>
           </a>
         </article>
@@ -124,39 +127,33 @@ HTML = f"""<!doctype html>
 
     hydrateMeta();
     load(true);
+
+    // Lightweight ping only: show banner if new items; do not hard refresh
     setInterval(async () => {
       try {
         const res = await fetch('/items.json', { cache: 'no-store' });
         const data = await res.json();
         if (data.count > lastCount) elNotice.classList.remove('hidden');
-      } catch (e) {
-        // don’t break UI if transient fetch fails
-      }
-    }, 5 * 60 * 1000);
+      } catch (e) {}
+    }, 180000); // 3 minutes
   </script>
 </body>
 </html>
 """
 
-@app.after_request
-def add_cors(resp):
-    # CORS + gentle caching for JSON and /static team files
-    if resp.mimetype in ("application/json", "text/json") or request.path.startswith("/static/teams/"):
-        resp.headers["Access-Control-Allow-Origin"] = "*"
-        resp.headers["Cache-Control"] = "max-age=60"
-    return resp
-
+# ---------- Routes ----------
 @app.get("/")
 def index():
     return Response(HTML, mimetype="text/html")
 
 @app.get("/items.json")
-def items():
+def items_json():
     path = "items.json"
     if not os.path.exists(path):
         log("items.json not found — returning empty payload")
         return jsonify({"team": APP_TITLE, "updated": int(time.time()), "count": 0, "items": []})
     try:
+        # Prefer send_file for speed; fallback to json if it fails
         return send_file(path, mimetype="application/json")
     except Exception:
         log("send_file failed, falling back to json.load")
@@ -170,6 +167,7 @@ def items():
 
 @app.get("/feeds.json")
 def feeds_json():
+    # Keep whatever feeds.py you already have; if import fails, return empty safely
     try:
         from feeds import FEEDS, STATIC_LINKS
     except Exception as e:
@@ -179,20 +177,32 @@ def feeds_json():
 
 @app.get("/health")
 def health():
-    status = {"ok": True, "updated": None, "count": 0, "now": int(time.time())}
+    # Ultra-fast health; never blocks the worker
+    out = {"ok": True, "now": int(time.time()), "updated": 0, "count": 0}
     try:
         if os.path.exists("items.json"):
             with open("items.json", "r", encoding="utf-8") as f:
                 data = json.load(f)
-                status["updated"] = int(data.get("updated") or 0)
-                status["count"] = int(data.get("count") or 0)
+                out["updated"] = int(data.get("updated") or 0)
+                out["count"] = int(data.get("count") or 0)
         else:
-            status["ok"] = False
-            status["note"] = "items.json not found yet (run collect.py or cron)"
+            out["ok"] = False
+            out["note"] = "items.json not found"
     except Exception as e:
-        status["ok"] = False
-        status["error"] = str(e)
-    return jsonify(status)
+        out["ok"] = False
+        out["error"] = str(e)
+    return jsonify(out)
+
+# CORS for JSON so static sites can read it too (harmless here)
+@app.after_request
+def add_cors(resp):
+    try:
+        if resp.mimetype in ("application/json", "text/json") or request.path.startswith("/static/teams/"):
+            resp.headers["Access-Control-Allow-Origin"] = "*"
+            resp.headers["Cache-Control"] = "max-age=60"
+    except Exception:
+        pass
+    return resp
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", "5000"))
