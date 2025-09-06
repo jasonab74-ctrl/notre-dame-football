@@ -1,4 +1,4 @@
-# server.py — stable single-file Flask app for Railway (no jumpy fight-song button)
+# server.py — stable single-file Flask app for Railway (no-jump fight-song, compact sources bar)
 import os, json, time, traceback
 from flask import Flask, jsonify, Response, send_file, request
 
@@ -35,7 +35,7 @@ HTML = """<!doctype html>
   <nav id="links" class="links"></nav>
 
   <section class="controls">
-    <label for="sourceSel" class="muted">Sources:</label>
+    <label for="sourceSel" class="muted">News sources:</label>
     <select id="sourceSel" class="select">
       <option value="__all__">All sources</option>
     </select>
@@ -59,7 +59,7 @@ HTML = """<!doctype html>
     const fightBtn = document.getElementById('play-fight-song');
     const audio = document.getElementById('fight-song');
 
-    // No-jump play/pause: keep label constant, toggle aria-pressed, blur to avoid mobile scroll/jank
+    // No-jump play/pause: keep label constant, toggle aria-pressed, blur to avoid mobile jank
     fightBtn?.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -76,7 +76,6 @@ HTML = """<!doctype html>
           fightBtn.setAttribute('aria-label','Play Victory March');
         }
       } catch (err) {}
-      // Defer blur to next tick so focus ring/scroll doesn’t cause layout jump on mobile
       setTimeout(() => fightBtn.blur(), 0);
     });
 
