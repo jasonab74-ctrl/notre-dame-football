@@ -17,7 +17,8 @@
       <div class="subtitle">Live news feed · auto-refreshing</div>
     </div>
     <div class="actions">
-      <button class="pill" id="songBtn">Victory March</button>
+      <!-- Keep label constant to avoid button "jump"; style change only -->
+      <button class="pill" id="songBtn" aria-pressed="false">Victory March</button>
     </div>
   </header>
 
@@ -49,20 +50,20 @@
       songBtn: document.getElementById('songBtn'),
     };
 
-    // Inline same STATIC_LINKS as feeds.py
+    // Header quick links (added Reddit ND Football back)
     const STATIC_LINKS = [
-      {"label":"Schedule","url":"https://fightingirish.com/sports/football/schedule/"},
-      {"label":"Roster","url":"https://fightingirish.com/sports/football/roster/"},
-      {"label":"AP Poll","url":"https://apnews.com/hub/ap-top-25-college-football-poll"},
-      {"label":"Coaches Poll","url":"https://www.usatoday.com/sports/ncaaf/polls/coaches-poll/"},
+      {"label":"Inside ND Sports (Rivals)","url":"https://notredame.rivals.com/"},
+      {"label":"247Sports ND","url":"https://247sports.com/college/notre-dame/"},
+      {"label":"CBS ND","url":"https://www.cbssports.com/college-football/teams/ND/notre-dame-fighting-irish/"},
+      {"label":"Reddit (Notre Dame Football)","url":"https://www.reddit.com/r/NotreDame/search?q=football&restrict_sr=on&sort=new"},
       {"label":"ND Insider","url":"https://www.southbendtribune.com/sports/notre-dame/"},
-      {"label":"Irish Envy","url":"https://www.irishenvy.com/forums/notre-dame-football.3/"},
       {"label":"Fighting Irish Wire","url":"https://fightingirishwire.usatoday.com/"},
       {"label":"One Foot Down","url":"https://www.onefootdown.com/"},
       {"label":"Blue & Gold (On3)","url":"https://www.on3.com/teams/notre-dame-fighting-irish/"},
-      {"label":"Inside ND Sports (Rivals)","url":"https://notredame.rivals.com/"},
-      {"label":"247Sports ND","url":"https://247sports.com/college/notre-dame/"},
-      {"label":"CBS ND","url":"https://www.cbssports.com/college-football/teams/ND/notre-dame-fighting-irish/"}
+      {"label":"Schedule","url":"https://fightingirish.com/sports/football/schedule/"},
+      {"label":"Roster","url":"https://fightingirish.com/sports/football/roster/"},
+      {"label":"AP Poll","url":"https://apnews.com/hub/ap-top-25-college-football-poll"},
+      {"label":"Coaches Poll","url":"https://www.usatoday.com/sports/ncaaf/polls/coaches-poll/"}
     ];
 
     function buildLinks(){
@@ -73,17 +74,11 @@
 
     function parseDate(item){
       if (typeof item.ts === 'number') return new Date(item.ts*1000);
-      if (item.ts) {
-        const n = Number(item.ts);
-        if (!Number.isNaN(n)) return new Date(n*1000);
-      }
+      if (item.ts && !Number.isNaN(Number(item.ts))) return new Date(Number(item.ts)*1000);
       if (item.published_iso) return new Date(item.published_iso);
       return new Date();
     }
-    function fmtDate(item){
-      const d = parseDate(item);
-      return d.toLocaleString();
-    }
+    function fmtDate(item){ return parseDate(item).toLocaleString(); }
 
     let all = {items:[]};
 
@@ -104,22 +99,20 @@
       all = j;
       els.updated.textContent = 'Updated: ' + new Date().toLocaleString();
 
-      // Build source dropdown from underlying outlets
+      // Build the dropdown from the real outlets we wrote into items.json
       const set = new Set(j.items.map(i => i.source).filter(Boolean));
-      const options = ['<option value="*">All sources</option>']
-        .concat([...set].sort().map(s => `<option>${escapeHtml(s)}</option>`));
-      els.srcSel.innerHTML = options.join('');
-
+      els.srcSel.innerHTML = '<option value="*">All sources</option>' +
+        [...set].sort().map(s => `<option>${escapeHtml(s)}</option>`).join('');
       render();
     }
 
     // Auto-refresh every 5 minutes
     setInterval(load, 5*60*1000);
 
-    els.srcSel.addEventListener('change', render);
+    // Keep button label constant; only toggle a CSS class (no layout jump)
     els.songBtn.addEventListener('click', () => {
-      if (els.song.paused){ els.song.play(); els.songBtn.textContent='Pause'; }
-      else { els.song.pause(); els.songBtn.textContent='Victory March'; }
+      if (els.song.paused){ els.song.play(); els.songBtn.setAttribute('aria-pressed','true'); els.songBtn.classList.add('playing'); }
+      else { els.song.pause(); els.songBtn.setAttribute('aria-pressed','false'); els.songBtn.classList.remove('playing'); }
     });
 
     buildLinks();
