@@ -1,102 +1,120 @@
+/* ===== Theme ===== */
 :root{
-  --navy:#0f2a3f;
-  --navy-2:#0b2333;
-  --gold:#caa233;
-  --gold-2:#e8d399;
-  --chip:#1a3a53;
-  --text:#0e2233;
-  --muted:#5c7486;
-  --card:#f6e8b9; /* light gold for cards */
+  --navy:#0e2a3a;
+  --navy-2:#102f42;
+  --gold:#caa23a;
+  --gold-2:#e6cf7a;
+  --ink:#0d2230;
+  --text:#f3f7fa;
+  --card-text:#172a38;
   --radius:18px;
+  --shadow:0 8px 18px rgba(0,0,0,.18);
+  --maxw: 980px;
+  --title-wt: 800;
+  --ui-wt: 700;
+  --body-wt: 500;
 }
 
-*{box-sizing:border-box}
-html,body{height:100%}
+/* Reset-ish */
+*{ box-sizing:border-box; }
+html,body{ margin:0; padding:0; height:100%; }
 body{
-  margin:0;
-  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-  color:#eef6ff;
-  background:linear-gradient(180deg,var(--navy),var(--navy-2));
+  background: linear-gradient(180deg, var(--navy) 0%, var(--navy-2) 100%);
+  color:var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji", "Segoe UI Symbol";
+  line-height:1.35;
   -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
 }
 
-.banner{
-  position:sticky;top:0;z-index:5;
-  background:linear-gradient(180deg,var(--navy),rgba(15,42,63,.92));
-  backdrop-filter:saturate(180%) blur(6px);
-  padding:14px 16px 10px;
-  border-bottom:1px solid rgba(255,255,255,.06);
+/* ===== Hero / Banner ===== */
+.hero{
+  position:sticky;
+  top:0;
+  z-index:2;
+  background:linear-gradient(180deg, rgba(16,47,66,.95), rgba(16,47,66,.90));
+  backdrop-filter: blur(8px);
+  border-bottom:1px solid rgba(255,255,255,.08);
 }
-.brand{display:flex;align-items:center;gap:14px}
-.logo{width:56px;height:56px;filter:drop-shadow(0 1px 0 rgba(0,0,0,.3))}
-.titles h1{font-size:28px;line-height:1.02;margin:0}
-.updated{margin-top:4px;color:#c5d4e0;font-size:14px}
+.hero-inner{
+  max-width:var(--maxw);
+  margin:auto;
+  padding:18px 16px;
+  display:flex;
+  align-items:center;
+  gap:16px;
+  justify-content:space-between;
+}
+.brand{
+  display:flex; gap:14px; align-items:center;
+}
+.nd-mark{
+  width:44px; height:44px; border-radius:10px;
+  background:var(--gold);
+  color:#111; display:grid; place-items:center;
+  font-weight:900; letter-spacing:.5px;
+  box-shadow: var(--shadow);
+}
+.site-title{
+  margin:0; font-size:28px; line-height:1.05; font-weight:var(--title-wt);
+}
+.updated{ opacity:.85; font-size:14px; margin-top:4px; }
+
+/* ===== Pills (buttons/links) ===== */
 .pill{
-  display:inline-flex;align-items:center;justify-content:center;
-  padding:10px 16px;border-radius:999px;border:none;cursor:pointer;
-  font-weight:700;text-decoration:none;white-space:nowrap;
-  transition:transform .04s ease,background-color .15s ease,box-shadow .15s ease;
+  display:inline-block;
+  background:var(--gold);
+  color:#121212;
+  font-weight:var(--ui-wt);
+  padding:12px 18px;
+  border-radius:999px;
+  text-decoration:none;
+  box-shadow: var(--shadow);
+  border:2px solid rgba(0,0,0,.15);
+  transition: transform .06s ease, filter .2s ease;
+  white-space:nowrap;
 }
-.pill:active{transform:translateY(1px)}
-.pill--cta{margin-left:auto;background:var(--gold);color:#101010}
-.pill--cta.playing{background:#e0b84a}
-.pill--link{background:var(--gold);color:#101010}
-.pill--ghost{background:transparent;color:#e9f2fa;border:1px solid rgba(255,255,255,.25)}
-
-.container{max-width:980px;margin:0 auto;padding:16px 14px 40px}
-.links-row{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
-.filters{
-  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
-  margin:6px 0 14px
-}
-.label{opacity:.9}
-.select-wrap{position:relative}
-.select-wrap select{
-  appearance:none;-webkit-appearance:none;
-  padding:10px 36px 10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.2);
-  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(0,0,0,.04));
-  color:#e9f2fa;font-weight:600
-}
-.select-wrap:after{
-  content:"▾";position:absolute;right:10px;top:50%;transform:translateY(-52%);
-  pointer-events:none;color:#d9e7f3
+.pill:hover{ filter:brightness(1.05); transform:translateY(-1px); }
+.pill:active{ transform:translateY(0); }
+.pill--alt{
+  background:var(--gold-2);
+  color:#111;
 }
 
-/* Cards */
-.feed{display:flex;flex-direction:column;gap:16px}
+/* Quicklinks layout */
+.wrap{ max-width:var(--maxw); margin:14px auto 48px; padding:0 16px; }
+.quicklinks{
+  display:flex; flex-wrap:wrap; gap:12px 14px; margin:16px 0 8px;
+}
+
+/* ===== Cards / Articles ===== */
+.articles{ display:grid; gap:16px; margin-top:14px; }
 .card{
-  background:var(--card);
-  border-radius:18px;padding:18px 18px 14px;
-  color:var(--text); box-shadow:0 3px 8px rgba(0,0,0,.18)
+  background: #f4e6ab; /* light gold */
+  color: var(--card-text);
+  border-radius: 22px;
+  padding: 18px 18px 14px;
+  box-shadow: var(--shadow);
 }
-.card__title{
-  font-weight:800;font-size:22px;line-height:1.18;
-  color:#0e3050;text-decoration:none;
+.card__title{ margin:0 0 8px; font-size:22px; line-height:1.15; font-weight:800; }
+.card__link{
+  color:#0f2c44; text-decoration:none;
 }
-.card__title:hover{text-decoration:underline}
-.card__summary{
-  color:#1f2a36;margin:8px 0 10px;font-size:16px;line-height:1.4
-}
+.card__link:hover{ text-decoration:underline; }
+.card__link--nolink{ color:#0f2c44; }
+.card__summary{ margin:0 0 10px; font-size:16px; color:#24394a; }
 .card__meta{
-  display:flex;gap:8px;align-items:center;color:#304353;font-size:14px
+  display:flex; align-items:center; gap:10px;
+  font-size:14px; color:#3a5061; opacity:.95;
 }
-.card__chip{
-  background:#efdf9f;color:#1a1a1a;padding:3px 10px;border-radius:999px;font-weight:700
-}
-.dot{opacity:.6}
+.meta__dot{ opacity:.5; }
 
+/* Empty state */
+.empty{ opacity:.75; text-align:center; padding:24px 0; }
+
+/* Mobile tweaks */
 @media (max-width:480px){
-  .logo{width:48px;height:48px}
-  .titles h1{font-size:24px}
-  .updated{font-size:13px}
-  .pill{padding:9px 14px}
-  .card{border-radius:16px}
-  .card__title{font-size:20px}
-}
-
-/* Buttons row styling (pills rendered as links) */
-.links-row .pill{
-  background:var(--gold);color:#101010;
-  font-weight:700;border:1px solid rgba(0,0,0,.08)
+  .site-title{ font-size:26px; }
+  .pill{ padding:11px 16px; font-size:16px; }
+  .card__title{ font-size:20px; }
 }
