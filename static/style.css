@@ -1,218 +1,101 @@
-/* ===== Notre Dame Football — Clean, stable, CSS-only refresh =====
-   Safe to drop in: no JS or template changes required.
-   Goals:
-   • Tighter banner
-   • Gold pill buttons with dark text
-   • Clean article cards (light-gold bg, dark text, no underlines)
-   • Hide the "New items available — refresh" row
-   • Improve readability + spacing on mobile
-================================================================== */
-
-/* ---------- Design tokens ---------- */
-:root{
-  --nd-navy: #0d2a3f;         /* page background */
-  --nd-navy-2:#0b2537;
-  --gold: #caa23a;            /* button/card gold */
-  --gold-600:#b98f22;
-  --gold-700:#a57f1f;
-  --card-gold:#e9d597;        /* lighter gold for article cards */
-  --ink: #0b2233;             /* dark text */
-  --ink-2:#102a3b;
-  --muted:#5f7a8d;            /* subtle label text */
-  --ring: rgba(0,0,0,.22);
-  --shadow: 0 2px 10px rgba(0,0,0,.18), 0 1px 3px rgba(0,0,0,.12);
-  --radius-pill: 999px;
-  --radius-card: 20px;
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #0c2340;
+  color: #ffffff;
 }
 
-/* ---------- Reset / base ---------- */
-* { box-sizing: border-box; }
-html, body { margin:0; padding:0; }
-html { -webkit-text-size-adjust: 100%; }
-body{
-  background: var(--nd-navy);
-  color: #eaf3fb;
-  font: 400 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+.banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #0c2340;
+  color: #fff;
+  padding: 1rem;
 }
 
-/* Links (global default) */
-a{
-  color:#dce9f7;
+.team-logo {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.banner-left {
+  display: flex;
+  align-items: center;
+}
+
+.team-title h1 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.updated {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.fight-button {
+  background: #c99700;
+  color: #000;
+  border: none;
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.fight-button:hover {
+  background: #e0b400;
+}
+
+.filters {
+  padding: 1rem;
+  background: #0c2340;
+}
+
+.filters label {
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+#sourceFilter {
+  padding: 0.3rem;
+  border-radius: 5px;
+  border: none;
+}
+
+#articles {
+  padding: 1rem;
+}
+
+.article {
+  background: #f1e3ac;
+  color: #000;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.article-title {
+  display: block;
+  font-size: 1rem;
+  font-weight: bold;
   text-decoration: none;
-}
-a:hover, a:focus{ text-decoration: underline; }
-
-/* ---------- Page container ---------- */
-.page{
-  max-width: 980px;
-  margin: 0 auto;
-  padding: 16px 16px 80px;
+  color: #0c2340;
+  margin-bottom: 0.5rem;
 }
 
-/* ---------- Banner ---------- */
-.banner{
-  display:grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 14px 16px;
-  align-items:center;
-  padding: 18px 14px;
-  background: linear-gradient(180deg, var(--nd-navy-2), transparent);
-  border-radius: 12px;
+.article-title:hover {
+  text-decoration: underline;
 }
 
-.logo-chip{
-  width: 44px; height: 44px;
-  border-radius: 12px;
-  background: var(--gold);
-  color: var(--ink);
-  display:flex; align-items:center; justify-content:center;
-  font-weight:800;
-  box-shadow: var(--shadow);
+.article-summary {
+  font-size: 0.9rem;
+  margin: 0.5rem 0;
 }
 
-.title{
-  margin:0;
-  line-height:1.1;
-  color:#f3f8fe;
-  text-shadow: 0 1px 0 rgba(0,0,0,.15);
-}
-.title .line1{ font-size: 40px; font-weight:800; letter-spacing:.3px; }
-.title .line2{ font-size: 40px; font-weight:800; letter-spacing:.3px; }
-
-.updated{
-  grid-column: 2 / 4;
-  margin-top:-2px;
-  color: var(--muted);
-  font-size: 14px;
-}
-
-/* Victory March button */
-.play-btn{
-  appearance:none; border:0;
-  background: #edd9a1;
-  color: var(--ink);
-  font-weight: 800;
-  padding: 10px 18px;
-  border-radius: 16px;
-  box-shadow: var(--shadow);
-  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
-}
-.play-btn:hover{ transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,0,0,.22); }
-.play-btn:active{ transform: translateY(0); }
-
-/* ---------- Quick links (gold pills) ---------- */
-.quick-links{
-  display:flex; flex-wrap:wrap; gap:14px 16px;
-  margin: 14px 0 18px;
-}
-
-.pill{
-  background: var(--gold);
-  color: var(--ink);
-  padding: 10px 16px;
-  border-radius: var(--radius-pill);
-  font-weight: 800;
-  box-shadow: var(--shadow);
-  display:inline-flex; align-items:center; justify-content:center;
-  border:1px solid rgba(0,0,0,.1);
-  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
-}
-.pill:hover{ background: var(--gold-600); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,0,0,.2); }
-.pill:active{ transform: translateY(0); }
-
-/* ---------- Controls (sources dropdown) ---------- */
-.controls{
-  display:flex; align-items:center; gap:12px; flex-wrap:wrap;
-  padding: 10px 12px;
-  background: rgba(255,255,255,.04);
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,.06);
-  margin: 8px 0 16px;
-}
-.controls label{
-  color:#d2e4f4; font-weight:600; letter-spacing:.2px;
-}
-.controls select{
-  appearance:none;
-  font-weight:700; color:#e9f3ff; background: rgba(0,0,0,.22);
-  border:1px solid rgba(255,255,255,.16);
-  padding:10px 14px; border-radius: 14px;
-  outline: none;
-}
-.controls select:focus{ box-shadow: 0 0 0 3px rgba(255,255,255,.12); }
-
-/* Hide any flavor of the “new items / refresh” row safely */
-.new-items, #new-items, .refresh-bar, #refresh-row,
-button#refresh, .btn-refresh{ display:none !important; }
-
-/* ---------- Article list ---------- */
-.list{ display:grid; gap:14px; }
-.card{
-  background: var(--card-gold);
-  color: var(--ink);
-  border-radius: var(--radius-card);
-  padding: 18px 18px 16px;
-  box-shadow: var(--shadow);
-  border:1px solid rgba(0,0,0,.08);
-}
-
-/* Title (link, no underline) */
-.card-title{
-  margin:0 0 8px;
-  font-weight: 900;
-  line-height: 1.15;
-  font-size: 22px;
-  color: var(--ink-2);
-}
-.card-title a{
-  color: var(--ink-2);
-  text-decoration: none;
-}
-.card-title a:hover{ text-decoration: underline; }
-
-/* Summary */
-.card-summary{
-  margin: 0 0 12px;
-  color: #253646;
-  font-size: 16px;
-}
-
-/* Meta line (source • time) condensed on one line */
-.card-meta{
-  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
-  font-size: 14px;
-  color: #2c4052;
-}
-.card-meta .dot{ width:4px; height:4px; border-radius:50%; background: #2c4052; opacity:.8; }
-
-/* Links inside meta */
-.card-meta a{ color:#1e3b56; text-decoration:none; font-weight:700; }
-.card-meta a:hover{ text-decoration: underline; }
-
-/* ---------- Footer note (deployment env strip) ---------- */
-.footer-note{
-  margin: 28px auto 0;
-  max-width: 640px;
-  color: rgba(255,255,255,.35);
-  text-align:center;
-  font-size: 13px;
-}
-
-/* ---------- Responsive tweaks ---------- */
-@media (max-width: 540px){
-  .title .line1, .title .line2{ font-size: 34px; }
-  .page{ padding: 12px 12px 68px; }
-  .controls{ padding: 8px 10px; }
-  .card{ padding: 16px 14px 14px; }
-  .card-title{ font-size: 20px; }
-}
-
-@media (min-width: 981px){
-  .list{ grid-template-columns: 1fr; } /* keep single column for readability */
-}
-
-/* Optional: if the big background ND mark is used as a decorative element */
-.hero-mark{
-  position:absolute; inset: -40px auto auto -40px;
-  opacity:.06; pointer-events:none; user-select:none;
+.article-meta {
+  font-size: 0.75rem;
+  color: #444;
 }
