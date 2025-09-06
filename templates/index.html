@@ -1,130 +1,79 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Notre Dame Football — News &amp; Feeds</title>
-  <link rel="manifest" href="{{ url_for('static', filename='manifest.webmanifest') }}">
-  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
-  <link rel="apple-touch-icon" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+  <meta charset="UTF-8">
+  <title>Notre Dame Football — News and Feeds</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-
-  <!-- Header (non-sticky, no scroll-jump) -->
-  <header class="site-header">
-    <div class="brand">
-      <img class="brand-mark" src="{{ url_for('static', filename='logo-512.png') }}" alt="ND logo" />
-      <div class="brand-text">
-        <h1 class="site-title">Notre Dame Football</h1>
-        <div class="site-subtitle">News &amp; Feeds</div>
-        <div class="site-updated">Updated: {{ updated_human or updated }}</div>
-      </div>
+  <header class="banner">
+    <img src="{{ url_for('static', filename='notredame-logo.png') }}" alt="Notre Dame Logo" class="team-logo">
+    <div class="banner-text">
+      <h1>Notre Dame Football</h1>
+      <p class="updated">Updated: {{ updated }}</p>
     </div>
-    <button id="fightSongBtn" class="pill pill--cta">Victory March</button>
-    <audio id="fightSong" preload="auto" src="{{ url_for('static', filename='fight-song.mp3') }}"></audio>
+    <button id="fight-song" class="fight-button">Victory March</button>
   </header>
 
-  <!-- Quick links row -->
-  <section class="quick-links">
-    <!-- Feel free to add/remove pills below; they’re purely static links -->
-    <a class="pill" href="https://fightingirish.com/" target="_blank" rel="noopener">Official Site</a>
-    <a class="pill" href="https://fightingirish.com/sports/football/schedule/" target="_blank" rel="noopener">Schedule</a>
-    <a class="pill" href="https://fightingirish.com/sports/football/roster/" target="_blank" rel="noopener">Roster</a>
-    <a class="pill" href="https://www.espn.com/college-football/rankings" target="_blank" rel="noopener">CFB Rankings</a>
-    <a class="pill" href="https://www.ndinsider.com/" target="_blank" rel="noopener">ND Insider</a>
-    <a class="pill" href="https://www.onefootdown.com/" target="_blank" rel="noopener">One Foot Down</a>
-    <a class="pill" href="https://slapthesign.com/" target="_blank" rel="noopener">Slap the Sign</a>
-    <a class="pill" href="https://www.irishenvy.com/" target="_blank" rel="noopener">Irish Envy Forum</a>
-    <a class="pill" href="https://www.youtube.com/channel/UCAMR05qSc5mfhVx20fDyAoQ" target="_blank" rel="noopener">YouTube — ND Football</a>
-    <a class="pill" href="https://www.reddit.com/r/notredamefootball/" target="_blank" rel="noopener">Reddit — r/notredamefootball</a>
-    <a class="pill" href="https://247sports.com/college/notre-dame/" target="_blank" rel="noopener">247Sports ND</a>
-    <a class="pill" href="https://www.espn.com/college-football/team/_/id/87/notre-dame-fighting-irish" target="_blank" rel="noopener">ESPN ND Football</a>
-    <a class="pill" href="https://www.cbssports.com/college-football/teams/ND/notre-dame-fighting-irish/" target="_blank" rel="noopener">CBS Sports ND</a>
-    <a class="pill" href="https://www.on3.com/teams/notre-dame-fighting-irish/" target="_blank" rel="noopener">On3 — Blue &amp; Gold</a>
-    <a class="pill" href="https://theathletic.com/team/notre-dame-fighting-irish/" target="_blank" rel="noopener">The Athletic — ND</a>
-    <a class="pill" href="https://fightingirishwire.usatoday.com/" target="_blank" rel="noopener">Fighting Irish Wire</a>
+  <nav class="buttons">
+    {% for link in links %}
+      <a href="{{ link.url }}" target="_blank" class="btn">{{ link.name }}</a>
+    {% endfor %}
+  </nav>
+
+  <section class="filter-bar">
+    <label for="sourceSelect"><strong>News sources:</strong></label>
+    <select id="sourceSelect">
+      <option value="all">All sources</option>
+      {% for src in sources %}
+        <option value="{{ src }}">{{ src }}</option>
+      {% endfor %}
+    </select>
   </section>
 
-  <!-- Source filter -->
-  <section class="filters">
-    <label class="filter-label" for="sourceSelect">News sources:</label>
-    <div class="filter-select-wrap">
-      <select id="sourceSelect">
-        <option value="all">All sources</option>
-        {% for key, label in (sources or {}).items() %}
-          <option value="{{ key }}">{{ label }}</option>
-        {% endfor %}
-      </select>
-      <span class="select-caret">▾</span>
-    </div>
-  </section>
-
-  <!-- Feed list -->
-  <main id="feed" class="feed">
+  <main id="articles">
     {% for item in items %}
-      <article class="card" data-source="{{ item.source_key or '' }}">
-        <h3 class="card-title">
-          <a href="{{ item.link }}" target="_blank" rel="noopener">{{ item.title }}</a>
-        </h3>
-
+      <article class="card" data-source="{{ item.source }}">
+        <h2><a href="{{ item.link }}" target="_blank">{{ item.title }}</a></h2>
         {% if item.summary %}
-          <p class="card-summary">{{ item.summary }}</p>
+          <p>{{ item.summary }}</p>
         {% endif %}
-
-        <div class="card-meta">
-          <span class="meta-source">{{ item.source or item.source_name }}</span>
-          <span class="meta-dot">•</span>
-          <time class="meta-time" datetime="{{ item.published or '' }}">{{ item.when or item.published_human }}</time>
-        </div>
+        <footer>
+          <span class="source">{{ item.source }}</span>
+          <span class="date">{{ item.published }}</span>
+        </footer>
       </article>
     {% endfor %}
   </main>
 
-  <footer class="site-footer">
-    <div class="footline">web-production-{{ app_id or '9597' }}.up.railway.app</div>
-  </footer>
-
   <script>
-    // Fight song: no layout jump (no scrollIntoView/hide/show)
-    (function () {
-      const audio = document.getElementById('fightSong');
-      const btn   = document.getElementById('fightSongBtn');
-      if (!audio || !btn) return;
+    // Fight song audio
+    const audio = new Audio("{{ url_for('static', filename='fight-song.mp3') }}");
+    const fightBtn = document.getElementById("fight-song");
 
-      let isPlaying = false;
-
-      function update() {
-        btn.textContent = isPlaying ? 'Pause' : 'Victory March';
-        btn.setAttribute('aria-pressed', String(isPlaying));
+    fightBtn.addEventListener("click", () => {
+      if (audio.paused) {
+        audio.play();
+        fightBtn.textContent = "Pause";
+      } else {
+        audio.pause();
+        fightBtn.textContent = "Victory March";
       }
+    });
 
-      btn.addEventListener('click', () => {
-        if (isPlaying) {
-          audio.pause();
+    // Source filter
+    const sourceSelect = document.getElementById("sourceSelect");
+    sourceSelect.addEventListener("change", () => {
+      const selected = sourceSelect.value;
+      document.querySelectorAll(".card").forEach(card => {
+        if (selected === "all" || card.dataset.source === selected) {
+          card.style.display = "block";
         } else {
-          audio.play().catch(() => {}); // fail silently if autoplay blocked
+          card.style.display = "none";
         }
       });
-      audio.addEventListener('play',  () => { isPlaying = true;  update(); });
-      audio.addEventListener('pause', () => { isPlaying = false; update(); });
-      audio.addEventListener('ended', () => { isPlaying = false; update(); });
-    })();
-
-    // Simple front-end filter (no network calls)
-    (function () {
-      const select = document.getElementById('sourceSelect');
-      const cards  = Array.from(document.querySelectorAll('.card'));
-      if (!select || !cards.length) return;
-
-      select.addEventListener('change', () => {
-        const v = select.value;
-        cards.forEach(c => {
-          const k = c.getAttribute('data-source') || '';
-          c.style.display = (v === 'all' || v === k) ? '' : 'none';
-        });
-      });
-    })();
+    });
   </script>
 </body>
 </html>
