@@ -2,76 +2,244 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, viewport-fit=cover"
-  />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Notre Dame Football — News & Feeds</title>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.webmanifest') }}">
 
-  <!-- Icons / PWA (unchanged) -->
-  <link rel="apple-touch-icon" href="/static/apple-touch-icon.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png" />
-  <link rel="manifest" href="/static/manifest.webmanifest" />
-
-  <!-- Styles (unchanged reference) -->
-  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <!-- Top banner -->
-  <header class="site-header">
+
+  <!-- Top Banner (compact, no layout jump) -->
+  <header class="topbar">
     <div class="brand">
-      <img src="/static/nd-logo.png" alt="ND" class="brand-logo" />
+      <img id="brand-logo"
+           src="{{ url_for('static', filename='logo.png') }}"
+           alt="Notre Dame logo"
+           onerror="this.style.display='none'">
       <div class="brand-text">
-        <h1 class="brand-title">Notre Dame</h1>
-        <h1 class="brand-title">Football</h1>
-        <p class="updated">
-          Updated: <span id="updatedAt">—</span>
-        </p>
+        <h1 class="app-title">Notre Dame<br>Football</h1>
+        <div class="updated">
+          Updated:
+          <span id="updated-at">—</span>
+        </div>
       </div>
     </div>
 
-    <button id="fightSongBtn" class="chip chip--cta">Victory March</button>
-    <audio id="fightSong" preload="auto" src="/static/fight-song.mp3"></audio>
+    <div class="fight-song">
+      <button id="fight-btn" class="btn pill gold">Victory March</button>
+      <audio id="fight-audio" preload="auto"
+             src="{{ url_for('static', filename='fight-song.mp3') }}"></audio>
+    </div>
   </header>
 
-  <!-- Quick links (chips) -->
-  <nav class="chips">
-    <!-- Keep: Official Site / Schedule / Roster / CFB Rankings / ND Insider -->
-    <a class="chip" href="https://fightingirish.com/" target="_blank" rel="noopener">Official Site</a>
-    <a class="chip" href="https://fightingirish.com/sports/m-footbl/schedule/" target="_blank" rel="noopener">Schedule</a>
-    <a class="chip" href="https://fightingirish.com/sports/m-footbl/roster/" target="_blank" rel="noopener">Roster</a>
-    <a class="chip" href="https://www.espn.com/college-football/rankings" target="_blank" rel="noopener">CFB Rankings</a>
-    <a class="chip" href="https://www.ndinsider.com/" target="_blank" rel="noopener">ND Insider</a>
+  <!-- Quick Links (gold buttons with black text) -->
+  <nav class="quick-links container">
+    <a class="btn pill gold" href="https://und.com/sports/football/" target="_blank" rel="noopener">Official Site</a>
+    <a class="btn pill gold" href="https://fightingirish.com/sports/football/schedule/" target="_blank" rel="noopener">Schedule</a>
+    <a class="btn pill gold" href="https://fightingirish.com/sports/football/roster/" target="_blank" rel="noopener">Roster</a>
 
-    <!-- REMOVED: One Foot Down / Slap the Sign / Irish Envy Forum -->
+    <a class="btn pill gold" href="https://www.cbssports.com/college-football/rankings/" target="_blank" rel="noopener">CFB Rankings</a>
+    <a class="btn pill gold" href="https://www.ndinsider.com/" target="_blank" rel="noopener">ND Insider</a>
 
-    <!-- Keep the rest: Reddit / YouTube / 247 / ESPN / CBS / On3 / Athletic / Fighting Irish Wire -->
-    <a class="chip" href="https://www.reddit.com/r/notredamefootball/" target="_blank" rel="noopener">Reddit — r/notredamefootball</a>
-    <a class="chip" href="https://www.youtube.com/channel/UCAMR05qSc5mfhVx20fDyAoQ" target="_blank" rel="noopener">YouTube — ND Football</a>
-    <a class="chip" href="https://247sports.com/college/notre-dame/" target="_blank" rel="noopener">247Sports ND</a>
-    <a class="chip" href="https://www.espn.com/college-football/team/_/id/87/notre-dame-fighting-irish" target="_blank" rel="noopener">ESPN ND Football</a>
-    <a class="chip" href="https://www.cbssports.com/college-football/teams/ND/notre-dame-fighting-irish/" target="_blank" rel="noopener">CBS Sports ND</a>
-    <a class="chip" href="https://www.on3.com/teams/notre-dame-fighting-irish/" target="_blank" rel="noopener">On3 — Blue & Gold</a>
-    <a class="chip" href="https://theathletic.com/college-football/team/notre-dame-fighting-irish/" target="_blank" rel="noopener">The Athletic — ND</a>
-    <a class="chip" href="https://fightingirishwire.usatoday.com/" target="_blank" rel="noopener">Fighting Irish Wire</a>
+    <a class="btn pill gold" href="https://www.reddit.com/r/notredamefootball/" target="_blank" rel="noopener">Reddit — r/notredamefootball</a>
+    <a class="btn pill gold" href="https://www.youtube.com/channel/UCAMR05qSc5mfhVx20fDyAoQ" target="_blank" rel="noopener">YouTube — ND Football</a>
+
+    <a class="btn pill gold" href="https://247sports.com/college/notre-dame/" target="_blank" rel="noopener">247Sports ND</a>
+    <a class="btn pill gold" href="https://www.espn.com/college-football/team/_/id/87/notre-dame-fighting-irish" target="_blank" rel="noopener">ESPN ND Football</a>
+    <a class="btn pill gold" href="https://www.cbssports.com/college-football/teams/ND/notre-dame-fighting-irish/" target="_blank" rel="noopener">CBS Sports ND</a>
+    <a class="btn pill gold" href="https://www.on3.com/teams/notre-dame-fighting-irish/" target="_blank" rel="noopener">On3 — Blue & Gold</a>
+    <a class="btn pill gold" href="https://theathletic.com/college-football/team/notre-dame-fighting-irish/" target="_blank" rel="noopener">The Athletic — ND</a>
+    <a class="btn pill gold" href="https://fightingirishwire.usatoday.com/" target="_blank" rel="noopener">Fighting Irish Wire</a>
   </nav>
 
-  <!-- Filters / controls -->
-  <section class="controls">
-    <label for="sourceSelect" class="sources-label">News sources:</label>
-    <div class="sources-row">
-      <select id="sourceSelect" class="select">
+  <!-- Controls -->
+  <section class="container controls">
+    <label class="control-label" for="source-filter">News sources:</label>
+    <div class="select-row">
+      <select id="source-filter" class="select">
         <option value="all" selected>All sources</option>
       </select>
-      <button id="refreshBtn" class="chip">refresh</button>
+      <button id="refresh-new" class="btn pill gold outline" hidden>refresh</button>
     </div>
   </section>
 
   <!-- Feed -->
-  <main id="feed" class="feed" aria-live="polite"></main>
+  <main id="feed" class="container cards"></main>
 
-  <!-- Scripts (unchanged references) -->
-  <script src="/static/app.js"></script>
+  <!-- Footer note -->
+  <footer class="container footer-note">
+    <small id="env-note"></small>
+  </footer>
+
+  <script>
+    // ---------- Config ----------
+    const DATA_URL = "{{ url_for('static', filename='items.json') }}"; // server’s JSON
+    const MAX_TITLE_LEN = 140; // visual clamp only
+
+    // ---------- DOM ----------
+    const updatedAtEl = document.getElementById('updated-at');
+    const feedEl      = document.getElementById('feed');
+    const sourceSel   = document.getElementById('source-filter');
+    const refreshNew  = document.getElementById('refresh-new');
+    const fightBtn    = document.getElementById('fight-btn');
+    const fightAudio  = document.getElementById('fight-audio');
+
+    // ---------- State ----------
+    let items = [];
+    let lastHash = '';
+    let knownSources = new Set();
+
+    // ---------- Utils ----------
+    const fmtTime = (iso) => {
+      try {
+        const d = new Date(iso);
+        return isNaN(d) ? '' : d.toLocaleString();
+      } catch { return ''; }
+    };
+
+    const hashPayload = (arr) => {
+      try {
+        return btoa(unescape(encodeURIComponent(JSON.stringify(arr.map(i => [i.title, i.link])))));
+      } catch { return String(arr.length); }
+    };
+
+    // Truncate visually (keeps whole string intact for link/tooltip)
+    const clamp = (s, n) => (s && s.length > n) ? s.slice(0, n - 1) + '…' : s || '';
+
+    // ---------- Rendering ----------
+    function renderItems() {
+      const sel = sourceSel.value;
+      const list = (sel === 'all') ? items : items.filter(i =>
+        (i.source || '').toLowerCase() === sel.toLowerCase()
+      );
+
+      feedEl.innerHTML = '';
+      list.forEach((it) => {
+        const card = document.createElement('article');
+        card.className = 'card';
+
+        const title = document.createElement('a');
+        title.className = 'card-title';
+        title.textContent = clamp(it.title, MAX_TITLE_LEN);
+        title.href = it.link || '#';
+        title.target = '_blank';
+        title.rel = 'noopener';
+
+        const summary = document.createElement('p');
+        summary.className = 'card-summary';
+        summary.textContent = it.summary || it.subtitle || '';
+
+        const meta = document.createElement('div');
+        meta.className = 'card-meta';
+        const left = document.createElement('span');
+        left.textContent = (it.source || '').trim();
+        const right = document.createElement('span');
+        right.textContent = fmtTime(it.published || it.date || it.updated);
+
+        meta.appendChild(left);
+        meta.appendChild(document.createTextNode(' • '));
+        meta.appendChild(right);
+
+        card.appendChild(title);
+        if (summary.textContent) card.appendChild(summary);
+        card.appendChild(meta);
+        feedEl.appendChild(card);
+      });
+    }
+
+    function renderSources() {
+      // keep existing options, just append any new
+      [...knownSources].sort((a, b) => a.localeCompare(b)).forEach(src => {
+        if (![...sourceSel.options].some(o => o.value.toLowerCase() === src.toLowerCase())) {
+          const opt = document.createElement('option');
+          opt.value = src;
+          opt.textContent = src;
+          sourceSel.appendChild(opt);
+        }
+      });
+    }
+
+    // ---------- Data ----------
+    async function fetchItems() {
+      const res = await fetch(DATA_URL, { cache: 'no-store' });
+      if (!res.ok) throw new Error('Failed to fetch items.json');
+      return await res.json();
+    }
+
+    async function loadInitial() {
+      try {
+        const data = await fetchItems();
+        items = Array.isArray(data.items) ? data.items : data;
+        items.forEach(i => { if (i.source) knownSources.add(i.source); });
+        renderSources();
+        renderItems();
+        updatedAtEl.textContent = fmtTime(data.updated || new Date().toISOString());
+        lastHash = hashPayload(items);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    // Poll quietly for new content; if new, show the refresh pill
+    async function pollForNew() {
+      try {
+        const data = await fetchItems();
+        const arr = Array.isArray(data.items) ? data.items : data;
+        const newHash = hashPayload(arr);
+        if (newHash !== lastHash) {
+          refreshNew.hidden = false;
+          refreshNew.dataset.payload = JSON.stringify({arr, updated: data.updated});
+        }
+      } catch {
+        /* ignore network blips */
+      }
+    }
+
+    // ---------- Interactions ----------
+    sourceSel.addEventListener('change', renderItems);
+
+    refreshNew.addEventListener('click', () => {
+      try {
+        const payload = JSON.parse(refreshNew.dataset.payload || '{}');
+        if (Array.isArray(payload.arr)) {
+          items = payload.arr;
+          items.forEach(i => { if (i.source) knownSources.add(i.source); });
+          renderSources();
+          renderItems();
+          updatedAtEl.textContent = fmtTime(payload.updated || new Date().toISOString());
+          lastHash = hashPayload(items);
+        }
+      } catch {}
+      refreshNew.hidden = true;
+    });
+
+    // Fight song: play/pause without moving layout
+    fightBtn.addEventListener('click', async () => {
+      try {
+        if (fightAudio.paused) {
+          await fightAudio.play();
+          fightBtn.textContent = 'Pause';
+        } else {
+          fightAudio.pause();
+          fightBtn.textContent = 'Victory March';
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    });
+    fightAudio.addEventListener('ended', () => {
+      fightBtn.textContent = 'Victory March';
+    });
+
+    // ---------- Boot ----------
+    loadInitial();
+    // Light poll every 60s; this won’t redeploy or hit your server hard
+    setInterval(pollForNew, 60000);
+    // small footer hint
+    document.getElementById('env-note').textContent = window.location.host;
+  </script>
 </body>
 </html>
