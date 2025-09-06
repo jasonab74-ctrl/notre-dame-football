@@ -3,9 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{{ title or 'Notre Dame Football — News' }}</title>
-
-  <!-- Icons & manifest (optional; safe if missing) -->
+  <title>Notre Dame Football — News & Feeds</title>
   <link rel="icon" href="/static/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
   <link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
@@ -16,33 +14,36 @@
 <body>
   <header class="header">
     <img class="logo" src="/static/notre-dame-logo.png" alt="Notre Dame logo" />
-    <div>
+    <div class="brand">
       <h1>Notre Dame<br/>Football</h1>
       <div id="updated" class="muted">Updated: —</div>
     </div>
-    <button id="play-fight-song" class="pill">Victory March</button>
+
+    <!-- Fight song: button text does not change width to avoid layout jump -->
+    <button id="play-fight-song" class="pill pill-wide" aria-pressed="false">
+      Victory March
+    </button>
     <audio id="fight-song" src="/static/fight-song.mp3" preload="auto"></audio>
   </header>
 
   <nav id="links" class="links"></nav>
 
   <section class="controls">
-    <label for="sourceSel" class="muted">Sources:</label>
-    <select id="sourceSel" class="select">
+    <label for="sourceSel" class="muted">News sources:</label>
+    <select id="sourceSel" class="select" aria-label="Filter by source">
       <option value="__all__">All sources</option>
     </select>
-    <div id="notice" class="notice hidden">New items available — <button id="reload" class="pill">refresh</button></div>
+    <div id="notice" class="notice hidden">New items available — <button id="reload" class="pill small">refresh</button></div>
   </section>
 
-  <main id="feed" class="grid"></main>
+  <main id="feed" class="grid" aria-live="polite"></main>
 
   <footer class="footer">
     <span>Built with your Sports App template.</span>
   </footer>
 
   <script>
-    const fmtTime = (ts) => ts ? new Date(ts * 1000).toLocaleString() : "";
-
+    // ---------------- UI elements
     const elUpdated = document.getElementById('updated');
     const elFeed = document.getElementById('feed');
     const elNotice = document.getElementById('notice');
@@ -52,26 +53,66 @@
     const fightBtn = document.getElementById('play-fight-song');
     const audio = document.getElementById('fight-song');
 
+    // Fight song with no layout jump: fixed-width button & simple aria toggle
     fightBtn.addEventListener('click', () => {
-      if (audio.paused) { audio.currentTime = 0; audio.play(); fightBtn.textContent = '⏸ Victory March'; }
-      else { audio.pause(); fightBtn.textContent = 'Victory March'; }
+      if (audio.paused) {
+        audio.currentTime = 0;
+        audio.play().catch(()=>{});
+        fightBtn.setAttribute('aria-pressed', 'true');
+        fightBtn.classList.add('playing');
+      } else {
+        audio.pause();
+        fightBtn.setAttribute('aria-pressed', 'false');
+        fightBtn.classList.remove('playing');
+      }
     });
 
     let lastCount = 0;
     let currentSource = "__all__";
     let cache = { items: [], updated: 0 };
 
-    async function hydrateMeta() {
+    function fmtTime(ts) {
+      if (!ts) return "";
       try {
-        const meta = await (await fetch('/feeds.json', {cache:'no-store'})).json();
-        const links = meta.links || [];
-        elLinks.innerHTML = links.map(l => `<a class="pill" href="${l.href}" target="_blank" rel="noopener">${l.label}</a>`).join('');
-        const feeds = meta.feeds || [];
-        const opts = feeds.map(f => `<option value="${f.name}">${f.name}</option>`).join('');
-        elSource.insertAdjacentHTML('beforeend', opts);
-      } catch (e) {
-        console.warn('feeds.json unavailable', e);
-      }
+        const d = new Date(ts * 1000);
+        return d.toLocaleString();
+      } catch(_) { return ""; }
+    }
+
+    function sanitize(html) {
+      if (!html) return "";
+      // Quick safe-strip (summary text only)
+      const div = document.createElement('div');
+      div.innerHTML = html;
+      return div.textContent || div.innerText || "";
+    }
+
+    function short(text, n=220) {
+      if (!text) return "";
+      const s = text.trim().replace(/\s+/g,' ');
+      return s.length > n ? s.slice(0, n - 1) + "…" : s;
+    }
+
+    function cardHTML(item) {
+      const title = item.title || "";
+      const href = item.link || "#";
+      const src = item.source || "";
+      const when = fmtTime(item.published);
+      const summary = short(sanitize(item.summary || item.description || ""));
+
+      return `
+        <article class="card">
+          <a class="card-title" href="${href}" target="_blank" rel="noopener">
+            ${title}
+          </a>
+          ${summary ? `<p class="summary">${summary}</p>` : ``}
+          <div class="meta">
+            <span class="source">${src}</span>
+            <span class="dot">•</span>
+            <span class="time">${when}</span>
+          </div>
+        </article>
+      `;
     }
 
     function render(items) {
@@ -79,19 +120,21 @@
         ? items
         : items.filter(i => (i.source || '').toLowerCase() === currentSource.toLowerCase());
 
-      elFeed.innerHTML = (filtered || []).map(item => `
-        <article class="card">
-          <a href="${item.link}" target="_blank" rel="noopener">
-            <h3>${item.title}</h3>
-            <p class="summary">${item.summary || ''}</p>
-            <div class="meta">
-              <span class="source">${item.source || ''}</span>
-              <span class="dot">•</span>
-              <span class="time">${fmtTime(item.published)}</span>
-            </div>
-          </a>
-        </article>
-      `).join('');
+      elFeed.innerHTML = (filtered || []).map(cardHTML).join('');
+    }
+
+    async function hydrateMeta() {
+      try {
+        const meta = await (await fetch('/feeds.json', {cache:'no-store'})).json();
+        const links = meta.links || [];
+        elLinks.innerHTML = links.map(l => `<a class="pill" href="${l.href}" target="_blank" rel="noopener">${l.label}</a>`).join('');
+
+        const feeds = meta.feeds || [];
+        const opts = feeds.map(f => `<option value="${f.name}">${f.name}</option>`).join('');
+        elSource.insertAdjacentHTML('beforeend', opts);
+      } catch (e) {
+        console.warn('feeds.json unavailable', e);
+      }
     }
 
     async function load(initial=false) {
@@ -114,12 +157,17 @@
       render(cache.items || []);
     });
 
+    // Initial boot
     hydrateMeta();
     load(true);
+
+    // Soft poll just for the banner (doesn't re-render automatically)
     setInterval(async () => {
-      const res = await fetch('/items.json', { cache: 'no-store' });
-      const data = await res.json();
-      if (data.count > lastCount) elNotice.classList.remove('hidden');
+      try {
+        const res = await fetch('/items.json', { cache: 'no-store' });
+        const data = await res.json();
+        if (data.count > lastCount) elNotice.classList.remove('hidden');
+      } catch(_) {}
     }, 5 * 60 * 1000);
   </script>
 </body>
