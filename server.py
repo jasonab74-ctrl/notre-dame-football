@@ -1,4 +1,4 @@
-# server.py — stable single-file Flask app for Railway
+# server.py — stable single-file Flask app for Railway (no jumpy fight-song button)
 import os, json, time, traceback
 from flask import Flask, jsonify, Response, send_file, request
 
@@ -9,7 +9,6 @@ def log(msg: str):
 
 app = Flask(__name__, static_folder="static")
 
-# ---------- HTML (inline) ----------
 HTML = """<!doctype html>
 <html lang="en">
 <head>
@@ -29,7 +28,7 @@ HTML = """<!doctype html>
       <h1>Notre Dame<br/>Football</h1>
       <div id="updated" class="muted">Updated: —</div>
     </div>
-    <button id="play-fight-song" class="pill">Victory March</button>
+    <button id="play-fight-song" class="pill" aria-pressed="false" aria-label="Play Victory March">Victory March</button>
     <audio id="fight-song" src="/static/fight-song.mp3" preload="auto"></audio>
   </header>
 
@@ -60,12 +59,25 @@ HTML = """<!doctype html>
     const fightBtn = document.getElementById('play-fight-song');
     const audio = document.getElementById('fight-song');
 
-    // Fight song: no layout reflow/jank
-    fightBtn?.addEventListener('click', () => {
+    // No-jump play/pause: keep label constant, toggle aria-pressed, blur to avoid mobile scroll/jank
+    fightBtn?.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
       try {
-        if (audio.paused) { audio.currentTime = 0; audio.play(); fightBtn.textContent = '⏸ Victory March'; }
-        else { audio.pause(); fightBtn.textContent = 'Victory March'; }
-      } catch(e) {}
+        if (audio.paused) {
+          audio.currentTime = 0;
+          const p = audio.play();
+          if (p && p.catch) p.catch(() => {});
+          fightBtn.setAttribute('aria-pressed','true');
+          fightBtn.setAttribute('aria-label','Pause Victory March');
+        } else {
+          audio.pause();
+          fightBtn.setAttribute('aria-pressed','false');
+          fightBtn.setAttribute('aria-label','Play Victory March');
+        }
+      } catch (err) {}
+      // Defer blur to next tick so focus ring/scroll doesn’t cause layout jump on mobile
+      setTimeout(() => fightBtn.blur(), 0);
     });
 
     let lastCount = 0;
@@ -128,20 +140,29 @@ HTML = """<!doctype html>
     hydrateMeta();
     load(true);
 
-    // Lightweight ping only: show banner if new items; do not hard refresh
+    // Lightweight check: show banner if new items; no forced refresh
     setInterval(async () => {
       try {
         const res = await fetch('/items.json', { cache: 'no-store' });
         const data = await res.json();
         if (data.count > lastCount) elNotice.classList.remove('hidden');
       } catch (e) {}
-    }, 180000); // 3 minutes
+    }, 180000);
   </script>
 </body>
 </html>
 """
 
-# ---------- Routes ----------
+@app.after_request
+def add_cors(resp):
+    try:
+        if resp.mimetype in ("application/json", "text/json") or request.path.startswith("/static/teams/"):
+            resp.headers["Access-Control-Allow-Origin"] = "*"
+            resp.headers["Cache-Control"] = "max-age=60"
+    except Exception:
+        pass
+    return resp
+
 @app.get("/")
 def index():
     return Response(HTML, mimetype="text/html")
@@ -153,7 +174,6 @@ def items_json():
         log("items.json not found — returning empty payload")
         return jsonify({"team": APP_TITLE, "updated": int(time.time()), "count": 0, "items": []})
     try:
-        # Prefer send_file for speed; fallback to json if it fails
         return send_file(path, mimetype="application/json")
     except Exception:
         log("send_file failed, falling back to json.load")
@@ -167,7 +187,6 @@ def items_json():
 
 @app.get("/feeds.json")
 def feeds_json():
-    # Keep whatever feeds.py you already have; if import fails, return empty safely
     try:
         from feeds import FEEDS, STATIC_LINKS
     except Exception as e:
@@ -177,7 +196,6 @@ def feeds_json():
 
 @app.get("/health")
 def health():
-    # Ultra-fast health; never blocks the worker
     out = {"ok": True, "now": int(time.time()), "updated": 0, "count": 0}
     try:
         if os.path.exists("items.json"):
@@ -192,17 +210,6 @@ def health():
         out["ok"] = False
         out["error"] = str(e)
     return jsonify(out)
-
-# CORS for JSON so static sites can read it too (harmless here)
-@app.after_request
-def add_cors(resp):
-    try:
-        if resp.mimetype in ("application/json", "text/json") or request.path.startswith("/static/teams/"):
-            resp.headers["Access-Control-Allow-Origin"] = "*"
-            resp.headers["Cache-Control"] = "max-age=60"
-    except Exception:
-        pass
-    return resp
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", "5000"))
