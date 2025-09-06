@@ -1,207 +1,125 @@
-/* ===== Notre Dame Football — clean, stable theme ===== */
-
-/* --- Color tokens (tweak if needed) --- */
-:root{
-  --nd-navy:#0c2340;          /* background */
-  --nd-gold:#e0c15a;          /* UI pill buttons */
-  --nd-gold-ink:#131313;      /* text on gold pills */
-  --card-bg:#f6e7b5;          /* article card background (light gold) */
-  --card-ink:#0c2340;         /* article text (dark navy) */
-  --muted:#7b8a9a;
-  --ring:rgba(0,0,0,.12);
-  --shadow:0 2px 10px rgba(0,0,0,.18);
-  --radius-pill:28px;
-  --radius-card:22px;
-  --maxw:980px;
+/* ===== General Reset ===== */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: #0c2340; /* ND blue */
+  color: #111;
+  margin: 0;
+  padding: 0;
 }
 
-/* --- Global reset --- */
-*{box-sizing:border-box}
-html,body{height:100%}
-html{scroll-behavior:smooth}
-body{
-  margin:0;
-  background:var(--nd-navy);
-  color:#e9eef6;
-  font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Helvetica,Arial,sans-serif;
-  text-rendering:optimizeLegibility;
-  -webkit-font-smoothing:antialiased;
+/* ===== Banner ===== */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #0c2340;
+  color: white;
+  padding: 12px 16px;   /* reduce padding */
+  min-height: 60px;     /* reduce tall spacing */
 }
 
-/* Prevent layout jump when audio plays (height reserved by page already) */
-img,svg,video{max-width:100%;height:auto;display:block}
-
-/* --- Page frame --- */
-.app{
-  max-width:var(--maxw);
-  margin:0 auto;
-  padding:16px 16px 80px;
+header img {
+  height: 40px; /* smaller ND logo */
+  margin-right: 10px;
 }
 
-/* --- Header (compact, not sticky) --- */
-.header{
-  position:static;            /* avoid sticky flash on iOS */
-  display:grid;
-  grid-template-columns:auto 1fr auto;
-  gap:14px;
-  align-items:center;
-  padding:8px 0 12px;
-}
-.header .logo{
-  width:56px;height:56px;border-radius:12px;overflow:hidden;flex:0 0 auto;
-}
-.header .title{
-  min-width:0;
-}
-.header h1{
-  margin:0;
-  font-size:28px;
-  line-height:1.05;
-  font-weight:800;
-  letter-spacing:.2px;
-}
-.header .updated{
-  margin-top:2px;
-  font-size:14px;
-  color:var(--muted);
-}
-.header .fight{
-  white-space:nowrap;
+header h1 {
+  font-size: 20px;
+  margin: 0;
+  line-height: 1.2;
 }
 
-/* --- Gold “pill” buttons row --- */
-.pills{
-  display:flex;
-  flex-wrap:wrap;
-  gap:12px;
-  padding:12px 0 6px;
-}
-.pill, .btn, .chip{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  padding:12px 18px;
-  border-radius:var(--radius-pill);
-  background:var(--nd-gold);
-  color:var(--nd-gold-ink);
-  font-weight:800;
-  text-decoration:none;
-  box-shadow:inset 0 -2px 0 rgba(0,0,0,.07);
-  transition:transform .04s ease, filter .15s ease, box-shadow .15s ease;
-}
-.pill:active, .btn:active, .chip:active{ transform:translateY(1px) }
-.pill:hover, .btn:hover, .chip:hover{ filter:brightness(.98) }
-.pill:focus-visible, .btn:focus-visible, .chip:focus-visible{
-  outline:3px solid #fff2; outline-offset:2px;
+header .updated {
+  font-size: 12px;
+  opacity: 0.8;
 }
 
-/* Fight song button can share pill styles */
-.fight{}
-
-/* --- Filters row (label + select) --- */
-.filters{
-  display:flex;
-  flex-wrap:wrap;
-  align-items:center;
-  gap:10px 14px;
-  margin:10px 0 14px;
-  padding:10px 12px;
-  border-radius:16px;
-  background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(0,0,0,.06));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
-}
-.filters .label{
-  font-weight:700;
-  color:#d6deea;
-}
-.filters select{
-  appearance:none;
-  -webkit-appearance:none;
-  border:1px solid rgba(255,255,255,.15);
-  background:#102a4a url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="14" viewBox="0 0 24 24" fill="%23d6deea"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 12px center/18px;
-  color:#e8eef8;
-  padding:10px 38px 10px 12px;
-  border-radius:12px;
-  font-weight:600;
-  min-width:190px;
-  max-width:100%;
+/* ===== Fight Song Button ===== */
+button.fight-song {
+  background: #C99700; /* ND gold */
+  color: #111;
+  border: none;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-weight: bold;
+  cursor: pointer;
 }
 
-/* --- Cards grid --- */
-.grid{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:14px;
-}
-@media (min-width:680px){
-  .grid{ grid-template-columns:1fr 1fr; }
-}
-@media (min-width:980px){
-  .grid{ grid-template-columns:1fr 1fr 1fr; }
+button.fight-song:hover {
+  opacity: 0.9;
 }
 
-/* --- Article card --- */
-.card{
-  background:var(--card-bg);
-  color:var(--card-ink);
-  border-radius:var(--radius-card);
-  padding:18px 16px 16px;
-  box-shadow:var(--shadow);
+/* ===== Nav Buttons ===== */
+.nav-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;        /* more consistent spacing */
+  padding: 12px 16px;
 }
 
-/* Title link — bold, dark, not underlined */
-.card h3{
-  margin:0 0 10px;
-  font-size:22px;
-  line-height:1.18;
-  font-weight:900;
-  color:var(--card-ink);
-}
-.card h3 a{
-  color:inherit;
-  text-decoration:none;
-}
-.card h3 a:hover{ text-decoration:none; filter:brightness(.92) }
-
-/* Summary text (no duplicate look of title) */
-.card .summary{
-  margin:0 0 12px;
-  color:#243b5c;
-  font-weight:600;
+.nav-buttons a {
+  background: #C99700;  /* ND gold */
+  color: #111;
+  padding: 6px 12px;    /* slightly smaller padding */
+  border-radius: 20px;
+  text-decoration: none;
+  font-size: 14px;      /* smaller font size */
+  font-weight: 600;
+  white-space: nowrap;
 }
 
-/* Meta row (source + time) */
-.card .meta{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px 14px;
-  align-items:center;
-  color:#3e5170;
-  font-size:14px;
-}
-.meta .source{
-  background:#fff8;
-  padding:6px 10px;
-  border-radius:999px;
-  box-shadow:inset 0 1px 0 #fff7;
-  font-weight:700;
+.nav-buttons a:hover {
+  background: #b58c00;
 }
 
-/* Generic links default (no auto underlines inside cards) */
-a{ color:#b9d3ff; text-decoration:none }
-a:hover{ text-decoration:underline }
-
-/* But inside cards we never underline */
-.card a:hover{ text-decoration:none }
-
-/* Footer (small) */
-.footer{
-  margin-top:36px;
-  color:#a6b4c3;
-  font-size:14px;
-  text-align:center;
-  opacity:.9;
+/* ===== News Sources Label & Dropdown ===== */
+.sources {
+  padding: 0 16px 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
 }
 
-/* --- Utility spacing --- */
-.mt-0{margin-top:0}.mt-8{margin-top:8px}.mt-12{margin-top:12px}.mt-16{margin-top:16px}
+select {
+  margin-left: 8px;
+  padding: 4px 8px;
+  font-size: 14px;
+  border-radius: 6px;
+}
+
+/* ===== Article Bubbles ===== */
+.article {
+  background: #f5e6b3; /* light ND gold */
+  border-radius: 10px;
+  padding: 14px;
+  margin: 10px 16px;
+  color: #111;
+}
+
+.article h2 {
+  font-size: 16px;
+  margin: 0 0 6px 0;
+  color: #0c2340;      /* ND dark blue */
+  font-weight: 700;
+  text-decoration: none; /* remove underline */
+}
+
+.article h2 a {
+  color: #0c2340;
+  text-decoration: none;
+}
+
+.article h2 a:hover {
+  text-decoration: underline; /* hover only */
+}
+
+.article p {
+  font-size: 14px;
+  margin: 0 0 6px 0;
+}
+
+.article .meta {
+  font-size: 12px;
+  color: #333;
+  opacity: 0.8;
+}
