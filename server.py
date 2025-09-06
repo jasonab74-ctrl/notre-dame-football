@@ -1,25 +1,19 @@
-# server.py — single-file Flask app (robust for Railway)
-import os
-import json
-import time
-import traceback
-from flask import Flask, jsonify, Response, send_file
+import os, json, time, traceback
+from flask import Flask, jsonify, Response, send_file, request
 
 APP_TITLE = "Notre Dame Football"
 
-def log(msg: str) -> None:
+def log(msg: str):
     print(f"[SERVER] {msg}", flush=True)
 
 app = Flask(__name__, static_folder="static")
 
-# NOTE: This is NOT an f-string on purpose.
-# We inject APP_TITLE by replacing the __APP_TITLE__ marker at response time.
-HTML = """<!doctype html>
+HTML = f"""<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>__APP_TITLE__ — News</title>
+  <title>{APP_TITLE} — News</title>
   <link rel="icon" href="/static/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
   <link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
@@ -38,7 +32,23 @@ HTML = """<!doctype html>
     <audio id="fight-song" src="/static/fight-song.mp3" preload="auto"></audio>
   </header>
 
-  <nav id="links" class="links"></nav>
+  <nav id="links" class="links">
+    <a class="pill" href="https://und.com/football/" target="_blank">Official Site</a>
+    <a class="pill" href="https://fightingirish.com/sports/football/schedule/" target="_blank">Schedule</a>
+    <a class="pill" href="https://fightingirish.com/sports/football/roster/" target="_blank">Roster</a>
+    <a class="pill" href="https://www.espn.com/college-football/team/_/id/87/notre-dame-fighting-irish" target="_blank">ESPN</a>
+    <a class="pill" href="https://247sports.com/college/notre-dame/" target="_blank">247Sports</a>
+    <a class="pill" href="https://notredame.rivals.com/" target="_blank">On3 — Blue & Gold</a>
+    <a class="pill" href="https://irishillustrated.com/" target="_blank">Irish Illustrated</a>
+    <a class="pill" href="https://irishwire.ndnation.com/" target="_blank">Irish Wire</a>
+    <a class="pill" href="https://www.ndinsider.com/" target="_blank">ND Insider</a>
+    <a class="pill" href="https://apnews.com/hub/ap-top-25-college-football-poll" target="_blank">AP Top 25</a>
+    <a class="pill" href="https://www.collegefootballplayoff.com/rankings" target="_blank">CFP Rankings</a>
+    <a class="pill" href="https://www.vividseats.com/notre-dame-fighting-irish-football-tickets/performer/465" target="_blank">Tickets</a>
+    <a class="pill" href="https://www.sports-reference.com/cfb/schools/notre-dame/" target="_blank">Stats</a>
+    <a class="pill" href="https://www.reddit.com/r/notredamefootball/" target="_blank">Reddit: r/notredamefootball</a>
+    <a class="pill" href="https://www.irishenvy.com/" target="_blank">Irish Envy</a>
+  </nav>
 
   <section class="controls">
     <label for="sourceSel" class="muted">Sources:</label>
@@ -65,12 +75,10 @@ HTML = """<!doctype html>
     const fightBtn = document.getElementById('play-fight-song');
     const audio = document.getElementById('fight-song');
 
-    if (fightBtn) {
-      fightBtn.addEventListener('click', () => {
-        if (audio.paused) { audio.currentTime = 0; audio.play(); fightBtn.textContent = '⏸ Victory March'; }
-        else { audio.pause(); fightBtn.textContent = 'Victory March'; }
-      });
-    }
+    fightBtn?.addEventListener('click', () => {
+      if (audio.paused) { audio.currentTime = 0; audio.play(); fightBtn.textContent = '⏸ Victory March'; }
+      else { audio.pause(); fightBtn.textContent = 'Victory March'; }
+    });
 
     let lastCount = 0;
     let currentSource = "__all__";
@@ -79,8 +87,6 @@ HTML = """<!doctype html>
     async function hydrateMeta() {
       try {
         const meta = await (await fetch('/feeds.json', {cache:'no-store'})).json();
-        const links = meta.links || [];
-        elLinks.innerHTML = links.map(l => `<a class="pill" href="${l.href}" target="_blank" rel="noopener">${l.label}</a>`).join('');
         const feeds = meta.feeds || [];
         const opts = feeds.map(f => `<option value="${f.name}">${f.name}</option>`).join('');
         elSource.insertAdjacentHTML('beforeend', opts);
@@ -132,11 +138,9 @@ HTML = """<!doctype html>
     hydrateMeta();
     load(true);
     setInterval(async () => {
-      try {
-        const res = await fetch('/items.json', { cache: 'no-store' });
-        const data = await res.json();
-        if (data.count > lastCount) elNotice.classList.remove('hidden');
-      } catch (_) {}
+      const res = await fetch('/items.json', { cache: 'no-store' });
+      const data = await res.json();
+      if (data.count > lastCount) elNotice.classList.remove('hidden');
     }, 5 * 60 * 1000);
   </script>
 </body>
@@ -145,7 +149,7 @@ HTML = """<!doctype html>
 
 @app.get("/")
 def index():
-    return Response(HTML.replace("__APP_TITLE__", APP_TITLE), mimetype="text/html")
+    return Response(HTML, mimetype="text/html")
 
 @app.get("/items.json")
 def items():
