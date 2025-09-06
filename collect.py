@@ -1,121 +1,111 @@
-#!/usr/bin/env python3
-# collect.py — team-aware RSS collector for Sports App Project
-# - Imports FEEDS from either root feeds.py or teams/<slug>/feeds.py
-# - Filters for team/sport, dedups, caps at MAX_ITEMS
-# - Writes JSON atomically (so the web app never reads a half-written file)
+# collect.py — robust feed collector for Sports App (Notre Dame Football)
+#
+# Usage (default writes ./items.json):
+#   python3 collect.py
+#
+# Optional:
+#   python3 collect.py --out static/teams/notre-dame/items.json
+#
+# Notes:
+# - Reads FEEDS from feeds.py (list of {name, url} or just {name} for labels).
+# - Never crashes on a single bad feed; logs and continues.
+# - Filters to Notre Dame Football content; trusted domains bypass strict filter.
+# - Caps to MAX_ITEMS and writes schema your server expects.
 
-import os
-import re
+import argparse
+import json
 import sys
 import time
-import json
-import html
-import argparse
-import tempfile
-import importlib.util
-from typing import List, Dict, Any, Tuple
+import traceback
+import re
+from urllib.parse import urlparse
 
-import requests
 import feedparser
 
-# ---------- Tunables ----------
+APP_TITLE = "Notre Dame Football"
 MAX_ITEMS = 50
-REQUEST_TIMEOUT = (8, 15)  # (connect, read)
-USER_AGENT = "sports-app-collector/1.0 (+https://example)"
-SUMMARY_MAX_CHARS = 240
 
-# Exclude terms (lowercased) that clearly aren't the target sport
-EXCLUDE_TERMS = [
-    "women", "wbb", "volleyball", "softball", "baseball", "soccer",
-    "hockey", "lacrosse", "golf", "tennis", "track", "swim", "swimming",
-    "cross country", "xc", "basketball", "womens", "women’s",
+# ---------- Filtering configuration ----------
+
+RE_REQUIRED_ANY = [
+    r"\bnotre\s*dame\b",
+    r"\bnd\b",  # sometimes abbreviated
+    r"\bfighting\s*irish\b",
 ]
 
-# Default include terms if team config doesn't provide KEYWORDS
-DEFAULT_KEYWORDS = [
-    # Team identity
-    "notre dame", "fighting irish", "nd",
-    # Sport identity
-    "football", "ncaaf", "college football",
+RE_REQUIRED_SPORT = [
+    r"\bfootball\b",
+    r"\bCFB\b",
 ]
 
-# ---------- Logging ----------
-def log(msg: str) -> None:
-    ts = time.strftime("%H:%M:%S")
-    print(f"[collect {ts}] {msg}", flush=True)
+RE_EXCLUDE = [
+    r"\bwomen'?s\b",
+    r"\bwbb\b",
+    r"\bvolleyball\b",
+    r"\bbasketball\b",   # exclude hoops for this site
+    r"\bbaseball\b",
+    r"\bsoftball\b",
+    r"\bsoccer\b",
+]
 
-# ---------- Utils ----------
-def import_module_from_path(py_path: str):
-    spec = importlib.util.spec_from_file_location("teamfeeds", py_path)
-    if spec is None or spec.loader is None:
-        return None
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return mod
+TRUSTED_DOMAINS = {
+    "und.com",
+    "onefootdown.com",
+    "slapthesign.com",
+    "ndinsider.com",
+    "ndnation.com",
+    "irishsportsdaily.com",
+    "insideindsports.com",  # rivals
+    "247sports.com",
+    "cbssports.com",
+    "espn.com",
+    "on3.com",
+    "theathletic.com",
+    "usatoday.com",  # fightingirishwire.usatoday.com
+    "fightingirishwire.usatoday.com",
+    "youtube.com",
+    "www.youtube.com",
+}
 
-def load_feeds(team_slug: str | None) -> Tuple[List[Dict[str, Any]], List[Dict[str, str]], List[str]]:
-    """
-    Returns (FEEDS, STATIC_LINKS, KEYWORDS)
-    - team_slug=None -> root feeds.py
-    - else -> teams/<slug>/feeds.py if present, fallback to root feeds.py
-    """
-    # Try team-specific first
-    if team_slug:
-        team_path = os.path.join("teams", team_slug, "feeds.py")
-        if os.path.exists(team_path):
-            log(f"Using team feeds: {team_path}")
-            mod = import_module_from_path(team_path)
-            if mod:
-                feeds = getattr(mod, "FEEDS", [])
-                static_links = getattr(mod, "STATIC_LINKS", [])
-                keywords = getattr(mod, "KEYWORDS", DEFAULT_KEYWORDS)
-                return feeds, static_links, [k.lower() for k in keywords]
+TITLE_LEN_MIN = 20  # ignore super tiny “noise” items
 
-    # Fallback: root feeds.py
-    root_path = os.path.join("feeds.py")
-    if os.path.exists(root_path):
-        log("Using root feeds.py")
-        mod = import_module_from_path(root_path)
-        if mod:
-            feeds = getattr(mod, "FEEDS", [])
-            static_links = getattr(mod, "STATIC_LINKS", [])
-            keywords = getattr(mod, "KEYWORDS", DEFAULT_KEYWORDS)
-            return feeds, static_links, [k.lower() for k in keywords]
 
-    # If nothing found, return empty (collector still writes a valid JSON)
-    log("WARNING: No feeds.py found; writing empty items.json")
-    return [], [], [k.lower() for k in DEFAULT_KEYWORDS]
+def log(msg: str):
+    print(f"[collect] {msg}", flush=True)
 
-def http_get(url: str) -> bytes | None:
+
+def load_feeds():
+    """Import FEEDS from feeds.py; tolerate missing/invalid."""
     try:
-        resp = requests.get(
-            url,
-            headers={"User-Agent": USER_AGENT},
-            timeout=REQUEST_TIMEOUT,
-        )
-        if 200 <= resp.status_code < 300:
-            return resp.content
-        log(f"HTTP {resp.status_code} for {url}")
+        from feeds import FEEDS  # type: ignore
     except Exception as e:
-        log(f"GET failed for {url}: {e}")
-    return None
+        log(f"feeds import failed: {e}")
+        return []
+    # Normalize: keep only items with url when present; name optional for label
+    norm = []
+    for f in FEEDS:
+        # Some configs may be label-only (for dropdown). Skip those here.
+        url = f.get("url")
+        if url:
+            norm.append({"name": f.get("name") or url, "url": url})
+    if not norm:
+        log("No feed URLs found in feeds.py FEEDS — using an empty list.")
+    return norm
 
-def parse_feed(content: bytes) -> feedparser.FeedParserDict:
-    # feedparser accepts bytes directly
-    return feedparser.parse(content)
 
-def clean_text(s: str | None) -> str:
-    if not s:
+def strip_html(text: str) -> str:
+    if not text:
         return ""
-    # strip HTML tags quickly; feedparser often gives plaintext but be safe
-    s = re.sub(r"<[^>]+>", " ", s)
-    s = html.unescape(s)
-    s = re.sub(r"\s+", " ", s).strip()
-    return s
+    # remove tags
+    text = re.sub(r"<[^>]+>", " ", text)
+    # collapse whitespace
+    text = re.sub(r"\s+", " ", text).strip()
+    return text
 
-def ts_from_entry(entry) -> int:
-    for key in ("published_parsed", "updated_parsed", "created_parsed"):
-        val = getattr(entry, key, None)
+
+def choose_epoch(entry) -> int:
+    for k in ("published_parsed", "updated_parsed", "created_parsed"):
+        val = entry.get(k)
         if val:
             try:
                 return int(time.mktime(val))
@@ -123,154 +113,162 @@ def ts_from_entry(entry) -> int:
                 pass
     return int(time.time())
 
-def summarize(s: str, max_chars: int = SUMMARY_MAX_CHARS) -> str:
-    s = clean_text(s)
-    if len(s) <= max_chars:
-        return s
-    # smart-ish truncation
-    cut = s[: max_chars - 1]
-    # try to end at word boundary
-    cut = re.sub(r"\s+\S*$", "", cut).rstrip(",.;:-") + "…"
-    return cut
 
-def allow_item(title: str, summary: str, source_name: str, keywords: List[str], trusted: bool) -> bool:
-    t = (title or "").lower()
-    s = (summary or "").lower()
+def hostname(url: str) -> str:
+    try:
+        return urlparse(url).hostname or ""
+    except Exception:
+        return ""
 
-    # Trusted feeds pass unless they contain explicit excludes
-    if trusted:
-        for bad in EXCLUDE_TERMS:
-            if bad in t or bad in s:
-                return False
+
+def is_trusted(url: str) -> bool:
+    host = hostname(url).lower()
+    if not host:
+        return False
+    # allow subdomains
+    for td in TRUSTED_DOMAINS:
+        if host == td or host.endswith("." + td):
+            return True
+    return False
+
+
+def text_hits(patterns, text: str) -> bool:
+    if not text:
+        return False
+    t = text.lower()
+    for pat in patterns:
+        if re.search(pat, t, flags=re.I):
+            return True
+    return False
+
+
+def allow_item(title: str, summary: str, link: str) -> bool:
+    """Notre Dame Football filter. Trusted domains bypass strict check."""
+    # Trusted domain shortcut
+    if is_trusted(link):
+        # still avoid obviously wrong sports if title screams it
+        if text_hits(RE_EXCLUDE, f"{title} {summary}"):
+            return False
         return True
 
-    # Exclusions first
-    for bad in EXCLUDE_TERMS:
-        if bad in t or bad in s:
-            return False
+    blob = f"{title} {summary}".strip()
+    if not blob:
+        return False
 
-    hay = f"{t} {s}"
-    # Require at least one team identity AND football identity
-    # If KEYWORDS provided, treat as a pool and require >=1 matches
-    matched = any(k in hay for k in keywords)
-    if not matched:
+    # Require ND + Football signals
+    if not text_hits(RE_REQUIRED_ANY, blob):
+        return False
+    if not text_hits(RE_REQUIRED_SPORT, blob):
+        return False
+    if text_hits(RE_EXCLUDE, blob):
+        return False
+
+    # Basic non-noise title
+    if len(title.strip()) < TITLE_LEN_MIN:
         return False
 
     return True
 
-def normalize_source(feed_obj: Dict[str, Any]) -> Tuple[str, bool]:
-    """Returns (source_name, trusted)"""
-    name = str(feed_obj.get("name") or "").strip() or "Feed"
-    trusted = bool(feed_obj.get("trusted"))
-    return name, trusted
 
-def build_item(entry, source_name: str) -> Dict[str, Any]:
-    title = clean_text(getattr(entry, "title", "") or "")
-    link = getattr(entry, "link", "") or ""
-    # Prefer summary/detail, fallback to description/content if present
-    summary = getattr(entry, "summary", "") or getattr(entry, "description", "") or ""
-    # Some feeds put HTML/long content in 'content' list
-    if not summary and getattr(entry, "content", None):
-        try:
-            summary = entry.content[0].value
-        except Exception:
-            pass
-    summary = summarize(summary)
+def normalize_item(raw, feed_name: str):
+    link = raw.get("link") or ""
+    title = strip_html(raw.get("title") or "").strip()
+    summary = strip_html(raw.get("summary") or raw.get("description") or "").strip()
+    published = choose_epoch(raw)
 
-    published = ts_from_entry(entry)
+    # Avoid duplicate title in summary (common in feeds)
+    s_low = summary.lower()
+    t_low = title.lower()
+    if summary and (s_low == t_low or s_low.startswith(t_low)):
+        summary = summary[len(title):].strip(" -–:|") if len(summary) > len(title) else ""
+
+    src = feed_name or hostname(link) or "Source"
 
     return {
         "title": title,
         "link": link,
         "summary": summary,
-        "source": source_name,
-        "published": published,
+        "published": int(published),
+        "source": src,
     }
 
-def write_json_atomic(path: str, data: Dict[str, Any]) -> None:
-    d = os.path.dirname(path) or "."
-    os.makedirs(d, exist_ok=True)
-    fd, tmp = tempfile.mkstemp(prefix=".items.", suffix=".json", dir=d)
-    with os.fdopen(fd, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, separators=(",", ":"))
-    os.replace(tmp, path)
 
-# ---------- Main ----------
-def main():
-    ap = argparse.ArgumentParser(description="Collect and filter RSS items for Sports App.")
-    ap.add_argument("--team", help="Team slug (uses teams/<slug>/feeds.py if present).", default=None)
-    ap.add_argument("--out", help="Output JSON path (default: items.json)", default="items.json")
-    args = ap.parse_args()
+def dedupe(items):
+    seen = set()
+    out = []
+    for it in items:
+        key = it["link"].strip().lower() or (it["title"].strip().lower(), it["source"].strip().lower())
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(it)
+    return out
 
-    feeds, _static_links, keywords = load_feeds(args.team)
 
-    items: List[Dict[str, Any]] = []
-    seen_links: set[str] = set()
-    seen_titles: set[str] = set()
-
-    total_entries = 0
-    kept = 0
-
+def collect_once(feeds):
+    all_items = []
     for f in feeds:
-        url = f.get("url")
+        name = f.get("name") or ""
+        url = f.get("url") or ""
         if not url:
             continue
-        source_name, trusted = normalize_source(f)
+        try:
+            log(f"fetch: {name} — {url}")
+            parsed = feedparser.parse(url)
+            if parsed.bozo:
+                log(f"  warn: feed bozo={parsed.bozo_exception!r}")
+            # Some feeds put title at top-level
+            feed_title = (parsed.feed.get("title") if parsed.feed else None) or name
+            for entry in parsed.entries or []:
+                item = normalize_item(entry, feed_title)
+                if allow_item(item["title"], item["summary"], item["link"]):
+                    all_items.append(item)
+        except Exception as e:
+            log(f"  error: {e}")
+            traceback.print_exc()
 
-        log(f"Fetching: {source_name} — {url}")
-        content = http_get(url)
-        if not content:
-            continue
+    if not all_items:
+        return []
 
-        parsed = parse_feed(content)
-        entries = parsed.entries or []
-        total_entries += len(entries)
+    # sort newest first
+    all_items.sort(key=lambda x: x["published"], reverse=True)
+    # dedupe
+    all_items = dedupe(all_items)
+    # cap
+    return all_items[:MAX_ITEMS]
 
-        for entry in entries:
-            try:
-                item = build_item(entry, source_name)
-            except Exception as e:
-                log(f"Entry parse error: {e}")
-                continue
 
-            # Dedup by link (preferred), fallback to title
-            key = item["link"] or item["title"]
-            if not key:
-                continue
-            low_key = key.lower()
-            if low_key in seen_links or item["title"].lower() in seen_titles:
-                continue
-
-            if allow_item(item["title"], item["summary"], source_name, keywords, trusted):
-                items.append(item)
-                seen_links.add(low_key)
-                seen_titles.add(item["title"].lower())
-                kept += 1
-
-    # Sort newest first, cap at MAX_ITEMS
-    items.sort(key=lambda x: x.get("published", 0), reverse=True)
-    items = items[:MAX_ITEMS]
-
+def write_json(path: str, items):
     payload = {
-        "team": (args.team or "notre-dame-football"),
+        "team": APP_TITLE,
         "updated": int(time.time()),
         "count": len(items),
         "items": items,
     }
+    tmp = f"{path}.tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(payload, f, ensure_ascii=False)
+    # atomic-ish replace
+    import os
+    os.replace(tmp, path)
+    log(f"wrote {path} with {len(items)} items at {payload['updated']}")
 
-    try:
-        write_json_atomic(args.out, payload)
-        log(f"Wrote {len(items)} items to {args.out} (from {total_entries} entries across {len(feeds)} feeds)")
-    except Exception as e:
-        log(f"ERROR writing {args.out}: {e}")
-        # Last resort: write non-atomic (should rarely happen)
-        try:
-            with open(args.out, "w", encoding="utf-8") as f:
-                json.dump(payload, f, ensure_ascii=False, separators=(",", ":"))
-            log(f"Fallback write succeeded: {args.out}")
-        except Exception as e2:
-            log(f"FATAL: Unable to write {args.out}: {e2}")
-            sys.exit(2)
+
+def main():
+    parser = argparse.ArgumentParser(description="Collect feeds into items.json")
+    parser.add_argument("--out", default="items.json", help="Output JSON path (default: items.json)")
+    args = parser.parse_args()
+
+    feeds = load_feeds()
+    if not feeds:
+        log("No feed URLs available. Writing empty payload so the site stays up.")
+        write_json(args.out, [])
+        sys.exit(0)
+
+    items = collect_once(feeds)
+    write_json(args.out, items)
+    log("done.")
+
 
 if __name__ == "__main__":
     main()
