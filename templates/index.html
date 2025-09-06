@@ -1,231 +1,66 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Notre Dame Football — News & Feeds</title>
-  <link rel="icon" href="/static/favicon.ico" />
-  <link rel="apple-touch-icon" href="/static/apple-touch-icon.png" />
-  <link rel="manifest" href="/static/manifest.webmanifest" />
-  <link rel="stylesheet" href="/static/style.css?v=20250906a" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notre Dame Football</title>
+    <!-- Cache-busting: bump ?v=2 when you update style.css -->
+    <link rel="stylesheet" href="/static/style.css?v=2">
 </head>
 <body>
-  <header class="site-header">
-    <div class="brand">
-      <img class="brand-logo" src="/static/purdue-logo.png" alt="ND" />
-      <div class="brand-titles">
-        <h1 class="brand-title">Notre Dame Football</h1>
-        <div class="brand-updated">
-          Updated: <span id="last-updated">—</span>
+    <header class="banner">
+        <div class="banner-left">
+            <img src="/static/nd-logo.png" alt="Notre Dame Logo" class="team-logo">
+            <div class="banner-text">
+                <h1>Notre Dame Football</h1>
+                <p id="last-updated">Updated: {{ last_updated }}</p>
+            </div>
         </div>
-      </div>
-    </div>
+        <div class="banner-right">
+            <button id="fight-song" class="fight-button">Victory March</button>
+        </div>
+    </header>
 
-    <button id="fight-song" class="pill pill--cta" aria-pressed="false">
-      Victory March
-    </button>
-    <audio id="audio" preload="none" src="/static/fight-song.mp3"></audio>
-  </header>
+    <main>
+        <!-- Quick link buttons -->
+        <section class="buttons">
+            <a href="https://fightingirish.com/sports/football/schedule/" target="_blank" class="btn">Schedule</a>
+            <a href="https://fightingirish.com/sports/football/roster/" target="_blank" class="btn">Roster</a>
+            <a href="https://apnews.com/hub/ap-top-25-college-football-poll" target="_blank" class="btn">CFB Rankings</a>
+            <a href="https://www.ndinsider.com/" target="_blank" class="btn">ND Insider</a>
+            <a href="https://www.reddit.com/r/notredamefootball/" target="_blank" class="btn">Reddit — r/notredamefootball</a>
+            <a href="https://www.youtube.com/channel/UCAMR05qSc5mfhVx20fDyAoQ" target="_blank" class="btn">YouTube — ND Football</a>
+            <a href="https://247sports.com/college/notre-dame/" target="_blank" class="btn">247Sports ND</a>
+            <a href="https://www.espn.com/college-football/team/_/id/87/notre-dame-fighting-irish" target="_blank" class="btn">ESPN ND Football</a>
+            <a href="https://www.cbssports.com/college-football/teams/ND/notre-dame-fighting-irish/" target="_blank" class="btn">CBS Sports ND</a>
+            <a href="https://www.on3.com/teams/notre-dame-fighting-irish/" target="_blank" class="btn">On3 — Blue & Gold</a>
+            <a href="https://theathletic.com/college-football/team/notre-dame-fighting-irish/" target="_blank" class="btn">The Athletic — ND</a>
+            <a href="https://fightingirishwire.usatoday.com/" target="_blank" class="btn">Fighting Irish Wire</a>
+        </section>
 
-  <main class="content">
-    <!-- top link grid -->
-    <nav class="quick-links" aria-label="Quick links">
-      <a class="pill" href="https://und.com/sports/football/" target="_blank" rel="noopener">Official Site</a>
-      <a class="pill" href="https://und.com/sports/football/schedule/" target="_blank" rel="noopener">Schedule</a>
-      <a class="pill" href="https://und.com/sports/football/roster/" target="_blank" rel="noopener">Roster</a>
+        <!-- Filter and refresh -->
+        <section class="filter">
+            <label for="sourceFilter">News sources:</label>
+            <select id="sourceFilter">
+                <option value="all">All sources</option>
+            </select>
+            <button id="refresh-button" class="refresh-btn">refresh</button>
+        </section>
 
-      <a class="pill" href="https://www.cbssports.com/college-football/rankings/" target="_blank" rel="noopener">CFB Rankings</a>
-      <a class="pill" href="https://www.ndinsider.com/" target="_blank" rel="noopener">ND Insider</a>
+        <!-- Articles -->
+        <section id="articles" class="articles">
+            {% for item in items %}
+            <article class="article">
+                <h2 class="article-title">{{ item.title }}</h2>
+                <p class="article-summary">{{ item.summary }}</p>
+                <p class="article-meta">
+                    {{ item.source }} • {{ item.published }}
+                </p>
+            </article>
+            {% endfor %}
+        </section>
+    </main>
 
-      <a class="pill" href="https://www.reddit.com/r/notredamefootball/" target="_blank" rel="noopener">Reddit — r/notredamefootball</a>
-      <a class="pill" href="https://www.youtube.com/channel/UCAMR05qSc5mfhVx20fDyAoQ" target="_blank" rel="noopener">YouTube — ND Football</a>
-
-      <a class="pill" href="https://247sports.com/college/notre-dame/" target="_blank" rel="noopener">247Sports ND</a>
-      <a class="pill" href="https://www.espn.com/college-football/team/_/id/87/notre-dame-fighting-irish" target="_blank" rel="noopener">ESPN ND Football</a>
-
-      <a class="pill" href="https://www.cbssports.com/college-football/teams/ND/notre-dame-fighting-irish/" target="_blank" rel="noopener">CBS Sports ND</a>
-      <a class="pill" href="https://www.on3.com/teams/notre-dame-fighting-irish/" target="_blank" rel="noopener">On3 — Blue &amp; Gold</a>
-      <a class="pill" href="https://theathletic.com/college-football/team/notre-dame-fighting-irish/" target="_blank" rel="noopener">The Athletic — ND</a>
-      <a class="pill" href="https://fightingirishwire.usatoday.com/" target="_blank" rel="noopener">Fighting Irish Wire</a>
-    </nav>
-
-    <!-- filters / refresh -->
-    <section class="controls">
-      <label class="label" for="source-select">News sources:</label>
-      <div class="select-wrap">
-        <select id="source-select" class="select">
-          <option value="all">All sources</option>
-        </select>
-      </div>
-
-      <div class="refresh-wrap" id="refresh-wrap" hidden>
-        <span class="new-items-label">New items available —</span>
-        <button id="refresh-btn" class="pill pill--ghost">refresh</button>
-      </div>
-    </section>
-
-    <!-- feed -->
-    <section id="feed" class="feed" aria-live="polite"></section>
-
-    <footer class="site-footer">
-      <div id="app-url"></div>
-    </footer>
-  </main>
-
-  <script>
-    // ---------- tiny helpers ----------
-    const $ = (sel, root=document) => root.querySelector(sel);
-    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
-
-    const fmtAgo = (iso) => {
-      try {
-        const d = new Date(iso);
-        const now = new Date();
-        const ms = now - d;
-        const mins = Math.floor(ms/60000);
-        if (mins < 1) return 'just now';
-        if (mins < 60) return mins + 'm ago';
-        const hrs = Math.floor(mins/60);
-        if (hrs < 24) return hrs + 'h ago';
-        const days = Math.floor(hrs/24);
-        return days + 'd ago';
-      } catch (_) { return ''; }
-    };
-
-    const safeText = (s) => (s ?? '').toString();
-
-    // ---------- fight song (no layout jump) ----------
-    (function initAudio(){
-      const btn = $('#fight-song');
-      const audio = $('#audio');
-      let playing = false;
-
-      btn.addEventListener('click', () => {
-        if (!playing) {
-          audio.currentTime = 0;
-          audio.play().then(()=>{
-            playing = true;
-            btn.setAttribute('aria-pressed', 'true');
-            btn.textContent = 'Pause';
-          }).catch(()=>{ /* ignore */ });
-        } else {
-          audio.pause();
-          playing = false;
-          btn.setAttribute('aria-pressed', 'false');
-          btn.textContent = 'Victory March';
-        }
-      });
-
-      audio.addEventListener('ended', () => {
-        playing = false;
-        btn.setAttribute('aria-pressed', 'false');
-        btn.textContent = 'Victory March';
-      });
-    })();
-
-    // ---------- data + render ----------
-    const DATA_URL = '/items.json';
-    let allItems = [];
-    let lastRenderedAt = 0;
-
-    async function loadItems() {
-      const res = await fetch(DATA_URL, { cache: 'no-store' });
-      if (!res.ok) throw new Error('Failed to load items');
-      const data = await res.json();
-
-      // Expect shape: { items: [...], updated: <epoch or iso> }
-      allItems = Array.isArray(data.items) ? data.items : [];
-      const updated = data.updated
-        ? (isFinite(data.updated) ? new Date(data.updated*1000) : new Date(data.updated))
-        : new Date();
-      $('#last-updated').textContent = updated.toLocaleString();
-
-      // sources list
-      const uniqueSources = Array.from(new Set(allItems.map(i => safeText(i.source).trim()).filter(Boolean))).sort();
-      const select = $('#source-select');
-      select.innerHTML = '<option value="all">All sources</option>' +
-        uniqueSources.map(s => `<option value="${s}">${s}</option>`).join('');
-
-      render();
-      lastRenderedAt = Date.now();
-    }
-
-    function render() {
-      const root = $('#feed');
-      const selected = $('#source-select').value;
-      const items = allItems
-        .filter(i => selected === 'all' ? true : safeText(i.source).trim() === selected)
-        .slice(0, 50);
-
-      root.innerHTML = items.map(renderCard).join('');
-    }
-
-    function renderCard(item) {
-      const title = safeText(item.title);
-      const url = item.link || item.url || '#';
-      const summary = safeText(item.summary || item.description || '');
-      const source = safeText(item.source || item.by || 'News');
-      const stamp = item.published || item.pubDate || item.date || item.ts || item.time;
-
-      const meta = `${source} • ${fmtAgo(stamp)}`;
-
-      return `
-        <article class="card">
-          <a class="card__title" href="${url}" target="_blank" rel="noopener">${title}</a>
-          ${summary ? `<p class="card__summary">${summary}</p>` : ''}
-          <div class="card__meta">${meta}</div>
-        </article>
-      `;
-    }
-
-    // source filter
-    $('#source-select').addEventListener('change', render);
-
-    // new-items polling (lightweight; doesn’t touch server routes)
-    let pollTimer = null;
-    async function pollForNew() {
-      try {
-        const res = await fetch(DATA_URL, { cache: 'no-store' });
-        if (!res.ok) return;
-        const data = await res.json();
-        const latestUpdated = data.updated
-          ? (isFinite(data.updated) ? data.updated*1000 : Date.parse(data.updated))
-          : Date.now();
-        if (latestUpdated > lastRenderedAt) {
-          // show refresh chip, stash new data for when user taps
-          window.__pendingData = data;
-          $('#refresh-wrap').hidden = false;
-        }
-      } catch (_) { /* ignore */ }
-    }
-
-    $('#refresh-btn').addEventListener('click', () => {
-      const data = window.__pendingData;
-      if (data && Array.isArray(data.items)) {
-        allItems = data.items;
-        const updated = data.updated
-          ? (isFinite(data.updated) ? new Date(data.updated*1000) : new Date(data.updated))
-          : new Date();
-        $('#last-updated').textContent = updated.toLocaleString();
-        render();
-        lastRenderedAt = Date.now();
-      }
-      $('#refresh-wrap').hidden = true;
-      window.__pendingData = null;
-    });
-
-    // boot
-    (async function boot(){
-      try {
-        await loadItems();
-      } catch (e) {
-        $('#feed').innerHTML = `<div class="empty">Unable to load items.</div>`;
-      }
-      // light poll every 60s
-      pollTimer = setInterval(pollForNew, 60000);
-      // footer url
-      $('#app-url').textContent = location.hostname + location.pathname;
-    })();
-  </script>
+    <script src="/static/script.js"></script>
 </body>
 </html>
