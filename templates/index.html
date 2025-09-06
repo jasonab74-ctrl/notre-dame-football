@@ -1,66 +1,110 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notre Dame Football</title>
-    <!-- Cache-busting: bump ?v=2 when you update style.css -->
-    <link rel="stylesheet" href="/static/style.css?v=2">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Notre Dame Football — News & Feeds</title>
+
+  <!-- Cache-bust the CSS: update v= number if you ever need to force refresh -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=24" />
+
+  <!-- System fonts for speed and consistency -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
-<body>
-    <header class="banner">
-        <div class="banner-left">
-            <img src="/static/nd-logo.png" alt="Notre Dame Logo" class="team-logo">
-            <div class="banner-text">
-                <h1>Notre Dame Football</h1>
-                <p id="last-updated">Updated: {{ last_updated }}</p>
-            </div>
+<body class="page">
+
+  <!-- ===== Banner ===== -->
+  <header class="banner">
+    <div class="brand">
+      <img class="brand-mark" src="{{ url_for('static', filename='nd-logo.svg') }}" alt="ND" />
+      <div class="brand-text">
+        <h1 class="brand-title">Notre Dame<br/>Football</h1>
+        <div class="updated">Updated: {{ updated_at }}</div>
+      </div>
+    </div>
+
+    <button id="fightSongBtn" class="pill pill--cta" aria-pressed="false">Victory March</button>
+    <!-- Audio stays invisible; JS only toggles play/pause, no layout jump -->
+    <audio id="fightSongAudio" preload="none" src="{{ url_for('static', filename='victory-march.mp3') }}"></audio>
+  </header>
+
+  <!-- ===== Quick Links ===== -->
+  <nav class="links">
+    <a class="pill" href="https://fightingirish.com/">Official Site</a>
+    <a class="pill" href="https://www.espn.com/college-football/team/schedule/_/id/87">Schedule</a>
+    <a class="pill" href="https://www.espn.com/college-football/team/roster/_/id/87">Roster</a>
+    <a class="pill" href="https://www.ncaa.com/rankings/football/fbs/associated-press">CFB Rankings</a>
+    <a class="pill" href="https://www.ndinsider.com/">ND Insider</a>
+    <a class="pill" href="https://www.reddit.com/r/notredamefootball/">Reddit — r/notredamefootball</a>
+    <a class="pill" href="https://www.youtube.com/channel/UCAMR05qSc5mfhVx20fDyAoQ">YouTube — ND Football</a>
+    <a class="pill" href="https://247sports.com/college/notre-dame/">247Sports ND</a>
+    <a class="pill" href="https://www.espn.com/college-football/team/_/id/87/notre-dame-fighting-irish">ESPN ND Football</a>
+    <a class="pill" href="https://www.cbssports.com/college-football/teams/ND/notre-dame-fighting-irish/">CBS Sports ND</a>
+    <a class="pill" href="https://www.on3.com/teams/notre-dame-fighting-irish/">On3 — Blue & Gold</a>
+    <a class="pill" href="https://theathletic.com/team/notre-dame-fighting-irish-football/">The Athletic — ND</a>
+    <a class="pill" href="https://fightingirishwire.usatoday.com/">Fighting Irish Wire</a>
+  </nav>
+
+  <!-- ===== Filters / Controls ===== -->
+  <section class="controls">
+    <label class="control-label" for="sourcesSelect">News sources:</label>
+    <select id="sourcesSelect" class="select" name="source" onchange="window.location.href='/?source='+encodeURIComponent(this.value)">
+      <option value="">All sources</option>
+      {% for s in sources %}
+        <option value="{{ s.value }}" {% if s.selected %}selected{% endif %}>{{ s.label }}</option>
+      {% endfor %}
+    </select>
+
+    {% if new_items_count and new_items_count > 0 %}
+      <a class="pill pill--ghost" href="/refresh">refresh</a>
+    {% else %}
+      <button class="pill pill--ghost" disabled>refresh</button>
+    {% endif %}
+  </section>
+
+  <!-- ===== Articles ===== -->
+  <main class="cards" id="cards">
+    {% for it in items %}
+      <article class="card">
+        <h2 class="card-title">
+          <a href="{{ it.url }}" target="_blank" rel="noopener">{{ it.title }}</a>
+        </h2>
+
+        {% if it.summary %}
+          <p class="card-summary">{{ it.summary }}</p>
+        {% endif %}
+
+        <div class="card-meta">
+          <span class="meta-chip">{{ it.source }}</span>
+          <span aria-hidden="true">•</span>
+          <time datetime="{{ it.published_iso }}">{{ it.published_human }}</time>
         </div>
-        <div class="banner-right">
-            <button id="fight-song" class="fight-button">Victory March</button>
-        </div>
-    </header>
+      </article>
+    {% endfor %}
+  </main>
 
-    <main>
-        <!-- Quick link buttons -->
-        <section class="buttons">
-            <a href="https://fightingirish.com/sports/football/schedule/" target="_blank" class="btn">Schedule</a>
-            <a href="https://fightingirish.com/sports/football/roster/" target="_blank" class="btn">Roster</a>
-            <a href="https://apnews.com/hub/ap-top-25-college-football-poll" target="_blank" class="btn">CFB Rankings</a>
-            <a href="https://www.ndinsider.com/" target="_blank" class="btn">ND Insider</a>
-            <a href="https://www.reddit.com/r/notredamefootball/" target="_blank" class="btn">Reddit — r/notredamefootball</a>
-            <a href="https://www.youtube.com/channel/UCAMR05qSc5mfhVx20fDyAoQ" target="_blank" class="btn">YouTube — ND Football</a>
-            <a href="https://247sports.com/college/notre-dame/" target="_blank" class="btn">247Sports ND</a>
-            <a href="https://www.espn.com/college-football/team/_/id/87/notre-dame-fighting-irish" target="_blank" class="btn">ESPN ND Football</a>
-            <a href="https://www.cbssports.com/college-football/teams/ND/notre-dame-fighting-irish/" target="_blank" class="btn">CBS Sports ND</a>
-            <a href="https://www.on3.com/teams/notre-dame-fighting-irish/" target="_blank" class="btn">On3 — Blue & Gold</a>
-            <a href="https://theathletic.com/college-football/team/notre-dame-fighting-irish/" target="_blank" class="btn">The Athletic — ND</a>
-            <a href="https://fightingirishwire.usatoday.com/" target="_blank" class="btn">Fighting Irish Wire</a>
-        </section>
+  <footer class="footer">
+    <span>{{ request.host }}</span>
+  </footer>
 
-        <!-- Filter and refresh -->
-        <section class="filter">
-            <label for="sourceFilter">News sources:</label>
-            <select id="sourceFilter">
-                <option value="all">All sources</option>
-            </select>
-            <button id="refresh-button" class="refresh-btn">refresh</button>
-        </section>
+  <script>
+    // Fight Song: toggle play/pause without changing layout
+    (function () {
+      const btn = document.getElementById('fightSongBtn');
+      const audio = document.getElementById('fightSongAudio');
+      if (!btn || !audio) return;
 
-        <!-- Articles -->
-        <section id="articles" class="articles">
-            {% for item in items %}
-            <article class="article">
-                <h2 class="article-title">{{ item.title }}</h2>
-                <p class="article-summary">{{ item.summary }}</p>
-                <p class="article-meta">
-                    {{ item.source }} • {{ item.published }}
-                </p>
-            </article>
-            {% endfor %}
-        </section>
-    </main>
-
-    <script src="/static/script.js"></script>
+      btn.addEventListener('click', () => {
+        if (audio.paused) {
+          audio.play().then(() => btn.setAttribute('aria-pressed', 'true'))
+                       .catch(() => {}); // ignore autoplay blocks
+        } else {
+          audio.pause();
+          btn.setAttribute('aria-pressed', 'false');
+        }
+      });
+      audio.addEventListener('ended', () => btn.setAttribute('aria-pressed', 'false'));
+    }());
+  </script>
 </body>
 </html>
