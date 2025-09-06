@@ -1,3 +1,4 @@
+# server.py — resilient single-file Flask app for Railway
 import os, json, time, traceback
 from flask import Flask, jsonify, Response, send_file, request
 
@@ -32,23 +33,7 @@ HTML = f"""<!doctype html>
     <audio id="fight-song" src="/static/fight-song.mp3" preload="auto"></audio>
   </header>
 
-  <nav id="links" class="links">
-    <a class="pill" href="https://und.com/football/" target="_blank">Official Site</a>
-    <a class="pill" href="https://fightingirish.com/sports/football/schedule/" target="_blank">Schedule</a>
-    <a class="pill" href="https://fightingirish.com/sports/football/roster/" target="_blank">Roster</a>
-    <a class="pill" href="https://www.espn.com/college-football/team/_/id/87/notre-dame-fighting-irish" target="_blank">ESPN</a>
-    <a class="pill" href="https://247sports.com/college/notre-dame/" target="_blank">247Sports</a>
-    <a class="pill" href="https://notredame.rivals.com/" target="_blank">On3 — Blue & Gold</a>
-    <a class="pill" href="https://irishillustrated.com/" target="_blank">Irish Illustrated</a>
-    <a class="pill" href="https://irishwire.ndnation.com/" target="_blank">Irish Wire</a>
-    <a class="pill" href="https://www.ndinsider.com/" target="_blank">ND Insider</a>
-    <a class="pill" href="https://apnews.com/hub/ap-top-25-college-football-poll" target="_blank">AP Top 25</a>
-    <a class="pill" href="https://www.collegefootballplayoff.com/rankings" target="_blank">CFP Rankings</a>
-    <a class="pill" href="https://www.vividseats.com/notre-dame-fighting-irish-football-tickets/performer/465" target="_blank">Tickets</a>
-    <a class="pill" href="https://www.sports-reference.com/cfb/schools/notre-dame/" target="_blank">Stats</a>
-    <a class="pill" href="https://www.reddit.com/r/notredamefootball/" target="_blank">Reddit: r/notredamefootball</a>
-    <a class="pill" href="https://www.irishenvy.com/" target="_blank">Irish Envy</a>
-  </nav>
+  <nav id="links" class="links"></nav>
 
   <section class="controls">
     <label for="sourceSel" class="muted">Sources:</label>
@@ -87,6 +72,8 @@ HTML = f"""<!doctype html>
     async function hydrateMeta() {
       try {
         const meta = await (await fetch('/feeds.json', {cache:'no-store'})).json();
+        const links = meta.links || [];
+        elLinks.innerHTML = links.map(l => `<a class="pill" href="${l.href}" target="_blank" rel="noopener">${l.label}</a>`).join('');
         const feeds = meta.feeds || [];
         const opts = feeds.map(f => `<option value="${f.name}">${f.name}</option>`).join('');
         elSource.insertAdjacentHTML('beforeend', opts);
@@ -146,6 +133,13 @@ HTML = f"""<!doctype html>
 </body>
 </html>
 """
+
+@app.after_request
+def add_cors(resp):
+    if resp.mimetype in ("application/json", "text/json") or request.path.startswith("/static/teams/"):
+        resp.headers["Access-Control-Allow-Origin"] = "*"
+        resp.headers["Cache-Control"] = "max-age=60"
+    return resp
 
 @app.get("/")
 def index():
