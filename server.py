@@ -1,63 +1,70 @@
-import json
-import os
-import time
-from datetime import datetime, timezone
-from flask import Flask, render_template, send_from_directory, make_response
+import os, json, datetime
+from flask import Flask, render_template, request
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static", template_folder="templates")
 
-# A tiny “build id” so we can cache-bust CSS safely after each deploy
-BUILD_ID = str(int(time.time()))
-
-def load_items():
-    """Return list of article dicts from items.json, never crash."""
-    path = os.path.join(app.root_path, "items.json")
+# -------- helpers --------
+def _load_items():
     try:
-        with open(path, "r", encoding="utf-8") as f:
+        with open("items.json", "r", encoding="utf-8") as f:
             data = json.load(f)
-            if isinstance(data, dict) and "items" in data:
-                return data["items"]
-            if isinstance(data, list):
-                return data
+            items = data if isinstance(data, list) else data.get("items", [])
     except Exception:
-        pass
-    return []
+        items = []
 
-@app.route("/")
-def index():
-    items = load_items()
-    updated_utc = datetime.now(timezone.utc)
-    # Render with a cache-busting build id so style changes show up immediately
-    resp = make_response(
-        render_template(
-            "index.html",
-            items=items,
-            updated_iso=updated_utc.strftime("%-m/%-d/%Y, %-I:%M:%S %p"),
-            build_id=BUILD_ID,
-        )
-    )
-    # Prevent the HTML itself from being cached (helps during rapid fixes)
-    resp.headers["Cache-Control"] = "no-store"
-    return resp
+    # normalize fields so template never breaks
+    normalized = []
+    for it in items:
+        normalized.append({
+            "title": it.get("title") or it.get("headline") or "(untitled)",
+            "summary": it.get("summary") or it.get("description") or "",
+            "link": it.get("link") or it.get("url") or "#",
+            "source": it.get("source") or it.get("site") or it.get("source_name") or "Unknown",
+            "published": it.get("published") or it.get("date") or "",
+        })
+    return normalized
 
-@app.route("/healthz")
-def healthz():
-    return "ok", 200
+def _updated_and_buster():
+    if os.path.exists("items.json"):
+        ts = os.path.getmtime("items.json")
+    else:
+        ts = datetime.datetime.utcnow().timestamp()
+    # nice readable time (no leading zeroes) and an integer cache-buster
+    updated_dt = datetime.datetime.fromtimestamp(ts)
+    updated_str = updated_dt.strftime("%m/%d/%Y, %I:%M:%S %p").replace("/0", "/").lstrip("0")
+    return updated_str, int(ts)
 
-# Optional: make sure CSS/JS aren’t aggressively cached during your fixes.
-# (Browsers will still revalidate but the build_id query param is the main lever.)
+# -------- no-cache for HTML responses --------
 @app.after_request
 def add_no_cache_headers(resp):
-    # Only apply to text/html; static files are requested with ?v=BUILD_ID anyway.
-    if resp.mimetype == "text/html":
-        resp.headers["Cache-Control"] = "no-store"
+    # Prevent HTML from being cached; static files get cache-busted via ?v= param.
+    resp.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    resp.headers["Pragma"] = "no-cache"
+    resp.headers["Expires"] = "0"
     return resp
 
-# Serve any static assets (logo/audio) if you add them later
-@app.route("/static/<path:filename>")
-def static_files(filename):
-    return send_from_directory(os.path.join(app.root_path, "static"), filename)
+# -------- routes --------
+@app.route("/")
+def index():
+    selected = request.args.get("source", "all")
+    items = _load_items()
+
+    # unique sources from items (server-rendered so no JS required)
+    sources = sorted({it["source"] for it in items if it.get("source")})
+
+    if selected != "all":
+        items = [it for it in items if it["source"] == selected]
+
+    updated, cache_buster = _updated_and_buster()
+    return render_template(
+        "index.html",
+        items=items,
+        sources=sources,
+        selected_source=selected,
+        updated=updated,
+        cache_buster=cache_buster,
+    )
 
 if __name__ == "__main__":
-    # For local testing only; Railway will use gunicorn
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8000)))
+    # For local run; Railway will use your Procfile/gunicorn
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
