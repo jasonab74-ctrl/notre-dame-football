@@ -1,134 +1,152 @@
-/* ===== Global Reset ===== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* ========= Theme ========= */
+:root{
+  --bg: #0f2a3a;          /* deep ND navy */
+  --banner: #0e2836;
+  --ink: #0b0f14;         /* near black for buttons/cards text */
+  --ink-soft: #13283a;
+  --ink-on-dark: #e9f1f7;
+
+  --gold: #d6b34a;        /* ND gold for buttons */
+  --gold-press: #c9a639;
+  --gold-soft: #eedc92;
+
+  --card-bg: #f6e7b8;     /* light gold card */
+  --card-shadow: rgba(0,0,0,.15);
+
+  --pill-pad-y: 10px;
+  --pill-pad-x: 16px;
+  --pill-gap: 10px;
+  --radius-pill: 999px;
+  --radius-card: 18px;
+
+  --maxw: 1100px;
 }
 
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f8f9fa;
-  color: #111;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
+/* ========= Base ========= */
+*{ box-sizing: border-box; }
+html,body{ height:100%; }
+body{
+  margin:0;
+  font: 16px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+  background: var(--bg);
+  color: var(--ink-on-dark);
 }
 
-/* ===== Header / Banner ===== */
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #0C2340; /* ND navy */
-  color: white;
-  padding: 10px 16px;
+/* containers */
+.container{
+  width: min(100%, var(--maxw));
+  margin: 0 auto;
+  padding: 12px 16px;
+}
+
+/* ========= Topbar ========= */
+.topbar{
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 5;
+  background: var(--banner);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  padding: 12px 16px;
+}
+.topbar .brand{
+  display:flex; align-items:center; justify-content:space-between;
+  gap: 12px;
+  max-width: var(--maxw);
+  margin: 0 auto;
+}
+#brand-logo{
+  width:64px; height:64px; object-fit: contain; flex: 0 0 auto;
+}
+.brand-text{
+  display: grid; grid-template-columns: 1fr; gap: 6px;
+  flex: 1 1 auto;
+}
+.app-title{
+  margin:0;
+  font-size: clamp(22px, 3.6vw, 36px);
+  line-height: 1.1;
+  letter-spacing: .2px;
+}
+.updated{ opacity:.9; font-size: 14px; color: #cfe3f2; }
+
+.fight-song{ display:flex; align-items:center; gap: 10px; }
+
+/* ========= Buttons ========= */
+.btn{
+  border:0; cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+  font-weight: 800; letter-spacing:.2px; text-decoration:none;
+  transition: transform .04s ease, background-color .15s ease, box-shadow .2s ease;
+}
+.pill{ padding: var(--pill-pad-y) var(--pill-pad-x); border-radius: var(--radius-pill); }
+.btn.gold{
+  background: var(--gold); color: var(--ink); box-shadow: 0 1px 0 rgba(0,0,0,.25) inset;
+}
+.btn.gold:hover{ background: var(--gold-press); }
+.btn.gold:active{ transform: translateY(1px); }
+.btn.gold.outline{
+  background: transparent; color: var(--gold); border: 2px solid var(--gold);
 }
 
-.header img.logo {
-  height: 48px;
-  margin-right: 12px;
+/* link reset (no underlines anywhere by default) */
+a{ color: inherit; text-decoration: none; }
+
+/* ========= Quick Links ========= */
+.quick-links{
+  display:flex; flex-wrap: wrap; gap: var(--pill-gap);
+  padding-top: 12px; padding-bottom: 4px;
+  background: linear-gradient(to bottom, var(--banner), transparent);
+}
+.quick-links .btn{ font-size: 16px; }
+
+/* ========= Controls ========= */
+.controls{
+  background: #0f2c3d;
+  border-top: 1px solid rgba(255,255,255,.05);
+  border-bottom: 1px solid rgba(255,255,255,.05);
+}
+.control-label{ display:block; margin-bottom:6px; color:#cfe3f2; font-weight:600; }
+.select-row{ display:flex; gap: 10px; align-items:center; }
+
+.select{
+  appearance:none; -webkit-appearance:none;
+  padding: 10px 14px; border-radius: 14px; border: 2px solid rgba(255,255,255,.15);
+  background: rgba(255,255,255,.06); color: #e9f1f7; min-width: 220px;
 }
 
-.header h1 {
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin-bottom: 2px;
+/* ========= Cards ========= */
+.cards{ padding-top: 8px; padding-bottom: 40px; }
+.card{
+  background: var(--card-bg); color: var(--ink);
+  border-radius: var(--radius-card);
+  padding: 18px 18px 14px;
+  box-shadow: 0 2px 6px var(--card-shadow);
+  margin: 14px 0;
+}
+.card-title{
+  display:block;
+  font-weight: 900;
+  font-size: clamp(18px, 2.9vw, 26px);
+  line-height:1.2;
+  color: #0c2c53;         /* dark blue */
+  margin: 0 0 10px 0;
+}
+.card-title:hover{ filter: brightness(.9); }
+.card-summary{
+  margin: 0 0 12px 0;
+  color: #2b2b2b;
+  font-size: 16px;
+}
+.card-meta{
+  display:flex; gap: 8px; align-items:center; flex-wrap:wrap;
+  color:#333; font-weight:600; opacity:.9;
 }
 
-.header .muted {
-  font-size: 0.8rem;
-  opacity: 0.8;
-}
+/* ========= Footer ========= */
+.footer-note{ padding-bottom: 70px; color:#9fb7c7; opacity:.9; }
 
-/* ===== Pill Buttons ===== */
-.pill, .links a {
-  display: inline-block;
-  padding: 6px 12px;
-  margin: 4px;
-  border-radius: 20px;
-  background: #C99700; /* ND gold */
-  color: #000;
-  font-size: 0.9rem;
-  font-weight: bold;
-  text-decoration: none;
-  transition: background 0.2s, transform 0.1s;
-}
-
-.pill:hover, .links a:hover {
-  background: #B8860B; /* darker gold */
-  transform: scale(1.05);
-}
-
-/* ===== Sources Dropdown ===== */
-.select {
-  padding: 4px;
-  margin-left: 8px;
-  font-size: 0.9rem;
-  max-width: 220px;
-}
-
-/* ===== Grid for Articles ===== */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 16px;
-  padding: 16px;
-}
-
-/* ===== Article Card ===== */
-.card {
-  background: #fdf6e3; /* light gold */
-  color: #111;
-  padding: 16px;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  transition: transform 0.2s ease;
-}
-
-.card:hover {
-  transform: translateY(-3px);
-}
-
-.card h3 {
-  font-size: 1rem;
-  font-weight: bold;
-  color: #0C2340; /* ND navy */
-  margin-bottom: 6px;
-  text-decoration: none;
-}
-
-.card h3 a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.card h3 a:hover {
-  text-decoration: none; /* no underline */
-}
-
-.card .summary {
-  font-size: 0.85rem;
-  color: #333;
-  margin-bottom: 8px;
-}
-
-.card .meta {
-  font-size: 0.75rem;
-  color: #555;
-  display: flex;
-  align-items: center;
-}
-
-.card .dot {
-  margin: 0 4px;
-}
-
-/* ===== Footer ===== */
-.footer {
-  text-align: center;
-  padding: 16px;
-  font-size: 0.8rem;
-  color: #555;
+/* ========= Responsive tweaks ========= */
+@media (max-width: 520px){
+  .quick-links .btn{ font-size: 15px; padding: 10px 14px; }
+  .pill{ --pill-pad-y: 9px; --pill-pad-x: 14px; }
+  #brand-logo{ width:56px; height:56px; }
 }
