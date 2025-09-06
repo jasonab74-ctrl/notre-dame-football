@@ -1,5 +1,5 @@
 {
-  "updated_iso": "2025-09-06T19:49:51.855737+00:00",
+  "updated_iso": "2025-09-06T20:29:33.751734+00:00",
   "count": 50,
   "items": [
     {
@@ -25,6 +25,14 @@
       "source": "lehighvalleylive",
       "ts": 1757167980.0,
       "published_iso": "2025-09-06T14:13:00+00:00"
+    },
+    {
+      "id": "https-msn-com-en-us-sports-other-pat-mcafee-s-verdict-on-notre-dame-as-marcus-freeman-given-work-to-do-over-bye-week-ar-",
+      "title": "Pat McAfee's verdict on Notre Dame as Marcus Freeman given work to do over bye week",
+      "link": "https://msn.com/en-us/sports/other/pat-mcafee-s-verdict-on-notre-dame-as-marcus-freeman-given-work-to-do-over-bye-week/ar-AA1M1wYr",
+      "source": "msn.com",
+      "ts": 1757162329.0,
+      "published_iso": "2025-09-06T12:38:49+00:00"
     },
     {
       "id": "https-news-google-com-rss-articles-cbmiugfbvv95cuxpb0o2rdbtskzgvktxdeyybu84c1kwm0zomlq2u0hsvny4zvbncllgykf2wxdnajnky2dfm",
@@ -73,6 +81,14 @@
       "source": "Trentonian",
       "ts": 1757124900.0,
       "published_iso": "2025-09-06T02:15:00+00:00"
+    },
+    {
+      "id": "https-msn-com-en-us-sports-other-ole-miss-football-notre-dame-fighting-irish-and-michigan-cruising-in-recruiting-ar-aa1l",
+      "title": "Ole Miss Football, Notre Dame Fighting Irish and Michigan Cruising in Recruiting",
+      "link": "https://msn.com/en-us/sports/other/ole-miss-football-notre-dame-fighting-irish-and-michigan-cruising-in-recruiting/ar-AA1LYOdc",
+      "source": "msn.com",
+      "ts": 1757094720.0,
+      "published_iso": "2025-09-05T17:52:00+00:00"
     },
     {
       "id": "https-news-google-com-rss-articles-cbmi-gfbvv95cuxnyu4xsus4ums2auprvuj1znk4de1lyu5oamluvvrfb2qybwn5dm9jtw15tkdkddjmzmx5n",
@@ -179,12 +195,12 @@
       "published_iso": "2025-09-04T10:05:01+00:00"
     },
     {
-      "id": "https-news-google-com-rss-articles-cbmipgfbvv95cuxoclzqnxzpv21ta0rnrnb1ec1inhf3ehq0d25mns1kumw1z2rpcjd2dlvrsurxytjqtgi5t",
+      "id": "https-news-google-com-rss-articles-cbmingfbvv95cuxnbgnoblpksuvzugxwnum1tjfszdhyte5xmmozrjyxedfabwqyc1c3m3nfq2jkmk1ywlbzw",
       "title": "Notre Dame football working on defensive struggles after loss to Miami",
-      "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOclZQNXZpV21ta0RnRnB1eC1iNHF3eHQ0d25MNS1KUmw1Z2Rpcjd2dlVrSURxYTJqTGI5TGRobDNYSTdSZExtTkVGZldFenRYVE1Ga05zd0ZvdkE3dllCbEsxek9mTWdnVS1yUGdqb3BYUnI0aXcteERMV3BzTWJmQW1oSUt0czIxU0Q3a2g5SktzdG9EcTlqZXVGUmk2X3hmaGtzTFJR?oc=5",
+      "link": "https://news.google.com/rss/articles/CBMingFBVV95cUxNbGNoblpkSUVzUGxWNUM1TjFsZDhYTE5xMmozRjYxeDFabWQyc1c3M3NfQ2JKMk1YWlBzWmVvX2E4aDhJQ0ljSDkyUE9LSTBrVC1vWm04WDJCYy1LZ19veG5MTWhrSTdfRmppVU96N2hZRklwQUFSQnI2b2lwMkstdTZ3WUs3UmhHQ2Ixd0wtcWItY2tfVDNTamFRZ0xGZ9IBsgFBVV95cUxObGU0WUpTT0xXYjB0cVQ2NFVNYzVOcXFIaW9KQ2pNeDBEazBaWElLZjczUXVSajF3dGh4MzNjWkZENmxodnR3OThvM1dkWnNHczdYOGJHTlVNaTZoMWxrcERGUU1yaW5MVDYxTkVZVFNENnlDTnhFMDA5Tkt1NGtfWUV1NDlkQ2dLTmRsMHlsMUFMNHd1Ni1fT2lrV1VtNjc5cGRsV29CY2l1T0hWNFZEOEdR?oc=5",
       "source": "WNDU",
-      "ts": 1756940040.0,
-      "published_iso": "2025-09-03T22:54:00+00:00"
+      "ts": 1756937460.0,
+      "published_iso": "2025-09-03T22:11:00+00:00"
     },
     {
       "id": "https-news-google-com-rss-articles-cbmipgjbvv95cuxpdxi1dnlddxk3velks2zvewo0s0nov3c3b0mywhk1yljusxdsu2tts2yxszfacwjzsevrd",
@@ -385,22 +401,6 @@
       "source": "A to Z Sports",
       "ts": 1756702322.0,
       "published_iso": "2025-09-01T04:52:02+00:00"
-    },
-    {
-      "id": "https-news-google-com-rss-articles-cbmi-afbvv95cuxnegmwddd6u0ntenbkcjrnsdnjvng2zwt5tuv5q2xeaxnnrkzoytzlm2xtchywaulqlxnyd",
-      "title": "Notre Dame represented in the sky with flyover at Miami football season opener",
-      "link": "https://news.google.com/rss/articles/CBMi-AFBVV95cUxNeGMwdDd6U0NTenBKcjRNSDNJVng2ZWt5TUV5Q2xEaXNNRkZOYTZlM2xtcHYwaUlQLXNydEVlOThrTVJySGVaVERIMW1UcnZfRlI1bTRPajhFQUpIZTh4dmg3M2JDOXFqbVZPcjdOTUZ6T2JIUzJjQUZTQklueDFhQ3ZOV3ZqODNkd3JybTUwZHFqUDdGQWdDREVkd2JQaldudm5JeFFINTdGZ21WRnFiblBxVVJ0S3diMTRWbE1ELXZ0bW9rczdkbWRUbkJiYzdNeFdFQzlBcnVGN1BLWXdSUzVDYzVyNTBrc19BcXpMZllqRzZpSkxKcQ?oc=5",
-      "source": "South Bend Tribune",
-      "ts": 1756701178.0,
-      "published_iso": "2025-09-01T04:32:58+00:00"
-    },
-    {
-      "id": "https-news-google-com-rss-articles-cbmihwjbvv95cuxpuxbvmu9yanncvvl6ylaynzlisertu01huxzsty1iajnbckl4uktxcdl6yk11dxzyudjnb",
-      "title": "Notre Dame football didn't meet big moment in loss to Miami, but CJ Carr kept competing",
-      "link": "https://news.google.com/rss/articles/CBMihwJBVV95cUxPUXBvMU9YanNCVVl6YlAyNzlISERtU01HUXZsTy1IajNBckl4UktXcDl6Yk11dXZyUDJNbkQwWTBtRnNRMUtLRUMyQ3VJLV9VeWhubUs3bVZUMnFqWXhtUEppWEFoc3N6YTAyTjRzcVE5S2g3d2RORnQtMFRldGRVMUNJRERyLTJ5SmNrWHhJNEZMUFNaMXotelduSWc5QXNGN0c0ZEtraWdmbk1uTXZXQ0JGRDNUVEFpRnYxQ21jMHg1LW50ZHFEYm15VGpTR2RuaXhTWDk4TGNsNWtmR01xd0hVOEhKVEpJdGRvQ0Q4Ql9hUFZSRGxrREp3NXhST21Jd0FDWFpZbw?oc=5",
-      "source": "IndyStar",
-      "ts": 1756698799.0,
-      "published_iso": "2025-09-01T03:53:19+00:00"
     }
   ]
 }
