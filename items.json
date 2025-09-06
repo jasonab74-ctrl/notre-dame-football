@@ -1,5 +1,5 @@
 {
-  "updated_iso": "2025-09-06T20:29:33.751734+00:00",
+  "updated_iso": "2025-09-06T20:40:38.734889+00:00",
   "count": 50,
   "items": [
     {
@@ -203,20 +203,20 @@
       "published_iso": "2025-09-03T22:11:00+00:00"
     },
     {
+      "id": "https-news-google-com-rss-articles-cbmiwwfbvv95cuxosuc3q1f6ywk3eex3qwuxemdxbgfntgt4z0r6zlhwyxh6d2d0t01vylozbdu3cwnwudfss",
+      "title": "Chat Transcript: Priorities for Notre Dame football’s bye-week redemption",
+      "link": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxOSUc3Q1F6YWk3eEx3QWUxemdXbGFNTGt4Z0R6ZlhWYXh6d2d0T01vYlozbDU3cWNwUDFsSlVhOHY1TVowV2h4bm9wcHpWazhLOVJTZ2xadTZCbVpCVUNBT2FqMzRwR19rU2QtcVotRWVyMDJfUnlyWXplTFp4RmppT2pES0lvSE9GTEcyVW95bnVLZjB1SDBuNzQtX3ZPR2VfTXAyRzE5MF9jT0VjMFNoWVZrWFh6RmU4b0QtR21rVFE2RXc?oc=5",
+      "source": "On3",
+      "ts": 1756935109.0,
+      "published_iso": "2025-09-03T21:31:49+00:00"
+    },
+    {
       "id": "https-news-google-com-rss-articles-cbmipgjbvv95cuxpdxi1dnlddxk3velks2zvewo0s0nov3c3b0mywhk1yljusxdsu2tts2yxszfacwjzsevrd",
       "title": "Notre Dame football star tackles chronic absenteeism in South Bend Schools",
       "link": "https://news.google.com/rss/articles/CBMipgJBVV95cUxPdXI1dnlDdXk3VElkS2ZveWo0S0NoV3c3b0MyWHk1YlJuSXdSU2ttS2YxSzFacWJZSEVrdFItQWVsZk1pSkNpXzY0NEFqZGJscEZBclpCWTgtSFlIbko5cm5VMFFfdkNycldBT1EwOG9BRVpoVXUyMUltRjVWbXdYSHpiOXg5dVdwekY1SXFuZlRhQVZ5RWxQZ2xnekl5TnZ6dUxuVTZHVXNhZldRUjdtN2pHaExpU1UyMkNWNWZ3QUtLVjFhSlFjRVMxMlhZclRfYllMQ3FuaE0zdHhQM3dmc1EyOGxzUGNaMTRyNU45dFlaZnFhQ1p5RVBJMmRqeEdVaFJUdnpURGhIdjJEWXAtLWdSMWJtTEZJQkR5M0VuR2djaC1VUWc?oc=5",
       "source": "WSBT",
       "ts": 1756933474.0,
       "published_iso": "2025-09-03T21:04:34+00:00"
-    },
-    {
-      "id": "https-news-google-com-rss-articles-cbmi-gfbvv95cuxpd3zalxrtqv9cx1fxnfc0n3visxhfshvushh6dxljutvfdww2ew83mnpxrwtpcfjmytctq",
-      "title": "How one Notre Dame football player plans to give back to South Bend community",
-      "link": "https://news.google.com/rss/articles/CBMi-gFBVV95cUxPd3ZaLXRtQV9CX1FXNFc0N3ViSXhfSHVUSHh6dXljUTVfdWw2eW83MnpxRWtPcFJMYTctQ3ozRElENFF0QjJpVlg1Y1c3QWFUS25nSVItY25wTERJek1tUTkyMU0wcEFlcWJnaU1DaFRUeWhwSzg5dDZXaFVXMTR6cWlwb1dSNnhNaFI3SV9wSWlBM013UE1mZjFDOTZjR2p1THpZa0V5SlJybEhnT1h0T0hKTHlpc1psWUtvSWFNdXpuajQtcUJ1X2hBR0dzbDQ1cXFQRVFjV1ViZlFySzRZOUlMd1JDVDFqMl9TaXI0ajZ3UERoWGZUaXpn?oc=5",
-      "source": "South Bend Tribune",
-      "ts": 1756932698.0,
-      "published_iso": "2025-09-03T20:51:38+00:00"
     },
     {
       "id": "https-news-google-com-rss-articles-cbmivgfbvv95cuxnnfhfafnayw5vz1vnd09urjzbymxgrhdxbhdxb0rkz0d6t3fcndbmmfa5ounyx05xdvzds",
@@ -283,14 +283,6 @@
       "published_iso": "2025-09-02T11:52:21+00:00"
     },
     {
-      "id": "https-news-google-com-rss-articles-cbmif0fvx3lxtfbpuc1hutm3oe5peu9vlvqxv0f0a053dvi5chktt3f2qnptn0fxmvpqss1jalvoywhjuutkq",
-      "title": "3 reasons to panic after Notre Dame football’s heartbreaking loss to Miami",
-      "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTFBpUC1hUTM3OE5PeU9vLVQxV0F0a053dVI5cHktT3F2QnptN0FxMVpqSS1JalVoYWhjUUtKQjZJMWQ2MXNPM3lhQWpfMWpqcEhoVE1PUlZiVXJ6YVJoS1hBR1R3WGxIQkdmNzNQWkpJM1U5REpLcWFpOXAtcDlhZGM?oc=5",
-      "source": "Yahoo Sports",
-      "ts": 1756761182.0,
-      "published_iso": "2025-09-01T21:13:02+00:00"
-    },
-    {
       "id": "https-news-google-com-rss-articles-cbmijafbvv95cuxnslnjn1hdqwdlbfryeddgbhvneezix0fucwjdczy2vlzlugzlvgtpzc1iaw9ov2rndw1um",
       "title": "Notre Dame football has a personnel change that they should consider to unlock the Fighting Irish defense under DC Chris Ash",
       "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxNSlNJN1hDQWdlbFRYeDdGbHVneEZiX0FUcWJDczY2VlZLUGZlVGtPZC1IaW9oV2RNdW1uMzViNnVkeVBENlEtbW5FTVNGQ19kZVJfQnRHOVpEWGNDZzRqN2VHYlFSM2Vtb2s3Z3c1dUVQZ0lRTkZ6dEQ0QU56MmoxV00tRDE0VkNlcUlySA?oc=5",
@@ -321,6 +313,14 @@
       "source": "Yahoo Sports",
       "ts": 1756744787.0,
       "published_iso": "2025-09-01T16:39:47+00:00"
+    },
+    {
+      "id": "https-msn-com-en-us-sports-other-3-reasons-to-panic-after-notre-dame-football-s-heartbreaking-loss-to-miami-ar-aa1lfuxu",
+      "title": "3 reasons to panic after Notre Dame football’s heartbreaking loss to Miami",
+      "link": "https://msn.com/en-us/sports/other/3-reasons-to-panic-after-notre-dame-football-s-heartbreaking-loss-to-miami/ar-AA1LFuxu",
+      "source": "msn.com",
+      "ts": 1756743060.0,
+      "published_iso": "2025-09-01T16:11:00+00:00"
     },
     {
       "id": "https-news-google-com-rss-articles-cbmijgjbvv95cuxockftdhdonkjcu0rwcw5ot0h0unnvrlvunf95zhzqv1zutmxlawxsy2hnrujvouhgzvg5r",
