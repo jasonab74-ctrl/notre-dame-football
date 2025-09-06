@@ -2,84 +2,120 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{{ app_name }}</title>
-  <link rel="preload" href="{{ url_for('static', filename='style.css') }}?v={{ build_id }}" as="style">
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v={{ build_id }}">
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Notre Dame Football — News & Feeds</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v={{version}}">
 </head>
 <body>
-  <header class="site-header">
+  <header class="banner">
     <div class="brand">
-      <img class="logo" src="{{ url_for('static', filename='nd-logo.svg') }}?v={{ build_id }}" alt="ND" onerror="this.style.display='none'">
-      <div class="title-wrap">
-        <h1 class="title">Notre Dame</h1>
-        <h1 class="title">Football</h1>
-        <div class="updated">Updated: <span>{{ updated_at }}</span></div>
+      <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/ND_logo_monogram.svg" alt="ND" />
+      <div class="titles">
+        <h1>Notre Dame</h1>
+        <h1>Football</h1>
+        <div class="updated">Updated: {{ last_updated_iso }}</div>
       </div>
     </div>
-    <button id="fight-song" class="pill pill--hollow" aria-pressed="false">Victory March</button>
-    <audio id="audio" preload="none">
-      <source src="{{ url_for('static', filename='victory-march.mp3') }}?v={{ build_id }}" type="audio/mpeg">
+    <button id="fightBtn" class="pill pill--cta" type="button" aria-pressed="false">Victory March</button>
+    <audio id="fightSong" preload="auto">
+      <source src="https://upload.wikimedia.org/wikipedia/commons/5/57/Victory_March.ogg" type="audio/ogg">
     </audio>
   </header>
 
-  <main class="wrap">
-    <!-- Quick links -->
-    <nav class="chips">
-      <a class="pill" href="https://fightingirish.com/sports/football/" target="_blank" rel="noopener">Official Site</a>
-      <a class="pill" href="https://fightingirish.com/sports/football/schedule/" target="_blank" rel="noopener">Schedule</a>
-      <a class="pill" href="https://fightingirish.com/sports/football/roster/" target="_blank" rel="noopener">Roster</a>
+  <main class="container">
+    <section id="linksRow" class="links-row"></section>
 
-      <a class="pill" href="https://www.espn.com/college-football/rankings" target="_blank" rel="noopener">CFB Rankings</a>
-      <a class="pill" href="https://www.ndinsider.com/" target="_blank" rel="noopener">ND Insider</a>
+    <div class="filters">
+      <label for="sourceSelect" class="label">News sources:</label>
+      <div class="select-wrap">
+        <select id="sourceSelect">
+          <option value="__all__">All sources</option>
+        </select>
+      </div>
+      <button id="refreshBtn" class="pill pill--ghost" type="button">refresh</button>
+    </div>
 
-      <a class="pill" href="https://www.reddit.com/r/notredamefootball/" target="_blank" rel="noopener">Reddit — r/notredamefootball</a>
-      <a class="pill" href="https://www.youtube.com/channel/UCAMR05qSc5mfhVx20fDyAoQ" target="_blank" rel="noopener">YouTube — ND Football</a>
-
-      <a class="pill" href="https://247sports.com/college/notre-dame/" target="_blank" rel="noopener">247Sports ND</a>
-      <a class="pill" href="https://www.espn.com/college-football/team/_/id/87/notre-dame-fighting-irish" target="_blank" rel="noopener">ESPN ND Football</a>
-      <a class="pill" href="https://www.cbssports.com/college-football/teams/ND/notre-dame-fighting-irish/" target="_blank" rel="noopener">CBS Sports ND</a>
-      <a class="pill" href="https://www.on3.com/teams/notre-dame-fighting-irish/" target="_blank" rel="noopener">On3 — Blue & Gold</a>
-      <a class="pill" href="https://theathletic.com/college-football/team/notre-dame-fighting-irish/" target="_blank" rel="noopener">The Athletic — ND</a>
-      <a class="pill" href="https://fightingirishwire.usatoday.com/" target="_blank" rel="noopener">Fighting Irish Wire</a>
-    </nav>
-
-    <!-- Source filter + refresh (visual only; refresh = full reload to avoid jumps) -->
-    <section class="filters">
-      <label class="filter-label" for="source">News sources:</label>
-      <select id="source" class="select" disabled>
-        <option selected>All sources</option>
-      </select>
-
-      <button id="refresh" class="pill pill--hollow">refresh</button>
-    </section>
-
-    <!-- Articles -->
     <section id="feed" class="feed">
-      {% for it in items %}
-      <article class="card">
-        <a class="card__title" href="{{ it.link }}" target="_blank" rel="noopener">{{ it.title }}</a>
-
-        {% if it.summary %}
-        <p class="card__summary">{{ it.summary }}</p>
+      {% for it in initial_items %}
+      <article class="card" data-src="{{ it.get('source','').strip() }}">
+        <a class="card__title" target="_blank" rel="noopener" href="{{ it.get('url','#') }}">{{ it.get('title','') }}</a>
+        {% if it.get('summary') %}
+        <p class="card__summary">{{ it.get('summary') }}</p>
         {% endif %}
-
         <div class="card__meta">
-          <span class="card__source">{{ it.source }}</span>
-          {% if it.published_display %}
+          <span class="card__chip">{{ it.get('source','') }}</span>
           <span class="dot">•</span>
-          <time datetime="{{ it.published_iso }}">{{ it.published_display }}</time>
-          {% endif %}
+          <time>{{ it.get('published','') }}</time>
         </div>
       </article>
       {% endfor %}
-
-      {% if not items %}
-      <div class="empty">No articles found yet.</div>
-      {% endif %}
     </section>
   </main>
 
-  <script src="{{ url_for('static', filename='app.js') }}?v={{ build_id }}"></script>
+  <script>
+    // -------------------
+    // Fight Song (no jump)
+    // -------------------
+    const fightBtn = document.getElementById('fightBtn');
+    const audio = document.getElementById('fightSong');
+    fightBtn.addEventListener('click', () => {
+      const playing = !audio.paused && !audio.ended;
+      if (playing) { audio.pause(); fightBtn.classList.remove('playing'); fightBtn.textContent = 'Victory March'; }
+      else { try { audio.currentTime = 0; audio.play(); } catch(_) {} fightBtn.classList.add('playing'); fightBtn.textContent = '⏸ Victory March'; }
+    });
+
+    // -------------------
+    // Data hydration
+    // -------------------
+    const feedEl = document.getElementById('feed');
+    const sourceSel = document.getElementById('sourceSelect');
+    const linksRow = document.getElementById('linksRow');
+    const refreshBtn = document.getElementById('refreshBtn');
+
+    function renderItems(items) {
+      const src = sourceSel.value;
+      const rows = (src === '__all__') ? items : items.filter(x => (x.source||'') === src);
+      feedEl.innerHTML = rows.map(it => `
+        <article class="card" data-src="${(it.source||'').trim()}">
+          <a class="card__title" target="_blank" rel="noopener" href="${it.url || '#'}">${it.title || ''}</a>
+          ${it.summary ? `<p class="card__summary">${it.summary}</p>` : ``}
+          <div class="card__meta">
+            <span class="card__chip">${it.source || ''}</span><span class="dot">•</span>
+            <time>${it.published || ''}</time>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    async function loadFeedsMeta() {
+      try {
+        const meta = await (await fetch('/feeds.json',{cache:'no-store'})).json();
+        // Links row
+        const links = meta.links || [];
+        linksRow.innerHTML = links.map(l => `<a class="pill pill--link" target="_blank" rel="noopener" href="${l.href}">${l.label}</a>`).join('');
+        // Sources dropdown
+        const feeds = meta.feeds || [];
+        const opts = ['<option value="__all__">All sources</option>']
+          .concat(feeds.map(f => `<option value="${f.name}">${f.name}</option>`));
+        sourceSel.innerHTML = opts.join('');
+      } catch (e) { console.warn('feeds.json load failed', e); }
+    }
+
+    async function loadItems() {
+      try {
+        const data = await (await fetch('/items.json',{cache:'no-store'})).json();
+        renderItems(data.items || []);
+      } catch (e) { console.warn('items.json load failed', e); }
+    }
+
+    sourceSel.addEventListener('change', loadItems);
+    refreshBtn.addEventListener('click', loadItems);
+
+    // Initial hydrate
+    loadFeedsMeta().then(loadItems);
+  </script>
 </body>
 </html>
