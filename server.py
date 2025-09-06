@@ -1,70 +1,76 @@
-import os, json, datetime
+import os, json, time, datetime as dt
 from flask import Flask, render_template, request
 
-app = Flask(__name__, static_folder="static", template_folder="templates")
+app = Flask(__name__, static_url_path="/static")
 
-# -------- helpers --------
+ITEMS_PATH = os.environ.get("ITEMS_PATH", "items.json")
+
 def _load_items():
+    if not os.path.exists(ITEMS_PATH):
+        return [], 0
+    mtime = int(os.path.getmtime(ITEMS_PATH))
     try:
-        with open("items.json", "r", encoding="utf-8") as f:
+        with open(ITEMS_PATH, "r", encoding="utf-8") as f:
             data = json.load(f)
-            items = data if isinstance(data, list) else data.get("items", [])
     except Exception:
-        items = []
-
-    # normalize fields so template never breaks
-    normalized = []
-    for it in items:
-        normalized.append({
-            "title": it.get("title") or it.get("headline") or "(untitled)",
-            "summary": it.get("summary") or it.get("description") or "",
-            "link": it.get("link") or it.get("url") or "#",
-            "source": it.get("source") or it.get("site") or it.get("source_name") or "Unknown",
-            "published": it.get("published") or it.get("date") or "",
+        data = []
+    items = []
+    for x in data:
+        title = (x.get("title") or "").strip()
+        summary = (x.get("summary") or "").strip()
+        link = (x.get("link") or x.get("url") or "").strip()
+        source = (x.get("source") or x.get("publisher") or "").strip()
+        # normalize published
+        ts = None
+        for key in ("published_ts", "published", "date", "updated"):
+            v = x.get(key)
+            if isinstance(v, (int, float)):
+                ts = int(v)
+                break
+            if isinstance(v, str) and v:
+                # try parse RFC3339-ish
+                try:
+                    ts = int(dt.datetime.fromisoformat(v.replace("Z","")).timestamp())
+                    break
+                except Exception:
+                    pass
+        if ts is None:
+            ts = mtime
+        items.append({
+            "title": title,
+            "summary": summary,
+            "link": link,
+            "source": source,
+            "published_ts": ts,
+            "published_iso": dt.datetime.fromtimestamp(ts).isoformat(),
+            "published_display": dt.datetime.fromtimestamp(ts).strftime("%-m/%-d/%Y, %-I:%M %p"),
         })
-    return normalized
+    # newest first
+    items.sort(key=lambda i: i["published_ts"], reverse=True)
+    return items, mtime
 
-def _updated_and_buster():
-    if os.path.exists("items.json"):
-        ts = os.path.getmtime("items.json")
-    else:
-        ts = datetime.datetime.utcnow().timestamp()
-    # nice readable time (no leading zeroes) and an integer cache-buster
-    updated_dt = datetime.datetime.fromtimestamp(ts)
-    updated_str = updated_dt.strftime("%m/%d/%Y, %I:%M:%S %p").replace("/0", "/").lstrip("0")
-    return updated_str, int(ts)
-
-# -------- no-cache for HTML responses --------
-@app.after_request
-def add_no_cache_headers(resp):
-    # Prevent HTML from being cached; static files get cache-busted via ?v= param.
-    resp.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
-    resp.headers["Pragma"] = "no-cache"
-    resp.headers["Expires"] = "0"
-    return resp
-
-# -------- routes --------
 @app.route("/")
-def index():
-    selected = request.args.get("source", "all")
-    items = _load_items()
+def home():
+    items, items_mtime = _load_items()
+    # build list of sources for the dropdown (sorted, unique)
+    sources = sorted({i["source"] for i in items if i["source"]})
+    sel = request.args.get("source", "").strip()
+    if sel:
+        items = [i for i in items if i["source"] == sel]
 
-    # unique sources from items (server-rendered so no JS required)
-    sources = sorted({it["source"] for it in items if it.get("source")})
-
-    if selected != "all":
-        items = [it for it in items if it["source"] == selected]
-
-    updated, cache_buster = _updated_and_buster()
+    updated_at = dt.datetime.fromtimestamp(items_mtime).strftime("%-m/%-d/%Y, %-I:%M:%S %p")
+    # cache_buster changes whenever items.json changes (and at boot)
+    cache_buster = f"{items_mtime}-{int(time.time())//3600}"
     return render_template(
         "index.html",
         items=items,
         sources=sources,
-        selected_source=selected,
-        updated=updated,
+        selected_source=sel,
+        updated_at=updated_at,
         cache_buster=cache_buster,
+        team_name="Notre Dame Football",
     )
 
 if __name__ == "__main__":
-    # For local run; Railway will use your Procfile/gunicorn
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    # good defaults for local runs; Railway runs gunicorn from Procfile
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", "8080")))
