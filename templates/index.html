@@ -1,77 +1,74 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Notre Dame Football — News & Feeds</title>
-  <link rel="preload" href="{{ url_for('static', filename='style.css') }}?v=25" as="style">
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=25">
-</head>
-<body>
-
-  <!-- Compact banner -->
-  <header class="site-header">
-    <div class="brand">
-      <div class="nd-badge">ND</div>
-      <div class="brand-text">
-        <h1>Notre Dame<br><span>Football</span></h1>
-        <div class="updated">Updated: {{ last_updated }}</div>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>{{ team_name }}</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}?v={{ cache_buster }}"
+    />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="brand">
+        <div class="nd-badge">ND</div>
+        <div class="titles">
+          <h1 class="site-title">Notre Dame<br />Football</h1>
+          <div class="updated">Updated: {{ updated_at }}</div>
+        </div>
       </div>
-    </div>
 
-    <a class="pill pill-cta" href="{{ victory_url }}" target="_blank" rel="noopener">
-      Victory March
-    </a>
-  </header>
+      <a
+        class="btn btn-cta"
+        href="https://www.youtube.com/watch?v=Z1ZcH6nQ9qU"
+        target="_blank"
+        rel="noopener"
+        >Victory March</a
+      >
+    </header>
 
-  <main class="container">
+    <main class="content">
+      <section class="filters">
+        <label for="source" class="label">News sources:</label>
+        <form class="source-form" method="get">
+          <select id="source" name="source" class="select">
+            <option value="" {% if not selected_source %}selected{% endif %}>
+              All sources
+            </option>
+            {% for s in sources %}
+            <option
+              value="{{ s }}"
+              {% if selected_source==s %}selected{% endif %}
+            >
+              {{ s }}
+            </option>
+            {% endfor %}
+          </select>
+        </form>
+      </section>
 
-    <!-- Quick links row (unchanged list; render only what you keep server-side) -->
-    <nav class="quick-links">
-      {% for link in links %}
-        <a class="pill" href="{{ link.href }}" target="_blank" rel="noopener">{{ link.label }}</a>
-      {% endfor %}
-    </nav>
-
-    <!-- Sources filter -->
-    <section class="filters">
-      <label for="sourceSelect">News sources:</label>
-      <select id="sourceSelect" name="source" onchange="location.href='?source='+encodeURIComponent(this.value)">
-        <option value="" {{ '' == active_source and 'selected' or '' }}>All sources</option>
-        {% for src in sources %}
-          <option value="{{ src.id }}" {{ src.id == active_source and 'selected' or '' }}>{{ src.label }}</option>
-        {% endfor %}
-      </select>
-    </section>
-
-    <!-- Articles list -->
-    <section class="feed">
-      {% for item in items %}
+      <section class="articles">
+        {% for item in items %}
         <article class="card">
-          <h2 class="card-title">
-            <a href="{{ item.url }}" target="_blank" rel="noopener">{{ item.title }}</a>
-          </h2>
+          <a class="card-title" href="{{ item.link }}" target="_blank" rel="noopener">
+            {{ item.title }}
+          </a>
 
-          {% if item.summary %}
-            <p class="card-summary">{{ item.summary }}</p>
+          {% set clean_summary = item.summary.replace("&nbsp;", " ") %}
+          {% if clean_summary and clean_summary.strip() and clean_summary.strip() != item.title.strip() %}
+          <p class="card-summary">{{ clean_summary }}</p>
           {% endif %}
 
           <div class="card-meta">
-            <!-- single line: when we pulled it; fall back to published -->
-            {% set pulled = item.added_at or item.collected_at or item.fetched_at %}
-            {% set when = pulled or item.published or item.date %}
-            <span class="meta-dot"></span>
-            <time datetime="{{ when }}">{{ when }}</time>
+            <time datetime="{{ item.published_iso }}">{{ item.published_display }}</time>
           </div>
         </article>
-      {% endfor %}
-    </section>
-
-    {% if not items or items|length == 0 %}
-      <p class="empty">No articles found for this source.</p>
-    {% endif %}
-
-  </main>
-
-</body>
+        {% endfor %}
+      </section>
+    </main>
+  </body>
 </html>
