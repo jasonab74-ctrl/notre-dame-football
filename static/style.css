@@ -1,126 +1,116 @@
+/* ---------- base ---------- */
 :root{
-  --nd-navy:#0e2a3a;
-  --nd-navy-2:#163b4e;
-  --nd-gold:#d2ad5a;      /* button gold */
-  --nd-gold-2:#f1e3ba;    /* card gold (light) */
-  --ink:#0b0f14;          /* near black text */
-  --ink-soft:#23313c;
-  --muted:#6f7c86;
-  --white:#ffffff;
-  --radius-lg:20px;
-  --radius-md:14px;
-  --radius-sm:10px;
-  --shadow:0 10px 24px rgba(0,0,0,.15), 0 1px 2px rgba(0,0,0,.25);
-  --shadow-soft:0 6px 16px rgba(0,0,0,.12);
-  --gap:16px;
-  --card-gap:18px;
-  --maxw:920px;
-  --title-size: clamp(28px, 5.5vw, 44px);
+  --nd-navy:#0d2b3f;
+  --nd-gold:#c8a14a;
+  --nd-gold-dark:#a7832e;
+  --surface:#0f334a;
+  --card:#f7e8b8;           /* light gold for cards */
+  --text:#0c2231;
+  --text-invert:#0c2231;    /* dark text on gold */
+  --muted:#5e7b8f;
+  --ring:rgba(200,161,74,.6);
+  --shadow: rgba(0,0,0,.25);
+  --radius:18px;
 }
 
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
   margin:0;
-  font-family: ui-sans-serif, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
-               "Apple Color Emoji","Segoe UI Emoji";
-  background: linear-gradient(180deg, var(--nd-navy) 0%, var(--nd-navy-2) 100%);
-  color: var(--white);
-  -webkit-font-smoothing:antialiased;
-  text-rendering:optimizeLegibility;
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  color:#e9f3fb;
+  background:linear-gradient(180deg,var(--nd-navy) 0%, #0b2639 100%);
 }
 
-/* ====== Header ====== */
-.site-header{
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  backdrop-filter: blur(6px);
-  background: rgba(14,42,58,.82);
-  border-bottom: 1px solid rgba(255,255,255,.06);
-  padding: 14px clamp(14px, 4vw, 24px);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
+/* ---------- banner ---------- */
+.banner{
+  position:sticky; top:0; z-index:10;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:24px 18px;
+  background:linear-gradient(180deg,#113854 0%, #0e324b 100%);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  box-shadow:0 8px 24px var(--shadow);
 }
-.brand{display:flex;align-items:center;gap:14px;min-width:0;}
+
+.brand{display:flex; gap:14px; align-items:center}
 .nd-badge{
-  width:44px;height:44px;border-radius:12px;
-  display:grid;place-items:center;
-  background: var(--nd-gold);
-  color: var(--ink);
-  font-weight:800;
-  box-shadow: var(--shadow-soft);
+  width:44px;height:44px;border-radius:10px;
+  background:var(--nd-gold); color:var(--text-invert);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800; letter-spacing:.5px; box-shadow:0 2px 8px var(--shadow);
 }
-.titles{min-width:0}
 .site-title{
-  margin:0;line-height:1.0;
-  font-weight:800;letter-spacing:.2px;
-  font-size: var(--title-size);
+  margin:0; line-height:1.0;
+  font-size:clamp(24px,4.6vw,40px); font-weight:800;
 }
-.updated{
-  margin-top:6px;font-size:14px;color:#d6dee6;opacity:.9;
-}
+.updated{margin-top:6px; color:#c9d8e4; font-weight:600}
 
+/* ---------- container ---------- */
+.container{max-width:980px;margin:16px auto;padding:0 16px}
+
+/* ---------- button & chips ---------- */
 .btn{
-  display:inline-flex;align-items:center;justify-content:center;
-  border-radius: 18px;
-  padding: 10px 16px;
-  font-weight:800;
-  text-decoration:none;
-  border:1px solid rgba(0,0,0,.3);
-  box-shadow: var(--shadow-soft);
+  border:none; cursor:pointer; font-weight:700;
+  padding:10px 16px; border-radius:12px;
+  background:#d9e7f2; color:#0b2a3c;
+  box-shadow:0 1px 2px var(--shadow);
+  transition:transform .05s ease;
 }
-.btn-cta{
-  background: linear-gradient(180deg, var(--nd-gold) 0%, #bd9a45 100%);
-  color: var(--ink);
+.btn:active{transform:translateY(1px)}
+.btn--pill{border-radius:999px}
+.btn--gold{background:var(--nd-gold); color:var(--text-invert)}
+.btn--ghost{
+  background:transparent; color:#e9f3fb; border:1px solid rgba(255,255,255,.25)
 }
 
-/* ====== Main layout ====== */
-.content{max-width:var(--maxw);margin:18px auto;padding:0 14px}
-
-/* ====== Filters ====== */
-.filters{
-  display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap;
+.chips{display:flex;flex-wrap:wrap;gap:14px;margin:18px 0 8px}
+.chip{
+  display:inline-block; padding:12px 16px; border-radius:999px;
+  background:var(--nd-gold); color:var(--text-invert); font-weight:800;
+  text-decoration:none; box-shadow:0 2px 4px var(--shadow);
 }
-.label{color:#d6dee6;opacity:.9}
-.source-form{flex:1}
+.chip--wide{padding-left:18px; padding-right:18px}
+
+/* ---------- toolbar ---------- */
+.toolbar{
+  display:flex; align-items:center; gap:12px; margin:8px 0 18px;
+}
+.label{font-weight:700; color:#e9f3fb}
+.source-form{display:flex; gap:8px; align-items:center}
 .select{
-  width:100%;appearance:none;background:rgba(255,255,255,.1);
-  color:#e9f0f5;border:1px solid rgba(255,255,255,.15);
-  border-radius:16px;padding:10px 14px;font-size:16px;
+  appearance:none; -webkit-appearance:none; -moz-appearance:none;
+  background:linear-gradient(180deg,#0f3a59,#0b2f46);
+  color:#e9f3fb; border:1px solid rgba(255,255,255,.18);
+  padding:10px 14px; border-radius:14px; outline:2px solid transparent;
 }
+.select:focus{outline:3px solid var(--ring)}
 
-/* ====== Article cards ====== */
-.articles{display:flex;flex-direction:column;gap:var(--card-gap);margin-top:10px}
+/* ---------- cards ---------- */
+.cards{display:grid; gap:16px}
 .card{
-  background: var(--nd-gold-2);
-  color: var(--ink);
-  border-radius: 22px;
-  padding: 18px 18px;
-  box-shadow: var(--shadow);
+  background:var(--card); color:var(--text);
+  border-radius:22px; padding:18px;
+  box-shadow:0 3px 16px var(--shadow);
 }
-.card-title{
-  display:block;
-  color: var(--ink);
-  font-weight: 800;
-  font-size: clamp(20px, 4.6vw, 30px);
-  line-height:1.15;
-  text-decoration:none;
-}
-.card-title:active{opacity:.85}
+.card-title{margin:0 0 8px 0; font-size:clamp(18px,2.6vw,28px); line-height:1.15}
+.card-title a{color:var(--text); text-decoration:none; font-weight:800}
+.card-title a:hover{opacity:.9}
+
 .card-summary{
-  margin:10px 0 6px 0;
-  color: var(--ink-soft);
-  font-size: clamp(15px, 3.8vw, 18px);
-  line-height:1.35;
-}
-.card-meta{
-  margin-top:4px;
-  font-size: 13px;
-  color: #3a4852;
+  margin:0 0 10px 0; color:#2a3d4b; font-weight:600; line-height:1.35;
 }
 
-/* ====== Utility ====== */
-a{color:inherit;text-decoration:none}
-a:hover{text-decoration:none}
+.card-meta{
+  display:flex; gap:8px; flex-wrap:wrap;
+  color:#51697a; font-weight:700;
+}
+
+/* ---------- footer ---------- */
+.footer{margin:24px 0 32px}
+.footer-inner{display:flex;justify-content:center;color:#87a4b9;font-weight:700}
+
+/* small screens tweaks */
+@media (max-width:480px){
+  .chips{gap:10px}
+  .chip{padding:10px 14px}
+}
