@@ -2,118 +2,76 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ND Football - News & Feeds</title>
-  <link rel="icon" href="/static/favicon.ico" sizes="any">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
+  <title>Notre Dame Football — News & Feeds</title>
+
+  <!-- Icons / PWA (unchanged) -->
+  <link rel="apple-touch-icon" href="/static/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png" />
+  <link rel="manifest" href="/static/manifest.webmanifest" />
+
+  <!-- Styles (unchanged reference) -->
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
-  <!-- ===== Banner ===== -->
-  <header class="header">
-    <img class="logo" src="/static/notre-dame-logo.png" alt="Notre Dame logo" />
-    <div>
-      <h1>ND Football — News & Feeds</h1>
-      <div id="updated" class="muted">Updated: —</div>
+  <!-- Top banner -->
+  <header class="site-header">
+    <div class="brand">
+      <img src="/static/nd-logo.png" alt="ND" class="brand-logo" />
+      <div class="brand-text">
+        <h1 class="brand-title">Notre Dame</h1>
+        <h1 class="brand-title">Football</h1>
+        <p class="updated">
+          Updated: <span id="updatedAt">—</span>
+        </p>
+      </div>
     </div>
-    <button id="play-fight-song" class="pill">Victory March</button>
-    <audio id="fight-song" src="/static/fight-song.mp3" preload="auto"></audio>
+
+    <button id="fightSongBtn" class="chip chip--cta">Victory March</button>
+    <audio id="fightSong" preload="auto" src="/static/fight-song.mp3"></audio>
   </header>
 
-  <!-- ===== Top Nav Buttons ===== -->
-  <nav id="links" class="links">
-    <a class="pill" href="https://www.onefootdown.com/" target="_blank">One Foot Down</a>
-    <a class="pill" href="https://slapthesign.com/" target="_blank">Slap the Sign</a>
-    <a class="pill" href="https://www.reddit.com/r/notredamefootball/" target="_blank">Reddit ND</a>
-    <a class="pill" href="https://www.irishenvy.com/" target="_blank">Irish Envy</a>
-    <a class="pill" href="https://www.youtube.com/channel/UCAMR05qSc5mfhVx20fDyAoQ" target="_blank">YouTube</a>
-    <a class="pill" href="https://www.espn.com/college-football/rankings" target="_blank">CFB Rankings</a>
-    <a class="pill" href="https://www.ndinsider.com/" target="_blank">ND Insider</a>
-    <a class="pill" href="https://www.espn.com/college-football/team/roster/_/id/87/notre-dame-fighting-irish" target="_blank">Roster</a>
+  <!-- Quick links (chips) -->
+  <nav class="chips">
+    <!-- Keep: Official Site / Schedule / Roster / CFB Rankings / ND Insider -->
+    <a class="chip" href="https://fightingirish.com/" target="_blank" rel="noopener">Official Site</a>
+    <a class="chip" href="https://fightingirish.com/sports/m-footbl/schedule/" target="_blank" rel="noopener">Schedule</a>
+    <a class="chip" href="https://fightingirish.com/sports/m-footbl/roster/" target="_blank" rel="noopener">Roster</a>
+    <a class="chip" href="https://www.espn.com/college-football/rankings" target="_blank" rel="noopener">CFB Rankings</a>
+    <a class="chip" href="https://www.ndinsider.com/" target="_blank" rel="noopener">ND Insider</a>
+
+    <!-- REMOVED: One Foot Down / Slap the Sign / Irish Envy Forum -->
+
+    <!-- Keep the rest: Reddit / YouTube / 247 / ESPN / CBS / On3 / Athletic / Fighting Irish Wire -->
+    <a class="chip" href="https://www.reddit.com/r/notredamefootball/" target="_blank" rel="noopener">Reddit — r/notredamefootball</a>
+    <a class="chip" href="https://www.youtube.com/channel/UCAMR05qSc5mfhVx20fDyAoQ" target="_blank" rel="noopener">YouTube — ND Football</a>
+    <a class="chip" href="https://247sports.com/college/notre-dame/" target="_blank" rel="noopener">247Sports ND</a>
+    <a class="chip" href="https://www.espn.com/college-football/team/_/id/87/notre-dame-fighting-irish" target="_blank" rel="noopener">ESPN ND Football</a>
+    <a class="chip" href="https://www.cbssports.com/college-football/teams/ND/notre-dame-fighting-irish/" target="_blank" rel="noopener">CBS Sports ND</a>
+    <a class="chip" href="https://www.on3.com/teams/notre-dame-fighting-irish/" target="_blank" rel="noopener">On3 — Blue & Gold</a>
+    <a class="chip" href="https://theathletic.com/college-football/team/notre-dame-fighting-irish/" target="_blank" rel="noopener">The Athletic — ND</a>
+    <a class="chip" href="https://fightingirishwire.usatoday.com/" target="_blank" rel="noopener">Fighting Irish Wire</a>
   </nav>
 
-  <!-- ===== Source Filter ===== -->
+  <!-- Filters / controls -->
   <section class="controls">
-    <label for="sourceSel" class="muted">News Sources:</label>
-    <select id="sourceSel" class="select">
-      <option value="__all__">All sources</option>
-    </select>
-    <div id="notice" class="notice hidden">
-      New items available — <button id="reload" class="pill">refresh</button>
+    <label for="sourceSelect" class="sources-label">News sources:</label>
+    <div class="sources-row">
+      <select id="sourceSelect" class="select">
+        <option value="all" selected>All sources</option>
+      </select>
+      <button id="refreshBtn" class="chip">refresh</button>
     </div>
   </section>
 
-  <!-- ===== Articles ===== -->
-  <main id="feed" class="grid"></main>
+  <!-- Feed -->
+  <main id="feed" class="feed" aria-live="polite"></main>
 
-  <!-- ===== Footer ===== -->
-  <footer class="footer">
-    <span>Built with your Sports App template.</span>
-  </footer>
-
-  <!-- ===== Script (client logic) ===== -->
-  <script>
-    const fmtTime = ts => ts ? new Date(ts * 1000).toLocaleString() : "";
-    const elUpdated = document.getElementById('updated');
-    const elFeed = document.getElementById('feed');
-    const elNotice = document.getElementById('notice');
-    const elReload = document.getElementById('reload');
-    const elSource = document.getElementById('sourceSel');
-    const fightBtn = document.getElementById('play-fight-song');
-    const audio = document.getElementById('fight-song');
-
-    fightBtn?.addEventListener('click', () => {
-      if (audio.paused) { audio.currentTime = 0; audio.play(); fightBtn.textContent = '⏸ Victory March'; }
-      else { audio.pause(); fightBtn.textContent = 'Victory March'; }
-    });
-
-    let lastCount = 0;
-    let currentSource = "__all__";
-    let cache = { items: [], updated: 0 };
-
-    function render(items) {
-      const filtered = currentSource === "__all__"
-        ? items
-        : items.filter(i => (i.source || '').toLowerCase() === currentSource.toLowerCase());
-
-      elFeed.innerHTML = (filtered || []).map(item => `
-        <article class="card">
-          <h3><a href="${item.link}" target="_blank" rel="noopener">${item.title}</a></h3>
-          <p class="summary">${item.summary || ''}</p>
-          <div class="meta">
-            <span class="source">${item.source || ''}</span>
-            <span class="dot">•</span>
-            <span class="time">${fmtTime(item.published)}</span>
-          </div>
-        </article>
-      `).join('');
-    }
-
-    async function load(initial=false) {
-      try {
-        const res = await fetch('/items.json', { cache: 'no-store' });
-        const data = await res.json();
-        cache = data;
-        elUpdated.textContent = 'Updated: ' + fmtTime(data.updated);
-        if (!initial && data.count > lastCount) elNotice.classList.remove('hidden');
-        lastCount = data.count;
-        render(data.items || []);
-      } catch (e) {
-        console.warn("Failed to load items.json", e);
-      }
-    }
-
-    elReload?.addEventListener('click', () => {
-      elNotice.classList.add('hidden');
-      load(true);
-    });
-
-    elSource.addEventListener('change', (e) => {
-      currentSource = e.target.value || "__all__";
-      render(cache.items || []);
-    });
-
-    load(true);
-    setInterval(load, 5 * 60 * 1000); // refresh every 5 minutes
-  </script>
+  <!-- Scripts (unchanged references) -->
+  <script src="/static/app.js"></script>
 </body>
 </html>
