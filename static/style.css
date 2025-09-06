@@ -1,101 +1,96 @@
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background: #0c2340;
-  color: #ffffff;
+/* ---------- base ---------- */
+:root{
+  --nd-navy:#0c2340;
+  --nd-gold:#c99700;
+  --nd-gold-soft:#f3e4ac;
+  --ink:#0c2340;
+  --paper:#ffffff;
+  --muted:#4d4d4d;
+  --shadow:rgba(0,0,0,.25);
 }
 
-.banner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #0c2340;
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--nd-navy);
   color: #fff;
-  padding: 1rem;
+  line-height: 1.35;
 }
 
-.team-logo {
-  width: 40px;
-  height: 40px;
-  margin-right: 10px;
+/* ---------- banner ---------- */
+.banner{
+  position: sticky; top: 0; z-index: 10;
+  display:flex; align-items:center; justify-content:space-between;
+  gap: 1rem;
+  padding: .9rem 1rem;
+  background: linear-gradient(180deg, #0c2340 0%, #0c2340ee 100%);
+  backdrop-filter: saturate(120%) blur(4px);
+  border-bottom: 1px solid rgba(255,255,255,.06);
 }
+.banner-left{display:flex; align-items:center; gap:.75rem}
+.team-logo{width:40px;height:40px;border-radius:8px;background:#d4af37;object-fit:cover}
+.team-title h1{margin:0;font-size:1.35rem;letter-spacing:.2px}
+.updated{margin:.15rem 0 0 0;color:#b9c7da;font-size:.8rem}
 
-.banner-left {
+/* ---------- fight button ---------- */
+.fight-button{
+  background: var(--nd-gold);
+  color: #000;
+  border: none;
+  border-radius: 22px;
+  padding: .55rem 1rem;
+  font-weight: 800;
+  box-shadow: 0 2px 6px var(--shadow);
+  cursor: pointer;
+}
+.fight-button.playing{filter:brightness(1.05)}
+
+/* ---------- filter row ---------- */
+.filters{
   display: flex;
   align-items: center;
+  gap: .6rem;
+  padding: .9rem 1rem .3rem;
+}
+.filters label{font-weight:700}
+#sourceSelect{
+  appearance:none;
+  background:#102c4d;
+  color:#e8eef7;
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:12px;
+  padding:.55rem .9rem;
+  font-weight:600;
 }
 
-.team-title h1 {
-  margin: 0;
-  font-size: 1.2rem;
-}
+/* ---------- articles ---------- */
+#articles{padding: .6rem 1rem 2rem}
 
-.updated {
-  font-size: 0.8rem;
-  opacity: 0.8;
-}
-
-.fight-button {
-  background: #c99700;
+.article{
+  background: var(--nd-gold-soft);
   color: #000;
-  border: none;
-  border-radius: 20px;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.fight-button:hover {
-  background: #e0b400;
-}
-
-.filters {
+  border-radius: 16px;
   padding: 1rem;
-  background: #0c2340;
+  margin: .8rem 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
 }
-
-.filters label {
-  font-weight: bold;
-  margin-right: 0.5rem;
+.article-title{
+  color: var(--ink);
+  text-decoration:none;
+  font-weight: 900;
+  letter-spacing:.2px;
+  display:block;
+  margin-bottom:.45rem;
 }
+.article-title:hover{text-decoration:underline}
+.article-summary{margin:.25rem 0 .6rem 0; color:#1d2330}
+.article-meta{margin:0; font-size:.82rem; color:#3a3a3a}
 
-#sourceFilter {
-  padding: 0.3rem;
-  border-radius: 5px;
-  border: none;
-}
+.empty{opacity:.9;margin:1rem;color:#e8eef7}
 
-#articles {
-  padding: 1rem;
-}
-
-.article {
-  background: #f1e3ac;
-  color: #000;
-  border-radius: 10px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-}
-
-.article-title {
-  display: block;
-  font-size: 1rem;
-  font-weight: bold;
-  text-decoration: none;
-  color: #0c2340;
-  margin-bottom: 0.5rem;
-}
-
-.article-title:hover {
-  text-decoration: underline;
-}
-
-.article-summary {
-  font-size: 0.9rem;
-  margin: 0.5rem 0;
-}
-
-.article-meta {
-  font-size: 0.75rem;
-  color: #444;
+/* ---------- responsive tweaks ---------- */
+@media (min-width: 680px){
+  .team-title h1{font-size:1.6rem}
+  #articles{max-width: 900px; margin: 0 auto}
 }
