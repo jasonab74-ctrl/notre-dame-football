@@ -1,79 +1,123 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Notre Dame Football — News and Feeds</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="icon" href="/static/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
+  <link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
+  <link rel="manifest" href="/static/manifest.webmanifest">
+  <meta name="theme-color" content="#0C2340">
+  <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
-  <header class="banner">
-    <img src="{{ url_for('static', filename='notredame-logo.png') }}" alt="Notre Dame Logo" class="team-logo">
-    <div class="banner-text">
-      <h1>Notre Dame Football</h1>
-      <p class="updated">Updated: {{ updated }}</p>
+  <header class="header">
+    <img class="logo" src="/static/notre-dame-logo.png" alt="Notre Dame logo" />
+    <div>
+      <h1>ND Football — News &amp; Feeds</h1>
+      <div id="updated" class="muted">Updated: —</div>
     </div>
-    <button id="fight-song" class="fight-button">Victory March</button>
+    <button id="play-fight-song" class="pill">Victory March</button>
+    <audio id="fight-song" src="/static/fight-song.mp3" preload="auto"></audio>
   </header>
 
-  <nav class="buttons">
-    {% for link in links %}
-      <a href="{{ link.url }}" target="_blank" class="btn">{{ link.name }}</a>
-    {% endfor %}
-  </nav>
+  <nav id="links" class="links"></nav>
 
-  <section class="filter-bar">
-    <label for="sourceSelect"><strong>News sources:</strong></label>
-    <select id="sourceSelect">
-      <option value="all">All sources</option>
-      {% for src in sources %}
-        <option value="{{ src }}">{{ src }}</option>
-      {% endfor %}
+  <section class="controls">
+    <label for="sourceSel" class="muted">News Sources:</label>
+    <select id="sourceSel" class="select">
+      <option value="__all__">All sources</option>
     </select>
+    <div id="notice" class="notice hidden">New items available — <button id="reload" class="pill">refresh</button></div>
   </section>
 
-  <main id="articles">
-    {% for item in items %}
-      <article class="card" data-source="{{ item.source }}">
-        <h2><a href="{{ item.link }}" target="_blank">{{ item.title }}</a></h2>
-        {% if item.summary %}
-          <p>{{ item.summary }}</p>
-        {% endif %}
-        <footer>
-          <span class="source">{{ item.source }}</span>
-          <span class="date">{{ item.published }}</span>
-        </footer>
-      </article>
-    {% endfor %}
-  </main>
+  <main id="feed" class="grid"></main>
+
+  <footer class="footer">
+    <span>Built with your Sports App template.</span>
+  </footer>
 
   <script>
-    // Fight song audio
-    const audio = new Audio("{{ url_for('static', filename='fight-song.mp3') }}");
-    const fightBtn = document.getElementById("fight-song");
+    const fmtTime = (ts) => ts ? new Date(ts * 1000).toLocaleString() : "";
+    const elUpdated = document.getElementById('updated');
+    const elFeed = document.getElementById('feed');
+    const elNotice = document.getElementById('notice');
+    const elReload = document.getElementById('reload');
+    const elLinks = document.getElementById('links');
+    const elSource = document.getElementById('sourceSel');
+    const fightBtn = document.getElementById('play-fight-song');
+    const audio = document.getElementById('fight-song');
 
-    fightBtn.addEventListener("click", () => {
-      if (audio.paused) {
-        audio.play();
-        fightBtn.textContent = "Pause";
-      } else {
-        audio.pause();
-        fightBtn.textContent = "Victory March";
+    fightBtn?.addEventListener('click', () => {
+      if (audio.paused) { audio.currentTime = 0; audio.play(); fightBtn.textContent = '⏸ Victory March'; }
+      else { audio.pause(); fightBtn.textContent = 'Victory March'; }
+    });
+
+    let lastCount = 0;
+    let currentSource = "__all__";
+    let cache = { items: [], updated: 0 };
+
+    async function hydrateMeta() {
+      try {
+        const meta = await (await fetch('/feeds.json', {cache:'no-store'})).json();
+        const links = meta.links || [];
+        elLinks.innerHTML = links.map(l => `<a class="pill" href="${l.href}" target="_blank" rel="noopener">${l.label}</a>`).join('');
+        const feeds = meta.feeds || [];
+        const opts = feeds.map(f => `<option value="${f.name}">${f.name}</option>`).join('');
+        elSource.insertAdjacentHTML('beforeend', opts);
+      } catch (e) {
+        console.warn('feeds.json unavailable', e);
       }
+    }
+
+    function render(items) {
+      const filtered = currentSource === "__all__"
+        ? items
+        : items.filter(i => (i.source || '').toLowerCase() === currentSource.toLowerCase());
+
+      elFeed.innerHTML = (filtered || []).map(item => `
+        <article class="card">
+          <a href="${item.link}" target="_blank" rel="noopener">
+            <h3 class="title">${item.title}</h3>
+          </a>
+          <p class="summary">${item.summary || ''}</p>
+          <div class="meta">
+            <span class="source">${item.source || ''}</span>
+            <span class="dot">•</span>
+            <span class="time">${fmtTime(item.published)}</span>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    async function load(initial=false) {
+      const res = await fetch('/items.json', { cache: 'no-store' });
+      const data = await res.json();
+      cache = data;
+      elUpdated.textContent = 'Updated: ' + fmtTime(data.updated);
+      if (!initial && data.count > lastCount) elNotice.classList.remove('hidden');
+      lastCount = data.count;
+      render(data.items || []);
+    }
+
+    elReload?.addEventListener('click', () => {
+      elNotice.classList.add('hidden');
+      load(true);
     });
 
-    // Source filter
-    const sourceSelect = document.getElementById("sourceSelect");
-    sourceSelect.addEventListener("change", () => {
-      const selected = sourceSelect.value;
-      document.querySelectorAll(".card").forEach(card => {
-        if (selected === "all" || card.dataset.source === selected) {
-          card.style.display = "block";
-        } else {
-          card.style.display = "none";
-        }
-      });
+    elSource.addEventListener('change', (e) => {
+      currentSource = e.target.value || "__all__";
+      render(cache.items || []);
     });
+
+    hydrateMeta();
+    load(true);
+    setInterval(async () => {
+      const res = await fetch('/items.json', { cache: 'no-store' });
+      const data = await res.json();
+      if (data.count > lastCount) elNotice.classList.remove('hidden');
+    }, 5 * 60 * 1000);
   </script>
 </body>
 </html>
