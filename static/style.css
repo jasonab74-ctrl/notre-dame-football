@@ -1,124 +1,140 @@
-/* ===== General Reset ===== */
+/* General reset */
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  background: #0c2340; /* ND blue */
-  color: #111;
   margin: 0;
-  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #0a2342; /* ND navy */
+  color: #111;
+  line-height: 1.5;
 }
 
-/* ===== Banner ===== */
-header {
+/* Banner */
+.banner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #0c2340;
+  background-color: #0a2342;
   color: white;
-  padding: 12px 16px;
-  min-height: 60px;   /* reduced height */
+  padding: 10px 15px;
 }
 
-header img {
-  height: 40px;       /* smaller ND logo */
+.team-logo {
+  height: 48px;
   margin-right: 10px;
 }
 
-header h1 {
-  font-size: 20px;
+.banner-text h1 {
   margin: 0;
-  line-height: 1.2;
+  font-size: 1.4rem;
 }
 
-header .updated {
-  font-size: 12px;
-  opacity: 0.8;
+.updated {
+  font-size: 0.8rem;
+  color: #ddd;
+  margin: 2px 0 0 0;
 }
 
-/* ===== Fight Song Button ===== */
-button.fight-song {
-  background: #C99700; /* ND gold */
-  color: #111;
+.fight-button {
+  background: #f4d03f;
   border: none;
   border-radius: 20px;
-  padding: 6px 14px;
+  padding: 8px 14px;
   font-weight: bold;
   cursor: pointer;
+  color: black;
+}
+.fight-button:hover {
+  background: #d4b20f;
 }
 
-button.fight-song:hover {
-  opacity: 0.9;
-}
-
-/* ===== Nav Buttons ===== */
-.nav-buttons {
+/* Buttons */
+nav.buttons {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 10px;
-  padding: 12px 16px;
+  justify-content: center;
+  margin: 12px 10px;
+  gap: 8px;
 }
 
-.nav-buttons a {
-  background: #C99700;  /* ND gold */
-  color: #111 !important;
-  padding: 6px 12px;
-  border-radius: 20px;
-  text-decoration: none !important;
-  font-size: 14px;
-  font-weight: 600;
-  white-space: nowrap;
+.btn {
+  background-color: #f4d03f;
+  color: black;
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 18px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  display: inline-block;
+}
+.btn:hover {
+  background-color: #d4b20f;
 }
 
-.nav-buttons a:hover {
-  background: #b58c00;
-}
-
-/* ===== News Sources Label & Dropdown ===== */
-.sources {
-  padding: 0 16px 12px;
-  font-size: 14px;
-  font-weight: 600;
+/* Filter bar */
+.filter-bar {
+  margin: 10px;
+  text-align: center;
   color: white;
 }
-
-select {
-  margin-left: 8px;
-  padding: 4px 8px;
-  font-size: 14px;
+.filter-bar label {
+  margin-right: 6px;
+}
+.filter-bar select {
+  padding: 5px 10px;
   border-radius: 6px;
+  border: none;
+  font-size: 0.9rem;
 }
 
-/* ===== Article Bubbles ===== */
-.article {
-  background: #f5e6b3; /* light ND gold */
+/* Article cards */
+#articles {
+  margin: 15px;
+}
+
+.card {
+  background: #fdf5d7; /* light gold */
+  color: #222;
+  padding: 12px 16px;
+  margin-bottom: 14px;
   border-radius: 10px;
-  padding: 14px;
-  margin: 10px 16px;
-  color: #111;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 
-.article h2 {
-  font-size: 16px;
-  margin: 0 0 6px 0;
-  color: #0c2340;      /* ND dark blue */
-  font-weight: 700;
+.card h2 {
+  margin: 0 0 8px 0;
+  font-size: 1.1rem;
 }
-
-.article h2 a {
-  color: #0c2340 !important;
-  text-decoration: none !important; /* no underline */
+.card h2 a {
+  color: #0a2342; /* dark blue */
+  font-weight: bold;
+  text-decoration: none;
 }
-
-.article h2 a:hover {
+.card h2 a:hover {
   text-decoration: underline;
 }
 
-.article p {
-  font-size: 14px;
-  margin: 0 0 6px 0;
+.card p {
+  margin: 0 0 10px 0;
+  font-size: 0.9rem;
 }
 
-.article .meta {
-  font-size: 12px;
-  color: #333;
-  opacity: 0.8;
+.card footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #555;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .banner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .team-logo {
+    height: 40px;
+    margin-bottom: 6px;
+  }
+  nav.buttons {
+    justify-content: flex-start;
+  }
 }
