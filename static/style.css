@@ -1,155 +1,48 @@
-/* --- Base --------------------------------------------------------------- */
-:root{
-  --nd-navy:#0e2a3b;
-  --nd-navy-2:#0c2533;
-  --nd-gold:#d4af37;
-  --nd-gold-soft:#e8d18a;
-  --text:#e6f0f4;
-  --text-dim:#bcd0d9;
-  --ink:#0a1c27;
-  --card-bg:#f2e5b7; /* light gold for article cards */
-  --chip-bg:#caa33a; /* button gold */
-  --chip-ink:#0c1b22; /* button text */
-  --radius:18px;
-  --shadow:0 6px 18px rgba(0,0,0,.18);
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f5f5f5;
+  color: #111;
 }
-
-* { box-sizing:border-box }
-html,body{ height:100% }
-body{
-  margin:0;
-  background:linear-gradient(180deg,var(--nd-navy),var(--nd-navy-2));
-  color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,system-ui,Arial,sans-serif;
-  line-height:1.35;
+.header {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background: #0C2340;
+  color: white;
 }
-
-/* --- Banner ------------------------------------------------------------- */
-.banner{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:18px 16px 10px;
-  position:sticky;
-  top:0;
-  background:linear-gradient(180deg,var(--nd-navy) 0%, rgba(14,42,59,0.92) 100%);
-  backdrop-filter:saturate(150%) blur(6px);
-  border-bottom:1px solid rgba(255,255,255,.06);
-  z-index:10;
+.header img.logo {
+  height: 50px;
+  margin-right: 1rem;
 }
-.brand{ display:flex; gap:12px; align-items:center; }
-.nd-badge{
-  background:var(--nd-gold);
-  color:var(--ink);
-  width:46px; height:46px;
-  display:grid; place-items:center;
-  border-radius:12px;
-  font-weight:800;
-  box-shadow:var(--shadow);
+.pill {
+  background: #C99700;
+  color: black;
+  padding: 0.3rem 0.7rem;
+  border: none;
+  border-radius: 20px;
+  margin: 0.2rem;
+  cursor: pointer;
 }
-.brand-text{ display:flex; flex-direction:column; gap:4px; }
-.app-title{
-  margin:0;
-  font-size:28px;
-  line-height:1.05;
-  letter-spacing:.2px;
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
 }
-.updated{
-  color:var(--text-dim);
-  font-size:14px;
+.card {
+  background: #fff8dc;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
 }
-.song-chip{
-  background:var(--nd-gold-soft);
-  color:var(--ink);
-  font-weight:800;
-  text-decoration:none;
-  padding:10px 16px;
-  border-radius:999px;
-  box-shadow:var(--shadow);
-  border:2px solid rgba(0,0,0,.12);
-  white-space:nowrap;
+.card h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #0C2340;
 }
-
-/* --- Links -------------------------------------------------------------- */
-.links{
-  display:flex;
-  flex-wrap:wrap;
-  gap:14px;
-  padding:14px 16px 8px;
+.card .meta {
+  font-size: 0.85rem;
+  color: #333;
 }
-.chip{
-  background:var(--chip-bg);
-  color:var(--chip-ink);
-  text-decoration:none;
-  font-weight:800;
-  padding:10px 16px;
-  border-radius:999px;
-  border:2px solid rgba(0,0,0,.12);
-  box-shadow:var(--shadow);
-}
-
-/* --- Filter ------------------------------------------------------------- */
-.filter{
-  padding:6px 16px 0;
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-.filter-label{
-  font-weight:800;
-  color:var(--text);
-}
-.select{
-  appearance:none;
-  -webkit-appearance:none;
-  background:rgba(255,255,255,.06);
-  color:var(--text);
-  border:1px solid rgba(255,255,255,.12);
-  padding:10px 14px;
-  border-radius:14px;
-  width:100%;
-}
-
-/* --- Articles ----------------------------------------------------------- */
-.articles{
-  padding:16px;
-  display:flex;
-  flex-direction:column;
-  gap:16px;
-}
-.card{
-  background:var(--card-bg);
-  color:var(--ink);
-  border-radius:22px;
-  padding:18px 18px 14px;
-  box-shadow:var(--shadow);
-}
-.card-title{
-  margin:0 0 8px 0;
-  font-size:22px;
-  line-height:1.15;
-}
-.card-link{
-  color:var(--ink);
-  text-decoration:none; /* no underline */
-  font-weight:900;
-}
-.card-link:active,
-.card-link:focus{ outline:none; }
-.card-summary{
-  margin:0 0 10px;
-  color:#23323b;
-  font-size:16px;
-}
-.meta{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  color:#3b5160;
-  font-weight:700;
-  font-size:14px;
-}
-.meta .dot{ opacity:.6 }
-
-/* Footer breathing room */
-.foot-space{ height:24px }
