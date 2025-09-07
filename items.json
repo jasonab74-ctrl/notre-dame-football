@@ -1,5 +1,5 @@
 {
-  "updated_iso": "2025-09-07T11:49:39.731551+00:00",
+  "updated_iso": "2025-09-07T13:02:37.597539+00:00",
   "count": 50,
   "items": [
     {
@@ -19,20 +19,20 @@
       "published_iso": "2025-09-06T21:27:00+00:00"
     },
     {
-      "id": "https-news-google-com-rss-articles-cbmi9wfbvv95cuxnztntme9hv0lidursc2s3uew3ylluttruv1v4burwm1ngtwjcdwlhanbgc1zhrhj0mzzyw",
-      "title": "ESPN College GameDay picks the winners of Week 2’s top games in college football",
-      "link": "https://news.google.com/rss/articles/CBMi9wFBVV95cUxNZTNTME9hV0lidURsc2s3UEw3YlluTTRuV1V4bURwM1NGTWJCdWlHanBGc1ZhRHJ0MzZyWmpDSUdZaDJHTXpadlEzd2VZM3pxbkNtZkhPVGs4VC1STHh2RWtkVV9QZnhndk4tQUp1QTBtYThQcHBGR0NBYU4yNVNNb0ZxUlRnUzdHM1JHZzJILVRHZVg3Q3o5Y3VVaERrTGRObFhOWVJHc2J6c0xER1RES0FlM3Y5RlNxM1UxdS1FdWw3dTFlRExKdHgtVW1zM2lKdzM5ZDdHdnZvVnpBQ3AxT3pfbkNtNFFkSG1ZX3M3RVJDa0NTVXk0?oc=5",
-      "source": "Fighting Irish Wire",
-      "ts": 1757175885.0,
-      "published_iso": "2025-09-06T16:24:45+00:00"
-    },
-    {
       "id": "https-news-google-com-rss-articles-cbmilwfbvv95cuxnewvhbldgrnbfre9jx05oblu1mkdnadlumne4nkt6zkrim3ddwm5lrwxoq04xwwjkvgvis",
       "title": "- Teeling Whiskey's partnership with Notre Dame football",
       "link": "https://news.google.com/rss/articles/CBMilwFBVV95cUxNeWVhbldGRnBFRE9jX05OblU1MkdnaDluMnE4Nkt6ZkRiM3dDWm5lRWxOQ04xWWJkVGVISVZrX3Z4c0FnOF9BNXFvM3ZYV1JUWFBvOWMyRUFPMmt1MTN1cUN4U1B4TzZTV0luSTU5V0pwcC1hOVBveVY4d0Q0V2htU19ENEtsMTNzdzBLbjFabHVTeHN6UGdV?oc=5",
       "source": "WNDU",
       "ts": 1757175480.0,
       "published_iso": "2025-09-06T16:18:00+00:00"
+    },
+    {
+      "id": "https-msn-com-en-us-sports-other-elite-2026-texas-commit-confirms-miami-hurricanes-are-still-in-the-fold-after-attending",
+      "title": "Elite 2026 Texas commit confirms Miami Hurricanes are still in the fold after attending big win over Notre Dame",
+      "link": "https://msn.com/en-us/sports/other/elite-2026-texas-commit-confirms-miami-hurricanes-are-still-in-the-fold-after-attending-big-win-over-notre-dame/ar-AA1M15Js",
+      "source": "msn.com",
+      "ts": 1757168280.0,
+      "published_iso": "2025-09-06T14:18:00+00:00"
     },
     {
       "id": "https-news-google-com-rss-articles-cbmiugfbvv95cuxpb0o2rdbtskzgvktxdeyybu84c1kwm0zomlq2u0hsvny4zvbncllgykf2wxdnajnky2dfm",
@@ -43,12 +43,20 @@
       "published_iso": "2025-09-06T12:03:35+00:00"
     },
     {
+      "id": "https-news-google-com-rss-articles-cbmi7afbvv95cuxoqvvzs1b2sedrzeltwms3whpyq3rtctvqrfzpx1vum3rmvli3ekljrfboelnpzvfluxo5e",
+      "title": "Week 2 of college football is here, and find out if Notre Dame will be on the field",
+      "link": "https://news.google.com/rss/articles/CBMi7AFBVV95cUxOQVVzS1B2SEdRZEltWms3WHpyQ3RTcTVQRFZpX1VUM3RmVlI3ekljRFBOelNPZVFLUXo5emJzUlhMRm1kQjRWNkNWYVd1dGFOcnV0TTRodUl1MU80M2dfUHkwQ2t4NmZlSXlUVGhidlowN1pPNzUwWnVHRk54dGRjMDY3SDFET2Z5ZU15N09qb1ZXWWktNXJBSG1vd3Z3cWtOZmZKa3lUZUQ0RjE3VDcyVGdyRW5yUXllTzhveWxrckJaNnpSWl8wa0FQVzJIajRiU1VqNDYtMWFVWEZHQlFmcHNWa2pud3hmdmZYQg?oc=5",
+      "source": "Fighting Irish Wire",
+      "ts": 1757157262.0,
+      "published_iso": "2025-09-06T11:14:22+00:00"
+    },
+    {
       "id": "https-news-google-com-rss-articles-cbmi4wfbvv95cuxnbezzrdkttjfhc3faann0v1pamghxmwp5vdnrsvq2bu4yq3fkogtztxnpcwm4rjc5cmhgc",
       "title": "Does Notre Dame play today? Football schedule for Irish's next game after Week 2 bye",
       "link": "https://news.google.com/rss/articles/CBMi4wFBVV95cUxNbEZzRDktTjFHc3FaanN0V1paMGhxMWp5VDNRSVQ2bU4yQ3FKOGtzTXNpcWM4Rjc5cmhGcGt0aHNheFd4cDN2RVA3YnJHdThnMk1ZdllHSG5XUC01YXByZ3RMMGpjNjVTdkRHLWM1LWpVVFh5bWNWQWdoeTdYNEtZYVFILUVZOXNwQWVaOTRXUXNhR0NKcTAydFNqb1RFMThtNERqRkJpQlNXa29NQld3blZUYmdvZ19mT05XUmVBSmRFa3NqRkFWaWtEOFdEeERLYlNiSm41NWVnYWVQa0VTaGF2cw?oc=5",
       "source": "South Bend Tribune",
-      "ts": 1757156722.0,
-      "published_iso": "2025-09-06T11:05:22+00:00"
+      "ts": 1757152971.0,
+      "published_iso": "2025-09-06T10:02:51+00:00"
     },
     {
       "id": "https-news-google-com-rss-articles-cbmi1wfbvv95cuxqzjlnn0nduxl6yw8zejh5q0rhyu53zwnvmjc3bjzjsmdja3rrlupqrhewmhrdd1m3ofpio",
@@ -75,12 +83,12 @@
       "published_iso": "2025-09-06T02:15:00+00:00"
     },
     {
-      "id": "https-news-google-com-rss-articles-cbmihgfbvv95cuxoclb0qmnrc01mx0lnvgdax1ppbxbfrwzyt2nwzuutzermvgvcbjfpselgzkxfzhhmntlvc",
-      "title": "3 games for Notre Dame football fans to watch in Week 2",
-      "link": "https://news.google.com/rss/articles/CBMihgFBVV95cUxOclB0QmNrc01mX0lnVGdaX1ppbXBfRWZyT2NWZUUtZERmVGVCbjFPSElGZkxFZHhmNTlvcDlTX3BqaUxINnNaTjdXeW1KemQ0RF9HS1J0TmhVMnZ1Nzdwd1E1bXd5SUtWcndYUG5qdlFFM01kM0VaZk9NOEV4U3B2N0ZOQWdwZw?oc=5",
-      "source": "Slap the Sign",
-      "ts": 1757106001.0,
-      "published_iso": "2025-09-05T21:00:01+00:00"
+      "id": "https-news-google-com-rss-articles-cbmiwgfbvv95cuxowutire42bjbornf4zeuwdvq1snn5y2viuxn5mu1fr2qtwu1ynu1duvl4lviyc0xwqjjie",
+      "title": "Five games Notre Dame football fans should watch during Week 2 bye",
+      "link": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxOWUtIRE42bjBORnF4ZEUwdVQ1SnN5Y2VIUXN5MU1FR2QtWU1YNU1DUVl4LVIyc0xwQjJIeDhQQ1ptZ0xvdGp4aElScU1iQXhXOGVCVm1uTEhRWmI0UXlXb2U3akVtUDFSS1NKYml4UlBsbVExZjdWUjN0bkNidFJRZUJwSXlEOUNQcjRyWVZEcmRFdG41SElhbmM1RDNoVnZ1TGxSc2ZkQ1VaOVlOeFNSWHlVYzN5SkduazVUaEkwSWJSQQ?oc=5",
+      "source": "On3",
+      "ts": 1757120379.0,
+      "published_iso": "2025-09-06T00:59:39+00:00"
     },
     {
       "id": "https-news-google-com-rss-articles-cbmi-gfbvv95cuxnyu4xsus4ums2auprvuj1znk4de1lyu5oamluvvrfb2qybwn5dm9jtw15tkdkddjmzmx5n",
@@ -267,14 +275,6 @@
       "published_iso": "2025-09-02T19:23:04+00:00"
     },
     {
-      "id": "https-news-google-com-rss-articles-cbmiigjbvv95cuxqceqyc2txszn2dgvuahpxyvfkys1vuenaeknnuknxttjmqkt0ztfswgtymdjmdvnrx3q5a",
-      "title": "Changes head coach Marcus Freeman and the Notre Dame Fighting Irish should consider during the bye week heading into Texas A&M",
-      "link": "https://news.google.com/rss/articles/CBMiigJBVV95cUxQcEQyc2txSzN2dGVUaHpXYVFkYS1VUENaekNNUkNXTTJMQkt0ZTFSWGtYMDJmdVNrX3Q5amZGbDRKa19FWXRnX0xRT294QV9SNEZWUndkR2RfazVPdTVMdXNfUkJZWjhVMFhBVUxkUVVDeldNd3ZocTAxcHVzUFZTWUp1bFF3T3BqNUxYRGhCdkNmUk55Z0w2aXBLajdKSUhZN2VGZUwwLUdyWExyU3pVSFFDWDkteFk3QkxsaWpQLTVCZ3NPRUppUzFrTUktanE4dnA1Z29rQWR0MG1qdG5wSm12cE92TjRKM2NCSUQxd1JILVZuOXFTTVBSeWlYZ01JTi1pVlJrV0F5UQ?oc=5",
-      "source": "A to Z Sports",
-      "ts": 1756826929.0,
-      "published_iso": "2025-09-02T15:28:49+00:00"
-    },
-    {
       "id": "https-news-google-com-rss-articles-cbmi7wfbvv95cuxnx2tzbs1nwgm5r1zrehe2wxhcam9dzzdmrdnad3pvc2zcc3vgtgjqbnhnmldbznjtlu16y",
       "title": "Putting a period on the Notre Dame football opening loss at Miami football",
       "link": "https://news.google.com/rss/articles/CBMi7wFBVV95cUxNX2tZbS1nWGM5R1ZreHE2WXhCam9DZzdmRDNad3pVc2ZCc3VGTGJQbnhnMldBZnJtLU16YXI2Mlh6X0txSjJzZzNsWWpaYXpfdEFPeEFNemNpdlczQTZmMDlLdzd6UzBxZ09Wa1VFQkNZRW9JX3dTWFlTWjZKWTVsNlRXaU9GaGQ1WEg4Ym1Rb3dOSUJ1bk1TaHFUMk4xQ0ZmS0JoVTFnQWlSQWpld1I1TkFOZnlJRWQyWktZdGQzc3pZWWc4bXBRenRJWDlXa3ZVbFpaWGlHZ1ZnUlVXQWNtNzVLRDVjYWpSMXpZZlRLdw?oc=5",
@@ -291,10 +291,10 @@
       "published_iso": "2025-09-01T21:13:02+00:00"
     },
     {
-      "id": "https-news-google-com-rss-articles-cbmijafbvv95cuxnslnjn1hdqwdlbfryeddgbhvneezix0fucwjdczy2vlzlugzlvgtpzc1iaw9ov2rndw1um",
+      "id": "https-news-google-com-rss-articles-cbmi8wfbvv95cuxpcklxogg4eljsaxhuy2jjszj0vfvbvzzqdjfrnk5yeeu5wdfltw9ha3fqy0llrfdubktwb",
       "title": "Notre Dame football has a personnel change that they should consider to unlock the Fighting Irish defense under DC Chris Ash",
-      "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxNSlNJN1hDQWdlbFRYeDdGbHVneEZiX0FUcWJDczY2VlZLUGZlVGtPZC1IaW9oV2RNdW1uMzViNnVkeVBENlEtbW5FTVNGQ19kZVJfQnRHOVpEWGNDZzRqN2VHYlFSM2Vtb2s3Z3c1dUVQZ0lRTkZ6dEQ0QU56MmoxV00tRDE0VkNlcUlySA?oc=5",
-      "source": "Yahoo Sports",
+      "link": "https://news.google.com/rss/articles/CBMi8wFBVV95cUxPcklxOGg4elJsaXhUY2JJSzJ0VFVBVzZqdjFRNk5YeEU5WDFLTW9ha3FqY0lLRFdUbktWbjktbzdiRnJyS0NSUGhaQXV1cFZRZVNZT2JLU0p1S01UMWFyVGtUUGl0cE5tcTlqMnRtOGhoQUZpSHVURFYyMkFMTG9aN3R6YWxLUGxlRkg4aHRibmtvaXVKQk51cmRfV09HOW8tQ20xeFVTQUdxVVJwTm5TWGhTYnN6YWt1bTkweWVwNlFSMjF6MlJKMFdHN0lSd2pEbnhXQW8xWnhXV1lEVHFkRWZRR2RCWGdoc0dpSFUzRVpOTXM?oc=5",
+      "source": "A to Z Sports",
       "ts": 1756756652.0,
       "published_iso": "2025-09-01T19:57:32+00:00"
     },
@@ -307,10 +307,10 @@
       "published_iso": "2025-09-01T19:30:19+00:00"
     },
     {
-      "id": "https-news-google-com-rss-articles-cbmi-wfbvv95cuxqdejisvfklvvhy2dedmhdzkh1lu9lwdrtaen1d1kzzkfrqkuzbtlywfdvzmuxmwlzus1rq",
+      "id": "https-news-google-com-rss-articles-cbmiggfbvv95cuxoqu96yknvulvrwvvqq25fylbdcxzmdtg0sfhbz3hlewvjymvzttbkqtvyqzl2og5uuhnym",
       "title": "Notre Dame football has one move that they need to make in order to fix two crucial problems for the Fighting Irish offense",
-      "link": "https://news.google.com/rss/articles/CBMi_wFBVV95cUxQdEJiSVFkLVVhY2dEdmhDZkh1LU9LWDRTaEN1d1kzZkFrQkUzbTlyWFdvZmUxMWlZUS1rQWdSYzFYLWpIbURpSllrYWN0d1Vra2FLamNHTWpzWU42RlRoTHhJcThockFJQWJtcV9OOFU5TDlOV2Z4aTluY25jaG5wR3p2dDFTOExxeEpvWUN4dC1ray1rZm5lazAtMW9uaW1UOUNxMzNBOExMMVlHM0U4MGlWc0VfR1VtUmVHeEY3UTNDcmw0Ykk4aGJpdXlJTVdfX0h5ZUNSTnJQQkVSQzQzbDJPeUdhTkZlNzVVdm0wMkVzVmNFbWtTaXNzQ2pPWWM?oc=5",
-      "source": "A to Z Sports",
+      "link": "https://news.google.com/rss/articles/CBMiggFBVV95cUxOQU96YkNvUlVrWVVQQ25FYlBDcXZmdTg0SFhBZ3hLeWVJYmVZTTBKQTVYQzl2OG5uUHNyM0NoMUowTnVOcWgtODJjY1UweHFIU0pYT29iQmI2d2RHYVZiRW96a2p6T0hzcXJQVmxrNWZLbGVOZFdxVmNVQ3BwVTFkQm53?oc=5",
+      "source": "Yahoo Sports",
       "ts": 1756750908.0,
       "published_iso": "2025-09-01T18:21:48+00:00"
     },
