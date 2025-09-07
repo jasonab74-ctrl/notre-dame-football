@@ -1,7 +1,15 @@
 {
-  "updated_iso": "2025-09-07T20:30:33.699326+00:00",
+  "updated_iso": "2025-09-07T20:41:56.810247+00:00",
   "count": 50,
   "items": [
+    {
+      "id": "https-news-google-com-rss-articles-cbmi0afbvv95cuxpdgs0dlhoufrkuhjezffhn2rvu19cowd0dgrxnnattfzqrgtls1zdr212tv83xzbtm2rvx",
+      "title": "Where Notre Dame Fighting Irish appear in Week 3 college football rankings",
+      "link": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxPdGs0dlhoUFRkUHJEZFFhN2RVU19COWd0dGRxNnAtTFZQRGtlS1ZDR212TV83XzBtM2RvX0Z1VTZjc2ZNMklKd1hGcnNmdEF4NE5ZOU8yLVcyOFByazl3UlFBQlo0ZFd1QnpLVGl6Y2thVWRXdXVZYWZFWXNBQ3JsSkRDZE1XS0JWa1lQOU1mVnI1VFJ1c2d0QUxHNVREcFZnWTNVWFZsRWJQcDAtdXkzSll2cnZVNEdqWGp3cnRDME5oTW9nVDZKUUZNYUNyNE44?oc=5",
+      "source": "On3",
+      "ts": 1757269889.0,
+      "published_iso": "2025-09-07T18:31:29+00:00"
+    },
     {
       "id": "https-news-google-com-rss-articles-cbmikwjbvv95cuxozc1zughrmvpta1n2defoaxrry0vau2etou1ivzbjzgzoblazqmljd1ruslbycgrqeknjm",
       "title": "See where Notre Dame football landed in this week's US LBM Coaches Poll",
@@ -25,14 +33,6 @@
       "source": "Yahoo Sports",
       "ts": 1757262731.0,
       "published_iso": "2025-09-07T16:32:11+00:00"
-    },
-    {
-      "id": "https-news-google-com-rss-articles-cbmi0afbvv95cuxpdgs0dlhoufrkuhjezffhn2rvu19cowd0dgrxnnattfzqrgtls1zdr212tv83xzbtm2rvx",
-      "title": "Where Notre Dame Fighting Irish appear in Week 3 college football rankings",
-      "link": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxPdGs0dlhoUFRkUHJEZFFhN2RVU19COWd0dGRxNnAtTFZQRGtlS1ZDR212TV83XzBtM2RvX0Z1VTZjc2ZNMklKd1hGcnNmdEF4NE5ZOU8yLVcyOFByazl3UlFBQlo0ZFd1QnpLVGl6Y2thVWRXdXVZYWZFWXNBQ3JsSkRDZE1XS0JWa1lQOU1mVnI1VFJ1c2d0QUxHNVREcFZnWTNVWFZsRWJQcDAtdXkzSll2cnZVNEdqWGp3cnRDME5oTW9nVDZKUUZNYUNyNE44?oc=5",
-      "source": "On3",
-      "ts": 1757227793.0,
-      "published_iso": "2025-09-07T06:49:53+00:00"
     },
     {
       "id": "https-news-google-com-rss-articles-cbmi3wfbvv95cuxpm0d6ymxqaezsslfyz2j5adhxagfpofdwmle5tjhkcxzlremwzvyta2i3dhpkdkywogdod",
@@ -139,20 +139,20 @@
       "published_iso": "2025-09-05T16:28:41+00:00"
     },
     {
+      "id": "https-news-google-com-rss-articles-cbmi5wfbvv95cuxpse5hwvpxm2x3m1vmumrcwhffynb6vmdnykt6awhumk5dawvkui03lwk4vxj5nlldwe1iz",
+      "title": "Utica Notre Dame football 2025: New coaches, players aim to help program improve",
+      "link": "https://news.google.com/rss/articles/CBMi5wFBVV95cUxPSE5HWVpxM2x3M1VMUmRCWHFfYnB6VmdnYkt6aWhuMk5DaWVkUi03LWk4VXJ5NllDWE1iZ1ZpMTc3azFCeFVVc0lTZnQ2OTEwQUVmaWF1QTlhYWtfcXozUWY1RW05SWdwRUV0SW55VDF5Z0RvUVhpQm5SaWxVVk5fdFpNN3gtOUh0bWlKU3puQWo1TE1iWGlnTGhVbGxpemQ0RDJLQzR0RGxDYlFtdWJtcXNxdm9Ydzk4QXBwZnlHYjlicWhuX3l0dmtKYXBYX25QLUNra2JlbDEtYzVSeFRhbGxBblc0SkU?oc=5",
+      "source": "Rome Sentinel",
+      "ts": 1757084400.0,
+      "published_iso": "2025-09-05T15:00:00+00:00"
+    },
+    {
       "id": "https-news-google-com-rss-articles-cbmifefvx3lxte9xbfhwdg9keffbrunleej1mnjvm2q4m0vorjbpnlrwmhp5yxbgyvnwuu14eko3axzuvjved",
       "title": "The biggest worry for Notre Dame football coming out of disappointing Week 1 loss",
       "link": "https://news.google.com/rss/articles/CBMifEFVX3lxTE9xbFhwdG9keFFBRUNLeEJ1MnJVM2Q4M0VORjBPNlRWMHp5YXBGYVNWUU14eko3aXZUVjVEd1l0M1hxVTM5ZkVyYmFQakFBeVJTd1dsTUZmOTlMU0stYUk1ODlaVU5QS2hWRTd2d2ZqMjYxTFdVNlpubmp2d2I?oc=5",
       "source": "Slap the Sign",
       "ts": 1757077821.0,
       "published_iso": "2025-09-05T13:10:21+00:00"
-    },
-    {
-      "id": "https-news-google-com-rss-articles-cbmitgfbvv95cuxpuwvezuu1dhpjovntahq4vjq0n0ixa2exddrobdf1ze14d1lfunqytdhin18tqxllogvxm",
-      "title": "Notre Dame Football star Leonard Moore tackles chronic absenteeism in South Bend",
-      "link": "https://news.google.com/rss/articles/CBMitgFBVV95cUxPUWVEZUU1dHpjOVNTaHQ4VjQ0N0Ixa2ExdDRobDF1ZE14d1lfUnQyTDhiN18tQXlLOGVXMUthQjFtT2Znb2Iya0puWGZhMUZZWm1oT1dZMjIzYkh0S2hBZEhndU1HOWcyUi1tUkNQcmlES0szbWZzX0J0MzJ6Q1M2NWh0bGhYN3RpN2VVY2JTQ3FhNk9xMVliMHpXU2x0VUw0c29hRmlEZjNuaHM2dmRlQmxvRnAzdw?oc=5",
-      "source": "95.3 MNC",
-      "ts": 1757073605.0,
-      "published_iso": "2025-09-05T12:00:05+00:00"
     },
     {
       "id": "https-news-google-com-rss-articles-cbmiqwfbvv95cuxom2hlsuxfc0vxr29fynhtvggybu9ucfv1zdbzagnwmmn0r3ffwk05vk9kx2hdnw1yzhzac",
