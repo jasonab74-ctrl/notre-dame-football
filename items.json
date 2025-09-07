@@ -1,5 +1,5 @@
 {
-  "updated_iso": "2025-09-07T07:37:41.954215+00:00",
+  "updated_iso": "2025-09-07T07:49:39.227878+00:00",
   "count": 50,
   "items": [
     {
@@ -41,6 +41,14 @@
       "source": "lehighvalleylive",
       "ts": 1757167980.0,
       "published_iso": "2025-09-06T14:13:00+00:00"
+    },
+    {
+      "id": "https-msn-com-en-us-sports-other-pat-mcafee-s-verdict-on-notre-dame-as-marcus-freeman-given-work-to-do-over-bye-week-ar-",
+      "title": "Pat McAfee's verdict on Notre Dame as Marcus Freeman given work to do over bye week",
+      "link": "https://msn.com/en-us/sports/other/pat-mcafee-s-verdict-on-notre-dame-as-marcus-freeman-given-work-to-do-over-bye-week/ar-AA1M1wYr",
+      "source": "msn.com",
+      "ts": 1757162329.0,
+      "published_iso": "2025-09-06T12:38:49+00:00"
     },
     {
       "id": "https-news-google-com-rss-articles-cbmiugfbvv95cuxpb0o2rdbtskzgvktxdeyybu84c1kwm0zomlq2u0hsvny4zvbncllgykf2wxdnajnky2dfm",
@@ -145,6 +153,14 @@
       "source": "247Sports",
       "ts": 1757071500.0,
       "published_iso": "2025-09-05T11:25:00+00:00"
+    },
+    {
+      "id": "https-news-google-com-rss-articles-cbmiqwjbvv95cuxpmlfjaxctnnpoymdodwdgmni5wje1uhhss0lleenpuur6vmdubgttn0jdthjdshppuzbsd",
+      "title": "The FIW staff chose who they believe will win Week 2’s top games in college football",
+      "link": "https://news.google.com/rss/articles/CBMiqwJBVV95cUxPMlFJaXctNnpoYmdOdWdGMnI5WjE1UHhSS0lleENpUUR6VmdUbGtTN0JDTHJDSHpPUzBsdnFyWUZqUERLOUlEajFhV08zZF93Q1R5eU40UFJ2VTJDM1dVdW9IczlBcFpKd1ZVa2hfSlhJTXc0UDl5NmhlS2tEcXp2WmV1REQ2Rl9Db2dTY3p6TVlhUjRJTWVQOG8tWnlpU2tqd292Q1RJZXRsZ19sX1Qtbkc2RTZVZ3FBTjBTa0pjSFBtWEtYU3RtMVZtVWtkcWNDbXREVFFJclA5Y3ZqWktVLTVmRFRXRS1CLXdYa2NYbk41QlFUSFZPOWdZS240S2VSMktVUUtMUFdCLVQtOUtzTmRYb3kxcVAyQktSSE1DNjRsMjJBQVJYVlU1TQ?oc=5",
+      "source": "Fighting Irish Wire",
+      "ts": 1757070105.0,
+      "published_iso": "2025-09-05T11:01:45+00:00"
     },
     {
       "id": "https-onefootdown-com-notre-dame-fighting-irish-football-76963-college-football-week-2-could-be-sneaky-good-staff-picks",
@@ -385,22 +401,6 @@
       "source": "South Bend Tribune",
       "ts": 1756742720.0,
       "published_iso": "2025-09-01T16:05:20+00:00"
-    },
-    {
-      "id": "https-news-google-com-rss-articles-cbmijgjbvv95cuxockftdhdonkjcu0rwcw5ot0h0unnvrlvunf95zhzqv1zutmxlawxsy2hnrujvouhgzvg5r",
-      "title": "How did Notre Dame football distribute snap counts in 27-24 loss to Miami?",
-      "link": "https://news.google.com/rss/articles/CBMijgJBVV95cUxOckFtdHdoNkJCU0RWcW5oT0h0UnNvRlVuNF95ZHZQV1ZuTmxLaWxSY2hNRUJVOUhGZVg5RThJOUQ2NW1XN25UY2ZyZnNMdGI3MVRTcTdhWHNJV09oeHVvNF9CYlNDR0RlZ2U1dkJXM3JfMTFWNm9FSHlfM0NwNzJ1VUdaYm1RS2ZYRFdmdHdTUnhBR2FnVVBiWXhiLWkyQWZXdkM5MWZIZTdLSUxHYlpYRkFmV3lRTWdxbDgzVENNZHZDR3o3Y0VpX0RBZW9tQk9YT3BRSXZLTTF2cFB0TVp6dDhpVHlZTmk2S0JsUy0yb3NjVUx1U0luYWVybmxPSEpZeDVQZDFOZ3ZPUHFLcmc?oc=5",
-      "source": "South Bend Tribune",
-      "ts": 1756741487.0,
-      "published_iso": "2025-09-01T15:44:47+00:00"
-    },
-    {
-      "id": "https-news-google-com-rss-articles-cbmiigfbvv95cuxnv0phyzlhzek0eumzowyyqzl4uffmsujycenuzmj0nel1mnfrofdru3i4bhlfdfe1q1jjr",
-      "title": "Notre Dame football’s Marcus Freeman admits 1 big failure vs. Miami",
-      "link": "https://news.google.com/rss/articles/CBMiigFBVV95cUxNV0phYzlHZEk0eUMzOWYyQzl4UFFMSUJycENUZmJ0NEl1MnFrOFdrU3I4bHlFdFE1Q1JJRlN4SE1oSDd3ckFWRVlBSld1OVRiQ2MwTEo0OVREMy1GWmI4SUZpa01GaUMyR0QxX0hrWDFqNDJrQTVMTDJuVi1PLU5SQ2dTNjhBa004bkE?oc=5",
-      "source": "Yahoo Sports",
-      "ts": 1756733302.0,
-      "published_iso": "2025-09-01T13:28:22+00:00"
     }
   ]
 }
