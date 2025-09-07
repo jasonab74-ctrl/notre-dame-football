@@ -1,31 +1,7 @@
 {
-  "updated_iso": "2025-09-07T22:31:55.855489+00:00",
-  "count": 8,
+  "updated_iso": "2025-09-07T22:49:34.812882+00:00",
+  "count": 5,
   "items": [
-    {
-      "id": "https-usatoday-com-story-sports-college-football-2025-09-07-back-from-an-extended-break-notre-dame-football-prepares-for",
-      "title": "Leave your Notre Dame football question or comment about Week Two here. Now.",
-      "link": "https://usatoday.com/story/sports/college/football/2025/09/07/back-from-an-extended-break-notre-dame-football-prepares-for-texas-am/85806040007/",
-      "source": "USA Today",
-      "ts": 1757251500.0,
-      "published_iso": "2025-09-07T13:25:00+00:00"
-    },
-    {
-      "id": "https-apnews-com-ds-college-football-ct14-nid49800-qid34648-syid26732-mid3219735-dataskrive-story",
-      "title": "Notre Dame vs. Texas A&M football tickets for Saturday, Sept. 13",
-      "link": "https://apnews.com/ds/college-football-ct14-nid49800-qid34648-syid26732-mid3219735-dataskrive-story",
-      "source": "AP News",
-      "ts": 1757211960.0,
-      "published_iso": "2025-09-07T02:26:00+00:00"
-    },
-    {
-      "id": "https-usatoday-com-story-sports-college-football-2025-09-06-notre-dame-fighting-irish-college-football-schedule-bye-week",
-      "title": "Does Notre Dame play today? Football schedule for Irish's next game after Week 2 bye",
-      "link": "https://usatoday.com/story/sports/college/football/2025/09/06/notre-dame-fighting-irish-college-football-schedule-bye-week-2/85958331007/",
-      "source": "USA Today",
-      "ts": 1757142660.0,
-      "published_iso": "2025-09-06T07:11:00+00:00"
-    },
     {
       "id": "https-onefootdown-com-notre-dame-fighting-irish-football-76963-college-football-week-2-could-be-sneaky-good-staff-picks",
       "title": "College Football Week 2 could be sneaky good: Staff Picks",
@@ -51,20 +27,20 @@
       "published_iso": "2025-09-04T16:52:19+00:00"
     },
     {
+      "id": "https-onefootdown-com-notre-dame-fighting-irish-football-76908-notre-dame-football-stats-2025-26-week-1-review",
+      "title": "Notre Dame Football Stats: 2025-26 Week 1 Review",
+      "link": "https://onefootdown.com/notre-dame-fighting-irish-football/76908/notre-dame-football-stats-2025-26-week-1-review",
+      "source": "One Foot Down",
+      "ts": 1756981341.0,
+      "published_iso": "2025-09-04T10:22:21+00:00"
+    },
+    {
       "id": "https-onefootdown-com-notre-dame-charity-good-works-76900-fighting-hunger-the-irish-way",
       "title": "Fighting Hunger, the Irish Way",
       "link": "https://onefootdown.com/notre-dame-charity-good-works/76900/fighting-hunger-the-irish-way",
       "source": "One Foot Down",
       "ts": 1756980301.0,
       "published_iso": "2025-09-04T10:05:01+00:00"
-    },
-    {
-      "id": "https-sports-yahoo-com-article-notre-dame-football-stats-2025-102221981-html",
-      "title": "Notre Dame Football Stats: 2025-26 Week 1 Review",
-      "link": "https://sports.yahoo.com/article/notre-dame-football-stats-2025-102221981.html",
-      "source": "Yahoo Sports",
-      "ts": 1756956540.0,
-      "published_iso": "2025-09-04T03:29:00+00:00"
     }
   ]
 }
