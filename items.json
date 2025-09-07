@@ -1,5 +1,5 @@
 {
-  "updated_iso": "2025-09-07T10:33:28.920883+00:00",
+  "updated_iso": "2025-09-07T10:49:19.226279+00:00",
   "count": 50,
   "items": [
     {
@@ -25,6 +25,14 @@
       "source": "WNDU",
       "ts": 1757175480.0,
       "published_iso": "2025-09-06T16:18:00+00:00"
+    },
+    {
+      "id": "https-msn-com-en-us-sports-other-elite-2026-texas-commit-confirms-miami-hurricanes-are-still-in-the-fold-after-attending",
+      "title": "Elite 2026 Texas commit confirms Miami Hurricanes are still in the fold after attending big win over Notre Dame",
+      "link": "https://msn.com/en-us/sports/other/elite-2026-texas-commit-confirms-miami-hurricanes-are-still-in-the-fold-after-attending-big-win-over-notre-dame/ar-AA1M15Js",
+      "source": "msn.com",
+      "ts": 1757168280.0,
+      "published_iso": "2025-09-06T14:18:00+00:00"
     },
     {
       "id": "https-news-google-com-rss-articles-cbmi3wfbvv95cuxpm0d6ymxqaezsslfyz2j5adhxagfpofdwmle5tjhkcxzlremwzvyta2i3dhpkdkywogdod",
@@ -137,6 +145,14 @@
       "source": "247Sports",
       "ts": 1757071500.0,
       "published_iso": "2025-09-05T11:25:00+00:00"
+    },
+    {
+      "id": "https-news-google-com-rss-articles-cbmiqwjbvv95cuxpmlfjaxctnnpoymdodwdgmni5wje1uhhss0lleenpuur6vmdubgttn0jdthjdshppuzbsd",
+      "title": "The FIW staff chose who they believe will win Week 2’s top games in college football",
+      "link": "https://news.google.com/rss/articles/CBMiqwJBVV95cUxPMlFJaXctNnpoYmdOdWdGMnI5WjE1UHhSS0lleENpUUR6VmdUbGtTN0JDTHJDSHpPUzBsdnFyWUZqUERLOUlEajFhV08zZF93Q1R5eU40UFJ2VTJDM1dVdW9IczlBcFpKd1ZVa2hfSlhJTXc0UDl5NmhlS2tEcXp2WmV1REQ2Rl9Db2dTY3p6TVlhUjRJTWVQOG8tWnlpU2tqd292Q1RJZXRsZ19sX1Qtbkc2RTZVZ3FBTjBTa0pjSFBtWEtYU3RtMVZtVWtkcWNDbXREVFFJclA5Y3ZqWktVLTVmRFRXRS1CLXdYa2NYbk41QlFUSFZPOWdZS240S2VSMktVUUtMUFdCLVQtOUtzTmRYb3kxcVAyQktSSE1DNjRsMjJBQVJYVlU1TQ?oc=5",
+      "source": "Fighting Irish Wire",
+      "ts": 1757070105.0,
+      "published_iso": "2025-09-05T11:01:45+00:00"
     },
     {
       "id": "https-onefootdown-com-notre-dame-fighting-irish-football-76963-college-football-week-2-could-be-sneaky-good-staff-picks",
@@ -385,22 +401,6 @@
       "source": "South Bend Tribune",
       "ts": 1756721481.0,
       "published_iso": "2025-09-01T10:11:21+00:00"
-    },
-    {
-      "id": "https-news-google-com-rss-articles-cbmijgjbvv95cuxoam5uukm5t2lkvnzjs2nwuuzoadu5bkpcmhrwn0zhdzdks2rjbulisvlpzupgrw8xchljo",
-      "title": "Notre Dame football writer Mike Berardino breaks down 27-24 loss at Miami",
-      "link": "https://news.google.com/rss/articles/CBMijgJBVV95cUxOam5uUkM5T2lkVnZjS2NwUUZOaDU5bkpCMHRWN0ZHdzdkS2RjbUlISVlpZUpGRW8xcHljOGNYeGF6cWp3S3ZWNjdVZUVUalRaazF0VmNaTllpakREWWtvai1Yd3UtNGF2Tk56YmtJa1RHOHo4OG1kYngydEplNi0xeFR1TmpvS2lvNGNMR0d2UVVpaEtSLVdoYnJ2ZXVjZWVpLXFMSmtGbHpLdkRvNlZzcjJhZ2JjMUgzT2g4TXFuc0Y3dGZUNFdkRW5nenB6ZW1XOXVOY0FjdWt1NDBfWnBHbW80MDZxbU9MY2NtdzF6WGRzS20ybmNmanVOai16WW1BQmJ2RHlhblZnRGpmakE?oc=5",
-      "source": "South Bend Tribune",
-      "ts": 1756715304.0,
-      "published_iso": "2025-09-01T08:28:24+00:00"
-    },
-    {
-      "id": "https-news-google-com-rss-articles-cbmi-wfbvv95cuxqohpjqxfqa255czrmadjucvutd2s4dvu4znpuvwjes0xlrfh3mgfurephcznou0pydfrxn",
-      "title": "How can everything still be OK for No. 5 Notre Dame football after opening 0-1?",
-      "link": "https://news.google.com/rss/articles/CBMi-wFBVV95cUxQOHpjQXFQa255czRMaDJucVUtd2s4dVU4ZnpUVWJES0xLRFh3MGFUREpHczNOU0pYdFRXN3I4STZlckJaVUk4UkdxSU9uakdsekJXenZCa0EzdmJSQ2JCb2F0dzFfWHVyMEJKTjNleUNuazZuTUl0bThHa1lfTVZKN1RxSDhKUU5sTFZaczFvdmh0enJDWVc2em1QMHpuNS1ZbTh0LWxsaVZvME1ZTzIyaHREbzdhNXR6bFFiWTlyZWQwTWhRdl9yVXFEUzhHRE92OWNUdnFBVk9Ja3M3TnZqdURoY25SOWZJdkY5dGIxbzVQQXE4YkoxRnM2OA?oc=5",
-      "source": "South Bend Tribune",
-      "ts": 1756714221.0,
-      "published_iso": "2025-09-01T08:10:21+00:00"
     }
   ]
 }
