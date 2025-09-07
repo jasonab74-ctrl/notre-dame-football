@@ -1,7 +1,15 @@
 {
-  "updated_iso": "2025-09-07T14:50:11.603725+00:00",
+  "updated_iso": "2025-09-07T15:27:54.739256+00:00",
   "count": 50,
   "items": [
+    {
+      "id": "https-apnews-com-ds-college-football-ct14-nid49800-qid34648-syid26732-mid3219735-dataskrive-story",
+      "title": "Notre Dame vs. Texas A&M football tickets for Saturday, Sept. 13",
+      "link": "https://apnews.com/ds/college-football-ct14-nid49800-qid34648-syid26732-mid3219735-dataskrive-story",
+      "source": "AP News",
+      "ts": 1757211960.0,
+      "published_iso": "2025-09-07T02:26:00+00:00"
+    },
     {
       "id": "https-msn-com-en-us-sports-other-early-injury-news-could-completely-reshape-the-game-plan-for-notre-dame-heading-into-th",
       "title": "Early injury news could completely reshape the game plan for Notre Dame heading into their home opener against Texas A&M",
@@ -187,6 +195,14 @@
       "published_iso": "2025-09-04T16:52:19+00:00"
     },
     {
+      "id": "https-news-google-com-rss-articles-cbmi-afbvv95cuxnwhjfchdyzxfny0psxzlpaksxtnqwdfjzcjfed0nym0jny3zvcdbqs2rzchm0nzhczepeq",
+      "title": "Was Notre Dame at Miami the most watched game of Week 1 across college football?",
+      "link": "https://news.google.com/rss/articles/CBMi-AFBVV95cUxNWHJfcHdyZXFNY0psXzlPaksxTnQwdFJZcjFEd0NyM0JnY3ZVcDBQS2RZcHM0NzhCZEpEQy1yeEp3VXc5V2R6T2luZTliaUtTTUVwaXBkNEZWWmYwRjVBcHZjSEtZQlRHQWEzSHRmSjJJelh1MUhnNW9tUVdMQ3NWWWlZaGN4WEVGQ081QUZtVEFOMlhkWmxYREkzZHFXa2xVSjlwV1F5X0pPZWRJOEpoQlBibUptdTVQWlJIN1ZHbGxoT3diLTJSUzVDMzFscjdJeFQwWjVaNHZ0Umd6WXFGZnRoS1B5SWhUbWlsekNKNWV6MjJvVHBZaw?oc=5",
+      "source": "Fighting Irish Wire",
+      "ts": 1756984500.0,
+      "published_iso": "2025-09-04T11:15:00+00:00"
+    },
+    {
       "id": "https-news-google-com-rss-articles-cbmitwfbvv95cuxnqv9ackjtvhrvczfudgpxouz3nffiewwzwvhfwmd5akp2tl8ws25yc2jewnvjvhppwxhkc",
       "title": "Notre Dame Football Stats: 2025-26 Week 1 Review",
       "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxNQV9ackJtVHRvczFUdGpXOUZ3NFFieWwzWVhfWmd5akp2Tl8wS25yc2JEWnVjVHpPWXhkcDR3bTk2VXNtLUxISEFlb1dPbzJPR2VXOHpkZzltbU1wUE9UeUFETDFSUWhlOWVKVDFNNS04RXBwTHJ4Y2t5aThRNkRMWGZScW02REF6NWYybFpCc3JDZVVsaUtnWFZaNmQ2TXpVc0hrS2xhN25SaU1pZnF2aHp0UFVLTzQ?oc=5",
@@ -211,9 +227,9 @@
       "published_iso": "2025-09-03T22:54:00+00:00"
     },
     {
-      "id": "https-news-google-com-rss-articles-cbmipgjbvv95cuxpdxi1dnlddxk3velks2zvewo0s0nov3c3b0mywhk1yljusxdsu2tts2yxszfacwjzsevrd",
+      "id": "https-news-google-com-rss-articles-cbmingjbvv95cuxnmmx6c2hdz0xueknsdmetwnjunjhlcl81mlu3vu1qlwtqx3yzvhmzemtrrkf5sk01dly3q",
       "title": "Notre Dame football star tackles chronic absenteeism in South Bend Schools",
-      "link": "https://news.google.com/rss/articles/CBMipgJBVV95cUxPdXI1dnlDdXk3VElkS2ZveWo0S0NoV3c3b0MyWHk1YlJuSXdSU2ttS2YxSzFacWJZSEVrdFItQWVsZk1pSkNpXzY0NEFqZGJscEZBclpCWTgtSFlIbko5cm5VMFFfdkNycldBT1EwOG9BRVpoVXUyMUltRjVWbXdYSHpiOXg5dVdwekY1SXFuZlRhQVZ5RWxQZ2xnekl5TnZ6dUxuVTZHVXNhZldRUjdtN2pHaExpU1UyMkNWNWZ3QUtLVjFhSlFjRVMxMlhZclRfYllMQ3FuaE0zdHhQM3dmc1EyOGxzUGNaMTRyNU45dFlaZnFhQ1p5RVBJMmRqeEdVaFJUdnpURGhIdjJEWXAtLWdSMWJtTEZJQkR5M0VuR2djaC1VUWc?oc=5",
+      "link": "https://news.google.com/rss/articles/CBMingJBVV95cUxNMmx6c2hDZ0xuekNSdmEtWnJuNjhLcl81MlU3VU1qLWtQX3YzVHMzemtrRkF5Sk01dlY3QUdsV3ZMZG9CeVBnNGdBZ0RMUHZfX05pRXBMM3JXd2VnNTR6dUtoNEo2bkducjFCLUx1OF9iSnUzaXF4OUxFRTktXzNIQU5BVGlmZTJpaU44ZGEyZ3dxU3JtTGo5VlNPcDlZLW8xLS1lemVxT3FOb2VaZTE3Wjh2Qm9kRGpUTjZGdVNXaDNlUHFNdUNkOXl3TVdJWEJpYkVPLXJQZVlLM05PMU1hM3BaY3hFanEyWWVOcTVwZmJ3c3V4T2JDcHppSjFxUXZSdDVJVjVRREFrc0ZVMFphRUZ5OEJTMkVsdjNRXzdn?oc=5",
       "source": "WSBT",
       "ts": 1756933474.0,
       "published_iso": "2025-09-03T21:04:34+00:00"
@@ -291,10 +307,10 @@
       "published_iso": "2025-09-01T21:13:02+00:00"
     },
     {
-      "id": "https-news-google-com-rss-articles-cbmi8wfbvv95cuxpcklxogg4eljsaxhuy2jjszj0vfvbvzzqdjfrnk5yeeu5wdfltw9ha3fqy0llrfdubktwb",
+      "id": "https-news-google-com-rss-articles-cbmijafbvv95cuxnslnjn1hdqwdlbfryeddgbhvneezix0fucwjdczy2vlzlugzlvgtpzc1iaw9ov2rndw1um",
       "title": "Notre Dame football has a personnel change that they should consider to unlock the Fighting Irish defense under DC Chris Ash",
-      "link": "https://news.google.com/rss/articles/CBMi8wFBVV95cUxPcklxOGg4elJsaXhUY2JJSzJ0VFVBVzZqdjFRNk5YeEU5WDFLTW9ha3FqY0lLRFdUbktWbjktbzdiRnJyS0NSUGhaQXV1cFZRZVNZT2JLU0p1S01UMWFyVGtUUGl0cE5tcTlqMnRtOGhoQUZpSHVURFYyMkFMTG9aN3R6YWxLUGxlRkg4aHRibmtvaXVKQk51cmRfV09HOW8tQ20xeFVTQUdxVVJwTm5TWGhTYnN6YWt1bTkweWVwNlFSMjF6MlJKMFdHN0lSd2pEbnhXQW8xWnhXV1lEVHFkRWZRR2RCWGdoc0dpSFUzRVpOTXM?oc=5",
-      "source": "A to Z Sports",
+      "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxNSlNJN1hDQWdlbFRYeDdGbHVneEZiX0FUcWJDczY2VlZLUGZlVGtPZC1IaW9oV2RNdW1uMzViNnVkeVBENlEtbW5FTVNGQ19kZVJfQnRHOVpEWGNDZzRqN2VHYlFSM2Vtb2s3Z3c1dUVQZ0lRTkZ6dEQ0QU56MmoxV00tRDE0VkNlcUlySA?oc=5",
+      "source": "Yahoo Sports",
       "ts": 1756756652.0,
       "published_iso": "2025-09-01T19:57:32+00:00"
     },
@@ -371,36 +387,20 @@
       "published_iso": "2025-09-01T10:11:21+00:00"
     },
     {
-      "id": "https-news-google-com-rss-articles-cbmifefvx3lxte5imthdvjdcdhzfb0piwlrpmnlvnwzzrjdjuuitqwxoow90utfvbfhzew9xqtb2duizblpaq",
-      "title": "How can everything still be OK for No. 5 Notre Dame football after opening 0-1?",
-      "link": "https://news.google.com/rss/articles/CBMifEFVX3lxTE5IMThDVjdCdHZFb0piWlRPMnlVNWZzRjdjUUItQWxoOW90UTFVbFhzeW9XQTB2dUIzblpaQk1GVG13YVVDYUxoTFNQU19WeC05bjZjaEtmREJyU0tEY0VsNWhxQlBDZTR0YzYyNmlNc3R1bmZsM1FfMXA0QnA?oc=5",
-      "source": "Yahoo Sports",
-      "ts": 1756713685.0,
-      "published_iso": "2025-09-01T08:01:25+00:00"
-    },
-    {
-      "id": "https-news-google-com-rss-articles-cbmipafbvv95cuxowkdgdevrdex5nllnyklwv1p0lurfrxpmvkxkos1wawjrstrxdjj3zmpmcko2z0pyqjhte",
-      "title": "Notre Dame football 2025: TV schedule, streaming guide for the Fighting Irish",
-      "link": "https://news.google.com/rss/articles/CBMipAFBVV95cUxOWkdGdEVRdEx5NllnYklwV1p0LURFRXpMVkxKOS1WaWJrSTRXdjJ3Zmpmcko2Z0pyQjhTeTlZRkNpYkZDRG0tUjZXdmZMUFZxbHZDdnQ2d0IyYXd5dWIyc1M5VklKdS0xTi16YUlKNTl6Y0p6SFlNVmp0QUVQTXl2VlJaX3M0WWpPR1B1SC1hMDk0YWdmbHJkSVRSTEhCc3d0SmtCQg?oc=5",
-      "source": "The New York Times",
-      "ts": 1756710000.0,
-      "published_iso": "2025-09-01T07:00:00+00:00"
-    },
-    {
-      "id": "https-news-google-com-rss-articles-cbmijwfbvv95cuxpm2vkuf8tvnncmm10rjfeewhlufjjslrpufluvk52cehfzg9qckxor3l5bzdxetrdofbyw",
-      "title": "In picking CJ Carr, Marcus Freeman ended Notre Dame’s unexpected QB competition his way",
-      "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxPM2VkUF8tVnNCMm10RjFEeWhlUFJjSlRPUFlUVk52cEhfZG9qckxOR3l5bzdxeTRDOFByWlVocFl0QUhUSlZnOUgzNHNxalFwVFlJdkVXTUtDVTVzdkYyUTdjYlZGN29JSC1zTGF2ZHdlcUdjc3BEVHJFQ3pOVGlVVFdwX0tuVmZqV2llbmZoUQ?oc=5",
-      "source": "The New York Times",
-      "ts": 1756710000.0,
-      "published_iso": "2025-09-01T07:00:00+00:00"
-    },
-    {
-      "id": "https-news-google-com-rss-articles-cbmiiwjbvv95cuxottfwcvnlzmjzdzrtb2utbm1zc0xhmenxnwdguhfvsgz6devwutzyuwpuwnnzmzndv245b",
-      "title": "Why Notre Dame football couldn't get Jeremiyah Love going in loss to Miami",
-      "link": "https://news.google.com/rss/articles/CBMiiwJBVV95cUxOTTFwcVNlZmJzdzRTb2Utbm1Zc0xhMENXNWdGUHFVSGZ6dEVwUTZyUWpuWnNzMzNDV245bzBrWkpXZU8wellnS29fS01FOTcwRy1rczlvM1BRbkMyTnUxX1E0MVdvTzVYYnRUN0N4LVJsQUhsdklZaE5KR1FmbndsT2NEenBRSlBjMDR0UjNLN2tQNnpVajhMZVFYMmNCV2lvbDJlcVpGR3FwQnNWem1pMGY1M185WDZ4cDF6S0xNUzh3UHROazViS244WDZPczJOejF0ZENNRzdtN2kyZk5yQkNZRU5GX3ljLTZsTC04Q1NGTTQ2VGJMRFVmbWY1aUpKYl9SMWxER2doLTg?oc=5",
+      "id": "https-news-google-com-rss-articles-cbmijgjbvv95cuxoam5uukm5t2lkvnzjs2nwuuzoadu5bkpcmhrwn0zhdzdks2rjbulisvlpzupgrw8xchljo",
+      "title": "Notre Dame football writer Mike Berardino breaks down 27-24 loss at Miami",
+      "link": "https://news.google.com/rss/articles/CBMijgJBVV95cUxOam5uUkM5T2lkVnZjS2NwUUZOaDU5bkpCMHRWN0ZHdzdkS2RjbUlISVlpZUpGRW8xcHljOGNYeGF6cWp3S3ZWNjdVZUVUalRaazF0VmNaTllpakREWWtvai1Yd3UtNGF2Tk56YmtJa1RHOHo4OG1kYngydEplNi0xeFR1TmpvS2lvNGNMR0d2UVVpaEtSLVdoYnJ2ZXVjZWVpLXFMSmtGbHpLdkRvNlZzcjJhZ2JjMUgzT2g4TXFuc0Y3dGZUNFdkRW5nenB6ZW1XOXVOY0FjdWt1NDBfWnBHbW80MDZxbU9MY2NtdzF6WGRzS20ybmNmanVOai16WW1BQmJ2RHlhblZnRGpmakE?oc=5",
       "source": "South Bend Tribune",
-      "ts": 1756703976.0,
-      "published_iso": "2025-09-01T05:19:36+00:00"
+      "ts": 1756715304.0,
+      "published_iso": "2025-09-01T08:28:24+00:00"
+    },
+    {
+      "id": "https-news-google-com-rss-articles-cbmi-wfbvv95cuxqohpjqxfqa255czrmadjucvutd2s4dvu4znpuvwjes0xlrfh3mgfurephcznou0pydfrxn",
+      "title": "How can everything still be OK for No. 5 Notre Dame football after opening 0-1?",
+      "link": "https://news.google.com/rss/articles/CBMi-wFBVV95cUxQOHpjQXFQa255czRMaDJucVUtd2s4dVU4ZnpUVWJES0xLRFh3MGFUREpHczNOU0pYdFRXN3I4STZlckJaVUk4UkdxSU9uakdsekJXenZCa0EzdmJSQ2JCb2F0dzFfWHVyMEJKTjNleUNuazZuTUl0bThHa1lfTVZKN1RxSDhKUU5sTFZaczFvdmh0enJDWVc2em1QMHpuNS1ZbTh0LWxsaVZvME1ZTzIyaHREbzdhNXR6bFFiWTlyZWQwTWhRdl9yVXFEUzhHRE92OWNUdnFBVk9Ja3M3TnZqdURoY25SOWZJdkY5dGIxbzVQQXE4YkoxRnM2OA?oc=5",
+      "source": "South Bend Tribune",
+      "ts": 1756714221.0,
+      "published_iso": "2025-09-01T08:10:21+00:00"
     }
   ]
 }
