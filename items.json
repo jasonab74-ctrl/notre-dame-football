@@ -1,5 +1,5 @@
 {
-  "updated_iso": "2025-09-07T11:22:32.744316+00:00",
+  "updated_iso": "2025-09-07T11:38:16.738955+00:00",
   "count": 50,
   "items": [
     {
@@ -17,6 +17,14 @@
       "source": "lehighvalleylive",
       "ts": 1757194020.0,
       "published_iso": "2025-09-06T21:27:00+00:00"
+    },
+    {
+      "id": "https-news-google-com-rss-articles-cbmi9wfbvv95cuxnztntme9hv0lidursc2s3uew3ylluttruv1v4burwm1ngtwjcdwlhanbgc1zhrhj0mzzyw",
+      "title": "ESPN College GameDay picks the winners of Week 2’s top games in college football",
+      "link": "https://news.google.com/rss/articles/CBMi9wFBVV95cUxNZTNTME9hV0lidURsc2s3UEw3YlluTTRuV1V4bURwM1NGTWJCdWlHanBGc1ZhRHJ0MzZyWmpDSUdZaDJHTXpadlEzd2VZM3pxbkNtZkhPVGs4VC1STHh2RWtkVV9QZnhndk4tQUp1QTBtYThQcHBGR0NBYU4yNVNNb0ZxUlRnUzdHM1JHZzJILVRHZVg3Q3o5Y3VVaERrTGRObFhOWVJHc2J6c0xER1RES0FlM3Y5RlNxM1UxdS1FdWw3dTFlRExKdHgtVW1zM2lKdzM5ZDdHdnZvVnpBQ3AxT3pfbkNtNFFkSG1ZX3M3RVJDa0NTVXk0?oc=5",
+      "source": "Fighting Irish Wire",
+      "ts": 1757175885.0,
+      "published_iso": "2025-09-06T16:24:45+00:00"
     },
     {
       "id": "https-news-google-com-rss-articles-cbmilwfbvv95cuxnewvhbldgrnbfre9jx05oblu1mkdnadlumne4nkt6zkrim3ddwm5lrwxoq04xwwjkvgvis",
@@ -99,20 +107,20 @@
       "published_iso": "2025-09-05T21:00:01+00:00"
     },
     {
-      "id": "https-msn-com-en-us-sports-other-ole-miss-football-notre-dame-fighting-irish-and-michigan-cruising-in-recruiting-ar-aa1l",
-      "title": "Ole Miss Football, Notre Dame Fighting Irish and Michigan Cruising in Recruiting",
-      "link": "https://msn.com/en-us/sports/other/ole-miss-football-notre-dame-fighting-irish-and-michigan-cruising-in-recruiting/ar-AA1LYOdc",
-      "source": "msn.com",
-      "ts": 1757094720.0,
-      "published_iso": "2025-09-05T17:52:00+00:00"
-    },
-    {
       "id": "https-news-google-com-rss-articles-cbmi-gfbvv95cuxnyu4xsus4ums2auprvuj1znk4de1lyu5oamluvvrfb2qybwn5dm9jtw15tkdkddjmzmx5n",
       "title": "Watch:Notre Dame football’s social media account spotlights quarterback CJ Carr",
       "link": "https://news.google.com/rss/articles/CBMi-gFBVV95cUxNYU4xSUs4Ums2aUprVUJ1Znk4dE1lYU5OamluVVRfb2QybWN5dm9JTW15TkdkdDJmZmx5N3Y5bm05N2YzSGlkV3FMZDJXaGk2Q29BQmx4VmQ2MGJFdHVFdzU3M2xTSVpJVmtaVVAwTllud0c5eXczdTNlekhZQkFIcGlFRzZuckNoQmdwMmhqQThEVWRHalNXUTRKVTNvYzV5Z09CVVdmSjJrdXRXT0dRcXh3cHk0bUZWWllaR2hBN2lwWEQ0dDNVOVBBS0Frb2NrYmFSTFBJem1pcWppWlhUNDdMdzUwOThscG5NUnVFWEtYQ256bU9BNTVR?oc=5",
       "source": "Fighting Irish Wire",
       "ts": 1757089721.0,
       "published_iso": "2025-09-05T16:28:41+00:00"
+    },
+    {
+      "id": "https-msn-com-en-us-sports-other-ole-miss-football-notre-dame-fighting-irish-and-michigan-cruising-in-recruiting-ar-aa1l",
+      "title": "Ole Miss Football, Notre Dame Fighting Irish and Michigan Cruising in Recruiting",
+      "link": "https://msn.com/en-us/sports/other/ole-miss-football-notre-dame-fighting-irish-and-michigan-cruising-in-recruiting/ar-AA1LYOdc",
+      "source": "msn.com",
+      "ts": 1757080337.0,
+      "published_iso": "2025-09-05T13:52:17+00:00"
     },
     {
       "id": "https-news-google-com-rss-articles-cbmifefvx3lxte9xbfhwdg9keffbrunleej1mnjvm2q4m0vorjbpnlrwmhp5yxbgyvnwuu14eko3axzuvjved",
@@ -137,6 +145,14 @@
       "source": "247Sports",
       "ts": 1757071500.0,
       "published_iso": "2025-09-05T11:25:00+00:00"
+    },
+    {
+      "id": "https-news-google-com-rss-articles-cbmiqwjbvv95cuxpmlfjaxctnnpoymdodwdgmni5wje1uhhss0lleenpuur6vmdubgttn0jdthjdshppuzbsd",
+      "title": "The FIW staff chose who they believe will win Week 2’s top games in college football",
+      "link": "https://news.google.com/rss/articles/CBMiqwJBVV95cUxPMlFJaXctNnpoYmdOdWdGMnI5WjE1UHhSS0lleENpUUR6VmdUbGtTN0JDTHJDSHpPUzBsdnFyWUZqUERLOUlEajFhV08zZF93Q1R5eU40UFJ2VTJDM1dVdW9IczlBcFpKd1ZVa2hfSlhJTXc0UDl5NmhlS2tEcXp2WmV1REQ2Rl9Db2dTY3p6TVlhUjRJTWVQOG8tWnlpU2tqd292Q1RJZXRsZ19sX1Qtbkc2RTZVZ3FBTjBTa0pjSFBtWEtYU3RtMVZtVWtkcWNDbXREVFFJclA5Y3ZqWktVLTVmRFRXRS1CLXdYa2NYbk41QlFUSFZPOWdZS240S2VSMktVUUtMUFdCLVQtOUtzTmRYb3kxcVAyQktSSE1DNjRsMjJBQVJYVlU1TQ?oc=5",
+      "source": "Fighting Irish Wire",
+      "ts": 1757070105.0,
+      "published_iso": "2025-09-05T11:01:45+00:00"
     },
     {
       "id": "https-onefootdown-com-notre-dame-fighting-irish-football-76963-college-football-week-2-could-be-sneaky-good-staff-picks",
@@ -385,22 +401,6 @@
       "source": "South Bend Tribune",
       "ts": 1756721481.0,
       "published_iso": "2025-09-01T10:11:21+00:00"
-    },
-    {
-      "id": "https-news-google-com-rss-articles-cbmifefvx3lxte5imthdvjdcdhzfb0piwlrpmnlvnwzzrjdjuuitqwxoow90utfvbfhzew9xqtb2duizblpaq",
-      "title": "How can everything still be OK for No. 5 Notre Dame football after opening 0-1?",
-      "link": "https://news.google.com/rss/articles/CBMifEFVX3lxTE5IMThDVjdCdHZFb0piWlRPMnlVNWZzRjdjUUItQWxoOW90UTFVbFhzeW9XQTB2dUIzblpaQk1GVG13YVVDYUxoTFNQU19WeC05bjZjaEtmREJyU0tEY0VsNWhxQlBDZTR0YzYyNmlNc3R1bmZsM1FfMXA0QnA?oc=5",
-      "source": "Yahoo Sports",
-      "ts": 1756713685.0,
-      "published_iso": "2025-09-01T08:01:25+00:00"
-    },
-    {
-      "id": "https-news-google-com-rss-articles-cbmipafbvv95cuxowkdgdevrdex5nllnyklwv1p0lurfrxpmvkxkos1wawjrstrxdjj3zmpmcko2z0pyqjhte",
-      "title": "Notre Dame football 2025: TV schedule, streaming guide for the Fighting Irish",
-      "link": "https://news.google.com/rss/articles/CBMipAFBVV95cUxOWkdGdEVRdEx5NllnYklwV1p0LURFRXpMVkxKOS1WaWJrSTRXdjJ3Zmpmcko2Z0pyQjhTeTlZRkNpYkZDRG0tUjZXdmZMUFZxbHZDdnQ2d0IyYXd5dWIyc1M5VklKdS0xTi16YUlKNTl6Y0p6SFlNVmp0QUVQTXl2VlJaX3M0WWpPR1B1SC1hMDk0YWdmbHJkSVRSTEhCc3d0SmtCQg?oc=5",
-      "source": "The New York Times",
-      "ts": 1756710000.0,
-      "published_iso": "2025-09-01T07:00:00+00:00"
     }
   ]
 }
