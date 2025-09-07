@@ -1,15 +1,7 @@
 {
-  "updated_iso": "2025-09-07T20:41:56.810247+00:00",
+  "updated_iso": "2025-09-07T20:51:12.347144+00:00",
   "count": 50,
   "items": [
-    {
-      "id": "https-news-google-com-rss-articles-cbmi0afbvv95cuxpdgs0dlhoufrkuhjezffhn2rvu19cowd0dgrxnnattfzqrgtls1zdr212tv83xzbtm2rvx",
-      "title": "Where Notre Dame Fighting Irish appear in Week 3 college football rankings",
-      "link": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxPdGs0dlhoUFRkUHJEZFFhN2RVU19COWd0dGRxNnAtTFZQRGtlS1ZDR212TV83XzBtM2RvX0Z1VTZjc2ZNMklKd1hGcnNmdEF4NE5ZOU8yLVcyOFByazl3UlFBQlo0ZFd1QnpLVGl6Y2thVWRXdXVZYWZFWXNBQ3JsSkRDZE1XS0JWa1lQOU1mVnI1VFJ1c2d0QUxHNVREcFZnWTNVWFZsRWJQcDAtdXkzSll2cnZVNEdqWGp3cnRDME5oTW9nVDZKUUZNYUNyNE44?oc=5",
-      "source": "On3",
-      "ts": 1757269889.0,
-      "published_iso": "2025-09-07T18:31:29+00:00"
-    },
     {
       "id": "https-news-google-com-rss-articles-cbmikwjbvv95cuxozc1zughrmvpta1n2defoaxrry0vau2etou1ivzbjzgzoblazqmljd1ruslbycgrqeknjm",
       "title": "See where Notre Dame football landed in this week's US LBM Coaches Poll",
@@ -33,6 +25,14 @@
       "source": "Yahoo Sports",
       "ts": 1757262731.0,
       "published_iso": "2025-09-07T16:32:11+00:00"
+    },
+    {
+      "id": "https-news-google-com-rss-articles-cbmi0afbvv95cuxpdgs0dlhoufrkuhjezffhn2rvu19cowd0dgrxnnattfzqrgtls1zdr212tv83xzbtm2rvx",
+      "title": "Where Notre Dame Fighting Irish appear in Week 3 college football rankings",
+      "link": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxPdGs0dlhoUFRkUHJEZFFhN2RVU19COWd0dGRxNnAtTFZQRGtlS1ZDR212TV83XzBtM2RvX0Z1VTZjc2ZNMklKd1hGcnNmdEF4NE5ZOU8yLVcyOFByazl3UlFBQlo0ZFd1QnpLVGl6Y2thVWRXdXVZYWZFWXNBQ3JsSkRDZE1XS0JWa1lQOU1mVnI1VFJ1c2d0QUxHNVREcFZnWTNVWFZsRWJQcDAtdXkzSll2cnZVNEdqWGp3cnRDME5oTW9nVDZKUUZNYUNyNE44?oc=5",
+      "source": "On3",
+      "ts": 1757233889.0,
+      "published_iso": "2025-09-07T08:31:29+00:00"
     },
     {
       "id": "https-news-google-com-rss-articles-cbmi3wfbvv95cuxpm0d6ymxqaezsslfyz2j5adhxagfpofdwmle5tjhkcxzlremwzvyta2i3dhpkdkywogdod",
@@ -73,14 +73,6 @@
       "source": "msn.com",
       "ts": 1757168280.0,
       "published_iso": "2025-09-06T14:18:00+00:00"
-    },
-    {
-      "id": "https-news-google-com-rss-articles-cbmiugfbvv95cuxpb0o2rdbtskzgvktxdeyybu84c1kwm0zomlq2u0hsvny4zvbncllgykf2wxdnajnky2dfm",
-      "title": "The art, science and history of making the most of the Notre Dame football bye week",
-      "link": "https://news.google.com/rss/articles/CBMiugFBVV95cUxPb0o2RDBtSkZGVktXdEYybU84c1kwM0ZoMlQ2U0hsVnY4ZVBncllGYkF2WXdnajNKY2dFM3ZxUUNLMEZtLUhlQ05IbnhNeXN3ZnZvODZ5b28tSHF3ZklGb1l2OVZvWjN4S1RlTlRuZHJyVTI3em5OaG1UWGVXRnY1Z3pSaE02bE9CcllZMUg4cWdicHRqazFkd25hY1lHTnBmV05SVzdnUlFrUXc2RmpUWGk1NERLcEZEZXc?oc=5",
-      "source": "On3",
-      "ts": 1757160010.0,
-      "published_iso": "2025-09-06T12:00:10+00:00"
     },
     {
       "id": "https-news-google-com-rss-articles-cbmi7afbvv95cuxoqvvzs1b2sedrzeltwms3whpyq3rtctvqrfzpx1vum3rmvli3ekljrfboelnpzvfluxo5e",
@@ -347,10 +339,10 @@
       "published_iso": "2025-09-01T19:57:32+00:00"
     },
     {
-      "id": "https-news-google-com-rss-articles-cbmi-wfbvv95cuxqdejisvfklvvhy2dedmhdzkh1lu9lwdrtaen1d1kzzkfrqkuzbtlywfdvzmuxmwlzus1rq",
+      "id": "https-news-google-com-rss-articles-cbmiggfbvv95cuxoqu96yknvulvrwvvqq25fylbdcxzmdtg0sfhbz3hlewvjymvzttbkqtvyqzl2og5uuhnym",
       "title": "Notre Dame football has one move that they need to make in order to fix two crucial problems for the Fighting Irish offense",
-      "link": "https://news.google.com/rss/articles/CBMi_wFBVV95cUxQdEJiSVFkLVVhY2dEdmhDZkh1LU9LWDRTaEN1d1kzZkFrQkUzbTlyWFdvZmUxMWlZUS1rQWdSYzFYLWpIbURpSllrYWN0d1Vra2FLamNHTWpzWU42RlRoTHhJcThockFJQWJtcV9OOFU5TDlOV2Z4aTluY25jaG5wR3p2dDFTOExxeEpvWUN4dC1ray1rZm5lazAtMW9uaW1UOUNxMzNBOExMMVlHM0U4MGlWc0VfR1VtUmVHeEY3UTNDcmw0Ykk4aGJpdXlJTVdfX0h5ZUNSTnJQQkVSQzQzbDJPeUdhTkZlNzVVdm0wMkVzVmNFbWtTaXNzQ2pPWWM?oc=5",
-      "source": "A to Z Sports",
+      "link": "https://news.google.com/rss/articles/CBMiggFBVV95cUxOQU96YkNvUlVrWVVQQ25FYlBDcXZmdTg0SFhBZ3hLeWVJYmVZTTBKQTVYQzl2OG5uUHNyM0NoMUowTnVOcWgtODJjY1UweHFIU0pYT29iQmI2d2RHYVZiRW96a2p6T0hzcXJQVmxrNWZLbGVOZFdxVmNVQ3BwVTFkQm53?oc=5",
+      "source": "Yahoo Sports",
       "ts": 1756750908.0,
       "published_iso": "2025-09-01T18:21:48+00:00"
     },
@@ -401,6 +393,14 @@
       "source": "Yahoo Sports",
       "ts": 1756720886.0,
       "published_iso": "2025-09-01T10:01:26+00:00"
+    },
+    {
+      "id": "https-news-google-com-rss-articles-cbmijgjbvv95cuxoam5uukm5t2lkvnzjs2nwuuzoadu5bkpcmhrwn0zhdzdks2rjbulisvlpzupgrw8xchljo",
+      "title": "Notre Dame football writer Mike Berardino breaks down 27-24 loss at Miami",
+      "link": "https://news.google.com/rss/articles/CBMijgJBVV95cUxOam5uUkM5T2lkVnZjS2NwUUZOaDU5bkpCMHRWN0ZHdzdkS2RjbUlISVlpZUpGRW8xcHljOGNYeGF6cWp3S3ZWNjdVZUVUalRaazF0VmNaTllpakREWWtvai1Yd3UtNGF2Tk56YmtJa1RHOHo4OG1kYngydEplNi0xeFR1TmpvS2lvNGNMR0d2UVVpaEtSLVdoYnJ2ZXVjZWVpLXFMSmtGbHpLdkRvNlZzcjJhZ2JjMUgzT2g4TXFuc0Y3dGZUNFdkRW5nenB6ZW1XOXVOY0FjdWt1NDBfWnBHbW80MDZxbU9MY2NtdzF6WGRzS20ybmNmanVOai16WW1BQmJ2RHlhblZnRGpmakE?oc=5",
+      "source": "South Bend Tribune",
+      "ts": 1756715304.0,
+      "published_iso": "2025-09-01T08:28:24+00:00"
     }
   ]
 }
