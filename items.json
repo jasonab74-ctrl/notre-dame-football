@@ -1,5 +1,5 @@
 {
-  "updated_iso": "2025-09-07T05:32:00.731661+00:00",
+  "updated_iso": "2025-09-07T05:49:50.794098+00:00",
   "count": 50,
   "items": [
     {
@@ -204,17 +204,9 @@
     },
     {
       "id": "https-news-google-com-rss-articles-cbmi2wfbvv95cuxptnrkzephww8xctuwuuixvxbotfzxv0xxbge0wmzgstnflw01smz1ou1kd3jctwngcxntr",
-      "title": "Notre Dame Football Schedule, TV Times, Stats, Roster, and Results",
+      "title": "2025 Notre Dame Football Schedule, TV Times, Stat Leaders, Roster, and Results",
       "link": "https://news.google.com/rss/articles/CBMi2wFBVV95cUxPTnRKZEpHWW8xcTUwUUIxVXBoTFZxV0xxbGE0WmZGSTNFLW01SmZ1OU1Kd3JCTWNGcXNTRWZsMmZtWkliSVNnVF9qNGNWUVNERmR0SWxrTEZKTDhfTFFZSUZicms3Y3VOWlhPbkJvUFpYSlNaNGNHV1doMTBTQmJuUmRGT2c5NzNTWktxdXFJNHRDVGd4M1JNVnE0b3pKQjNCUkJGNWVNbXIwRW04ZFVSYXBPcUxLR2c3YVVYaVZjMHRSS3hUdEFiQ3dGVlFKQ2ozM1c5TjJCRi1oekk?oc=5",
       "source": "One Foot Down",
-      "ts": 1757004739.0,
-      "published_iso": "2025-09-04T16:52:19+00:00"
-    },
-    {
-      "id": "https-news-google-com-rss-articles-cbmiiafbvv95cuxpweszeunzcfvqrnjyv3rmbzhozkl3ymi4wmvszfq2qzlctvjszxjzmdjvsfuyb2u5c1brd",
-      "title": "2025 Notre Dame Football Schedule, TV Times, Stat Leaders, Roster, and Results",
-      "link": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxPWEszeUNZcFVQRnJYV3RmbzhoZkl3YmI4WmVsZFQ2QzlCTVJSZXJzMDJvSFUyb2U5c1BrdEJZVkJYSjZpY1RtWmlMWl9qeGc2SUtTcEF2Nl9NOWFHMTZyeUs2bHJhMEZ6R0h4a0FRQXhpM0xTMUppQjR1Y3ZLWndqV1AxeHJyZ3VB?oc=5",
-      "source": "Yahoo Sports",
       "ts": 1757004739.0,
       "published_iso": "2025-09-04T16:52:19+00:00"
     },
@@ -401,6 +393,14 @@
       "source": "South Bend Tribune",
       "ts": 1756721481.0,
       "published_iso": "2025-09-01T10:11:21+00:00"
+    },
+    {
+      "id": "https-news-google-com-rss-articles-cbmijgjbvv95cuxoam5uukm5t2lkvnzjs2nwuuzoadu5bkpcmhrwn0zhdzdks2rjbulisvlpzupgrw8xchljo",
+      "title": "Notre Dame football writer Mike Berardino breaks down 27-24 loss at Miami",
+      "link": "https://news.google.com/rss/articles/CBMijgJBVV95cUxOam5uUkM5T2lkVnZjS2NwUUZOaDU5bkpCMHRWN0ZHdzdkS2RjbUlISVlpZUpGRW8xcHljOGNYeGF6cWp3S3ZWNjdVZUVUalRaazF0VmNaTllpakREWWtvai1Yd3UtNGF2Tk56YmtJa1RHOHo4OG1kYngydEplNi0xeFR1TmpvS2lvNGNMR0d2UVVpaEtSLVdoYnJ2ZXVjZWVpLXFMSmtGbHpLdkRvNlZzcjJhZ2JjMUgzT2g4TXFuc0Y3dGZUNFdkRW5nenB6ZW1XOXVOY0FjdWt1NDBfWnBHbW80MDZxbU9MY2NtdzF6WGRzS20ybmNmanVOai16WW1BQmJ2RHlhblZnRGpmakE?oc=5",
+      "source": "South Bend Tribune",
+      "ts": 1756715304.0,
+      "published_iso": "2025-09-01T08:28:24+00:00"
     }
   ]
 }
