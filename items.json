@@ -1,12 +1,12 @@
 {
-  "updated_iso": "2025-09-07T05:49:50.794098+00:00",
+  "updated_iso": "2025-09-07T06:43:43.737572+00:00",
   "count": 50,
   "items": [
     {
-      "id": "https-sports-yahoo-com-article-early-injury-news-could-completely-011725785-html",
+      "id": "https-msn-com-en-us-sports-other-early-injury-news-could-completely-reshape-the-game-plan-for-notre-dame-heading-into-th",
       "title": "Early injury news could completely reshape the game plan for Notre Dame heading into their home opener against Texas A&M",
-      "link": "https://sports.yahoo.com/article/early-injury-news-could-completely-011725785.html",
-      "source": "Yahoo Sports",
+      "link": "https://msn.com/en-us/sports/other/early-injury-news-could-completely-reshape-the-game-plan-for-notre-dame-heading-into-their-home-opener-against-texas-a-m/ar-AA1M29uU",
+      "source": "msn.com",
       "ts": 1757195700.0,
       "published_iso": "2025-09-06T21:55:00+00:00"
     },
@@ -41,14 +41,6 @@
       "source": "lehighvalleylive",
       "ts": 1757167980.0,
       "published_iso": "2025-09-06T14:13:00+00:00"
-    },
-    {
-      "id": "https-msn-com-en-us-sports-other-pat-mcafee-s-verdict-on-notre-dame-as-marcus-freeman-given-work-to-do-over-bye-week-ar-",
-      "title": "Pat McAfee's verdict on Notre Dame as Marcus Freeman given work to do over bye week",
-      "link": "https://msn.com/en-us/sports/other/pat-mcafee-s-verdict-on-notre-dame-as-marcus-freeman-given-work-to-do-over-bye-week/ar-AA1M1wYr",
-      "source": "msn.com",
-      "ts": 1757162329.0,
-      "published_iso": "2025-09-06T12:38:49+00:00"
     },
     {
       "id": "https-news-google-com-rss-articles-cbmiugfbvv95cuxpb0o2rdbtskzgvktxdeyybu84c1kwm0zomlq2u0hsvny4zvbncllgykf2wxdnajnky2dfm",
@@ -107,12 +99,12 @@
       "published_iso": "2025-09-05T21:00:01+00:00"
     },
     {
-      "id": "https-msn-com-en-us-sports-other-ole-miss-football-notre-dame-fighting-irish-and-michigan-cruising-in-recruiting-ar-aa1l",
-      "title": "Ole Miss Football, Notre Dame Fighting Irish and Michigan Cruising in Recruiting",
-      "link": "https://msn.com/en-us/sports/other/ole-miss-football-notre-dame-fighting-irish-and-michigan-cruising-in-recruiting/ar-AA1LYOdc",
-      "source": "msn.com",
-      "ts": 1757094720.0,
-      "published_iso": "2025-09-05T17:52:00+00:00"
+      "id": "https-trentonian-com-2025-09-05-no-miracle-needed-this-time-as-notre-dame-football-routed-by-timber-creek",
+      "title": "No miracle needed this time as Notre Dame football routed by Timber Creek",
+      "link": "https://trentonian.com/2025/09/05/no-miracle-needed-this-time-as-notre-dame-football-routed-by-timber-creek/",
+      "source": "trentonian.com",
+      "ts": 1757099460.0,
+      "published_iso": "2025-09-05T19:11:00+00:00"
     },
     {
       "id": "https-news-google-com-rss-articles-cbmi-gfbvv95cuxnyu4xsus4ums2auprvuj1znk4de1lyu5oamluvvrfb2qybwn5dm9jtw15tkdkddjmzmx5n",
@@ -121,6 +113,14 @@
       "source": "Fighting Irish Wire",
       "ts": 1757089721.0,
       "published_iso": "2025-09-05T16:28:41+00:00"
+    },
+    {
+      "id": "https-msn-com-en-us-sports-other-ole-miss-football-notre-dame-fighting-irish-and-michigan-cruising-in-recruiting-ar-aa1l",
+      "title": "Ole Miss Football, Notre Dame Fighting Irish and Michigan Cruising in Recruiting",
+      "link": "https://msn.com/en-us/sports/other/ole-miss-football-notre-dame-fighting-irish-and-michigan-cruising-in-recruiting/ar-AA1LYOdc",
+      "source": "msn.com",
+      "ts": 1757080337.0,
+      "published_iso": "2025-09-05T13:52:17+00:00"
     },
     {
       "id": "https-news-google-com-rss-articles-cbmifefvx3lxte9xbfhwdg9keffbrunleej1mnjvm2q4m0vorjbpnlrwmhp5yxbgyvnwuu14eko3axzuvjved",
@@ -323,10 +323,18 @@
       "published_iso": "2025-09-02T11:52:21+00:00"
     },
     {
-      "id": "https-news-google-com-rss-articles-cbmi8wfbvv95cuxpcklxogg4eljsaxhuy2jjszj0vfvbvzzqdjfrnk5yeeu5wdfltw9ha3fqy0llrfdubktwb",
+      "id": "https-news-google-com-rss-articles-cbmif0fvx3lxtfbpuc1hutm3oe5peu9vlvqxv0f0a053dvi5chktt3f2qnptn0fxmvpqss1jalvoywhjuutkq",
+      "title": "3 reasons to panic after Notre Dame football’s heartbreaking loss to Miami",
+      "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTFBpUC1hUTM3OE5PeU9vLVQxV0F0a053dVI5cHktT3F2QnptN0FxMVpqSS1JalVoYWhjUUtKQjZJMWQ2MXNPM3lhQWpfMWpqcEhoVE1PUlZiVXJ6YVJoS1hBR1R3WGxIQkdmNzNQWkpJM1U5REpLcWFpOXAtcDlhZGM?oc=5",
+      "source": "Yahoo Sports",
+      "ts": 1756761182.0,
+      "published_iso": "2025-09-01T21:13:02+00:00"
+    },
+    {
+      "id": "https-news-google-com-rss-articles-cbmijafbvv95cuxnslnjn1hdqwdlbfryeddgbhvneezix0fucwjdczy2vlzlugzlvgtpzc1iaw9ov2rndw1um",
       "title": "Notre Dame football has a personnel change that they should consider to unlock the Fighting Irish defense under DC Chris Ash",
-      "link": "https://news.google.com/rss/articles/CBMi8wFBVV95cUxPcklxOGg4elJsaXhUY2JJSzJ0VFVBVzZqdjFRNk5YeEU5WDFLTW9ha3FqY0lLRFdUbktWbjktbzdiRnJyS0NSUGhaQXV1cFZRZVNZT2JLU0p1S01UMWFyVGtUUGl0cE5tcTlqMnRtOGhoQUZpSHVURFYyMkFMTG9aN3R6YWxLUGxlRkg4aHRibmtvaXVKQk51cmRfV09HOW8tQ20xeFVTQUdxVVJwTm5TWGhTYnN6YWt1bTkweWVwNlFSMjF6MlJKMFdHN0lSd2pEbnhXQW8xWnhXV1lEVHFkRWZRR2RCWGdoc0dpSFUzRVpOTXM?oc=5",
-      "source": "A to Z Sports",
+      "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxNSlNJN1hDQWdlbFRYeDdGbHVneEZiX0FUcWJDczY2VlZLUGZlVGtPZC1IaW9oV2RNdW1uMzViNnVkeVBENlEtbW5FTVNGQ19kZVJfQnRHOVpEWGNDZzRqN2VHYlFSM2Vtb2s3Z3c1dUVQZ0lRTkZ6dEQ0QU56MmoxV00tRDE0VkNlcUlySA?oc=5",
+      "source": "Yahoo Sports",
       "ts": 1756756652.0,
       "published_iso": "2025-09-01T19:57:32+00:00"
     },
@@ -355,12 +363,28 @@
       "published_iso": "2025-09-01T16:39:47+00:00"
     },
     {
-      "id": "https-msn-com-en-us-sports-other-3-reasons-to-panic-after-notre-dame-football-s-heartbreaking-loss-to-miami-ar-aa1lfuxu",
-      "title": "3 reasons to panic after Notre Dame football’s heartbreaking loss to Miami",
-      "link": "https://msn.com/en-us/sports/other/3-reasons-to-panic-after-notre-dame-football-s-heartbreaking-loss-to-miami/ar-AA1LFuxu",
-      "source": "msn.com",
-      "ts": 1756743060.0,
-      "published_iso": "2025-09-01T16:11:00+00:00"
+      "id": "https-news-google-com-rss-articles-cbmilwjbvv95cuxpetblaep0mkjyrnh4qjvnvxlntdq1nlezvvhsb1rwb3vqzw56swhvuwz5sghhn3zjulhhd",
+      "title": "Notre Dame football QB CJ Carr on striking the right balance with star RB Jeremiyah Love",
+      "link": "https://news.google.com/rss/articles/CBMilwJBVV95cUxPeTBLaEp0MkJYRnh4QjVNVXlnTDQ1NlEzVVhsb1Rwb3VqZW56SWhvUWZ5SGhHN3ZJUlhhd05tQUFWUERDei1fc2dOY09UendZUnpncUZpR2I3RXBkMmRUZHFmeW1MeHdhNHRuTDBzdFFZZl94NjN4U1EtdXZZMURPSXdXSlBFZDY2QXVDYTN5aldtUmlTRG95elRKdUNpRFBEYTBMbHBGTWZ4OXlPMk5RQjBKOVl6NnZoNHRLOXNRbjN2clFadlFXbVRFVDlqSnMxWmFFZjhnSjMzM05IenZ6b20zWDhDLXdfLUd1NFU4ZmM3anUxSFh1X3ZGczgwTE0xR3RHZDJPSFRqTGFDdmRDcVNJd3p0YzQ?oc=5",
+      "source": "South Bend Tribune",
+      "ts": 1756743427.0,
+      "published_iso": "2025-09-01T16:17:07+00:00"
+    },
+    {
+      "id": "https-news-google-com-rss-articles-cbmikgjbvv95cuxqcmnfsffrzmpstgdjwljhb0zvaljcogjvt2phow9fwxnib2xltw9wuxnuzfb2otzodjnmn",
+      "title": "Notre Dame football coach Marcus Freeman on the lack of pass rush vs. Miami's Carson Beck",
+      "link": "https://news.google.com/rss/articles/CBMikgJBVV95cUxQcmNfSFFrZmpsTGdjWlJHb0ZvalJCOGJvT2phOW9fWXNIb2xLTW9WUXNuZFB2OTZOdjNmNGpwbGZBNzFYRlZPbmkxVExDQ05fTld4VDdtR05GSlB3OGpvbm1RdGl3eFVBcTIwckJwd2tMdW8taXFTcV83NWlEa3hVS0J6bFhDbXBWdVNOQUxvY01Hak95VzQ5enU5SG1QTmdBeUduRW5zc0UyZDQ1T2gyb2FqSHNlTDNaMXcxYnA5SEttYmdFbkRWaENwMk5rQmVRTVU4MkZoeHZkVmVmQm0xTVJOQ1Zaa3k5c1J1TnppODNVTlhVNnRTLS1JY1JwdmRWdXNSMkhndXJGa2U1NGk2VG9B?oc=5",
+      "source": "South Bend Tribune",
+      "ts": 1756743091.0,
+      "published_iso": "2025-09-01T16:11:31+00:00"
+    },
+    {
+      "id": "https-news-google-com-rss-articles-cbmiiwjbvv95cuxnaljselzsyjn6zhots2zcltliblf2uwxbs19um1zsa0wydvzfakrhsvj5afrwawrervc1a",
+      "title": "Notre Dame football coach Marcus Freeman on improvisational skills of QB CJ Carr",
+      "link": "https://news.google.com/rss/articles/CBMiiwJBVV95cUxNalJselZSYjN6ZHotS2ZCLTliblF2UWxBS19UM1ZSa0wydVZfakRHSVJ5aFRwaWRERVc1amdzVGdORUl1UldwVnl2X2ZrQVV3TkthdDJUd25xQXpteFN0R3ZKSUJfUU1ROTdXY0MyQXExNTMwQlFGNm9wQ1pubUg5V04tbHNYOURDcHRWT2VNUkJvVDRJNU1tWlh3YVFKZzhQMDBlMXdmeXdIRWJVR0k3WkZFTW5uejlsSGZGb1Bkd1NPbXNBRnVQaS1EdjltWl9UNE9hSmEzYU9rR25wcjAxYmEyUDJSeHFxS1doNlo1eTNPZjZkQ19sREoxUFFEc2J1Y2dkd3ZVUGNXUHc?oc=5",
+      "source": "South Bend Tribune",
+      "ts": 1756742720.0,
+      "published_iso": "2025-09-01T16:05:20+00:00"
     },
     {
       "id": "https-news-google-com-rss-articles-cbmijgjbvv95cuxockftdhdonkjcu0rwcw5ot0h0unnvrlvunf95zhzqv1zutmxlawxsy2hnrujvouhgzvg5r",
@@ -377,30 +401,6 @@
       "source": "Yahoo Sports",
       "ts": 1756733302.0,
       "published_iso": "2025-09-01T13:28:22+00:00"
-    },
-    {
-      "id": "https-news-google-com-rss-articles-cbmifkfvx3lxte9sv1fqyvlzwe43cm1obelzadmysgvox3ftn2lirw5jalz6thz6cnngx3rft0nmwmhcq2ntx",
-      "title": "Notre Dame football QB CJ Carr opens up about 1 regret in crucial blunder vs. Miami",
-      "link": "https://news.google.com/rss/articles/CBMifkFVX3lxTE9SV1FQYVlzWE43cm1ObElzaDMySGVOX3FtN2liRW5jalZ6THZ6cnNGX3RfT0NMWmhCQ2NTXy1tWVlfR0pJMW13OTFybE5fYno4Ml9tT1ZYeGptOGV4a0dKZlQ3c0cybWoxSDQ4V09KeW1NMEFSZzdoeGhPVzIxUQ?oc=5",
-      "source": "Yahoo Sports",
-      "ts": 1756731595.0,
-      "published_iso": "2025-09-01T12:59:55+00:00"
-    },
-    {
-      "id": "https-news-google-com-rss-articles-cbmijgjbvv95cuxqb3ncum9ueedmzks4zwpoavnrwut4q29lczlhm2pjz0y4u2yxuepnm0dfagpyenr0r0jjw",
-      "title": "How did Notre Dame football defense fare against Miami? Not well enough to win",
-      "link": "https://news.google.com/rss/articles/CBMijgJBVV95cUxQb3NCUm9ueEdmZks4ZWpOaVNRWUt4Q29LczlHM2pjZ0Y4U2YxUEpNM0dFaGpyenR0R0JjWmFaOWNyZDBXZUJpV0VVeXRkc0pCODlOTWFONlhzbjZWSW1Ma25yV1lSRkNzWFltM29wWW9uN0VXdUo4WVItU3hCMENMT3Zpd05lZlVlLUJLMG81MWNPOE14cHIyQU55STVKUkNtaE1ROXczeHJtRDY3MUxDZ1ZjR29CUF9UektGVm5WYVBhZ25YR0tsZTN4RlcyTlFncjdBb2VFZ0xpX25jMEFrQ2RoYkhlaUNNbmlqMVRmZHlMRkZiQU5FRHVBX2NCbWhMU09fRkNUOHFhYTEtUHc?oc=5",
-      "source": "South Bend Tribune",
-      "ts": 1756721481.0,
-      "published_iso": "2025-09-01T10:11:21+00:00"
-    },
-    {
-      "id": "https-news-google-com-rss-articles-cbmijgjbvv95cuxoam5uukm5t2lkvnzjs2nwuuzoadu5bkpcmhrwn0zhdzdks2rjbulisvlpzupgrw8xchljo",
-      "title": "Notre Dame football writer Mike Berardino breaks down 27-24 loss at Miami",
-      "link": "https://news.google.com/rss/articles/CBMijgJBVV95cUxOam5uUkM5T2lkVnZjS2NwUUZOaDU5bkpCMHRWN0ZHdzdkS2RjbUlISVlpZUpGRW8xcHljOGNYeGF6cWp3S3ZWNjdVZUVUalRaazF0VmNaTllpakREWWtvai1Yd3UtNGF2Tk56YmtJa1RHOHo4OG1kYngydEplNi0xeFR1TmpvS2lvNGNMR0d2UVVpaEtSLVdoYnJ2ZXVjZWVpLXFMSmtGbHpLdkRvNlZzcjJhZ2JjMUgzT2g4TXFuc0Y3dGZUNFdkRW5nenB6ZW1XOXVOY0FjdWt1NDBfWnBHbW80MDZxbU9MY2NtdzF6WGRzS20ybmNmanVOai16WW1BQmJ2RHlhblZnRGpmakE?oc=5",
-      "source": "South Bend Tribune",
-      "ts": 1756715304.0,
-      "published_iso": "2025-09-01T08:28:24+00:00"
     }
   ]
 }
