@@ -1,8 +1,10 @@
-# collect.py — ND football collector (robust outlet parsing + hard dedupe)
-# - Writes item.source as the REAL outlet (WNDU, On3, SBT, etc.)
+# collect.py — ND football collector (tight sources + robust outlet parsing + hard dedupe)
+# - Writes item.source as REAL outlet (parsed from title suffix; fallback: <source> tag; fallback: article domain)
 # - Removes outlet suffix from title for display
 # - Strong dedupe: canonical URL + normalized title
 # - ND-football-only filtering (stricter for Google/Bing)
+# - NEW: host allowlist to keep sources clean (drops fringe/reprint sites)
+
 import feedparser, json, re, time, html
 from datetime import datetime, timezone
 from urllib.parse import urlparse, urlunparse, parse_qsl, urlencode
@@ -27,6 +29,22 @@ EXCLUDE_ANY = [
 
 AGGREGATORS = {"news.google.com", "www.bing.com", "bing.com"}
 
+# Host allowlist: keep dropdown tight to reputable national + trusted local outlets
+ALLOWED_SOURCES = {
+    # National / major
+    "espn.com", "cbssports.com", "247sports.com", "on3.com", "blueandgold.com",
+    "sports.yahoo.com", "yahoo.com", "si.com", "nbcsports.com", "foxsports.com",
+    "theathletic.com", "apnews.com", "bleacherreport.com", "sportingnews.com",
+    # Official / team / network
+    "fightingirish.com",
+    # Local ND beat
+    "southbendtribune.com", "wndu.com", "wsbt.com",
+    # Fan/independent
+    "onefootdown.com", "fightingirishwire.usatoday.com", "usatoday.com",
+    # Community / discussion
+    "reddit.com",
+}
+
 DOMAIN_LABELS = {
     "espn.com": "ESPN",
     "cbssports.com": "CBS Sports",
@@ -46,18 +64,18 @@ DOMAIN_LABELS = {
     "insideindsports.com": "Inside ND Sports",
     "notredame.rivals.com": "Inside ND Sports (Rivals)",
     "wndu.com": "WNDU",
+    "wsbt.com": "WSBT",
     "theathletic.com": "The Athletic",
     "apnews.com": "AP News",
     "bleacherreport.com": "Bleacher Report",
     "reddit.com": "Reddit",
+    "sportingnews.com": "Sporting News",
 }
 
 # ------------------- helpers -------------------
-NBSP = "\u00A0"
 UNICODE_SPACES = re.compile(r"[\u00A0\u1680\u2000-\u200B\u202F\u205F\u3000]")
 
 def normalize_spaces(s: str) -> str:
-    # turn all unicode spaces into ASCII space, collapse multiples
     s = UNICODE_SPACES.sub(" ", s)
     s = re.sub(r"\s+", " ", s)
     return s.strip()
@@ -102,7 +120,7 @@ OUTLET_RE = re.compile(rf"\s{DASH}\s([A-Za-z0-9&@.,'()/:+ ]+)$")
 def split_title_outlet(title: str):
     """
     Parse 'Headline - Outlet' / 'Headline – Outlet' / 'Headline — Outlet'
-    Return (clean_title, outlet or None). Works even with NBSP once normalized.
+    Return (clean_title, outlet or None).
     """
     t = normalize_spaces(title)
     m = OUTLET_RE.search(t)
@@ -125,10 +143,7 @@ def outlet_from_url(u: str, default_feed_name: str) -> str:
         return default_feed_name
 
 def entry_source_title(entry) -> str | None:
-    """
-    Read <source> or source_detail (Google News includes <source url="...">Outlet</source>).
-    Use FeedParserDict .get(...) access (works more reliably across feeds).
-    """
+    """Read <source> or source_detail title (Google News includes this)."""
     try:
         src = entry.get("source")
         if isinstance(src, dict):
@@ -221,12 +236,18 @@ def collect():
             else:
                 source = outlet_from_url(link, feed_name)
 
+            # ---- NEW: host allowlist filter (tighten sources) ----
+            host = urlparse(link).netloc.lower()
+            if host.startswith("www."): host = host[4:]
+            if host not in ALLOWED_SOURCES:
+                continue
+
             ts = ts_from_entry(e)
             items.append({
                 "id": make_id(link),
                 "title": base_title,
                 "link": link,
-                "source": source,  # <-- drives dropdown
+                "source": source,  # drives dropdown
                 "ts": float(ts),
                 "published_iso": datetime.fromtimestamp(ts, tz=timezone.utc).isoformat(),
             })
