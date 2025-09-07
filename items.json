@@ -1,5 +1,5 @@
 {
-  "updated_iso": "2025-09-07T07:26:31.960943+00:00",
+  "updated_iso": "2025-09-07T07:37:41.954215+00:00",
   "count": 50,
   "items": [
     {
@@ -145,14 +145,6 @@
       "source": "247Sports",
       "ts": 1757071500.0,
       "published_iso": "2025-09-05T11:25:00+00:00"
-    },
-    {
-      "id": "https-news-google-com-rss-articles-cbmiqwjbvv95cuxpmlfjaxctnnpoymdodwdgmni5wje1uhhss0lleenpuur6vmdubgttn0jdthjdshppuzbsd",
-      "title": "The FIW staff chose who they believe will win Week 2’s top games in college football",
-      "link": "https://news.google.com/rss/articles/CBMiqwJBVV95cUxPMlFJaXctNnpoYmdOdWdGMnI5WjE1UHhSS0lleENpUUR6VmdUbGtTN0JDTHJDSHpPUzBsdnFyWUZqUERLOUlEajFhV08zZF93Q1R5eU40UFJ2VTJDM1dVdW9IczlBcFpKd1ZVa2hfSlhJTXc0UDl5NmhlS2tEcXp2WmV1REQ2Rl9Db2dTY3p6TVlhUjRJTWVQOG8tWnlpU2tqd292Q1RJZXRsZ19sX1Qtbkc2RTZVZ3FBTjBTa0pjSFBtWEtYU3RtMVZtVWtkcWNDbXREVFFJclA5Y3ZqWktVLTVmRFRXRS1CLXdYa2NYbk41QlFUSFZPOWdZS240S2VSMktVUUtMUFdCLVQtOUtzTmRYb3kxcVAyQktSSE1DNjRsMjJBQVJYVlU1TQ?oc=5",
-      "source": "Fighting Irish Wire",
-      "ts": 1757070105.0,
-      "published_iso": "2025-09-05T11:01:45+00:00"
     },
     {
       "id": "https-onefootdown-com-notre-dame-fighting-irish-football-76963-college-football-week-2-could-be-sneaky-good-staff-picks",
@@ -385,6 +377,14 @@
       "source": "msn.com",
       "ts": 1756743060.0,
       "published_iso": "2025-09-01T16:11:00+00:00"
+    },
+    {
+      "id": "https-news-google-com-rss-articles-cbmiiwjbvv95cuxnaljselzsyjn6zhots2zcltliblf2uwxbs19um1zsa0wydvzfakrhsvj5afrwawrervc1a",
+      "title": "Notre Dame football coach Marcus Freeman on improvisational skills of QB CJ Carr",
+      "link": "https://news.google.com/rss/articles/CBMiiwJBVV95cUxNalJselZSYjN6ZHotS2ZCLTliblF2UWxBS19UM1ZSa0wydVZfakRHSVJ5aFRwaWRERVc1amdzVGdORUl1UldwVnl2X2ZrQVV3TkthdDJUd25xQXpteFN0R3ZKSUJfUU1ROTdXY0MyQXExNTMwQlFGNm9wQ1pubUg5V04tbHNYOURDcHRWT2VNUkJvVDRJNU1tWlh3YVFKZzhQMDBlMXdmeXdIRWJVR0k3WkZFTW5uejlsSGZGb1Bkd1NPbXNBRnVQaS1EdjltWl9UNE9hSmEzYU9rR25wcjAxYmEyUDJSeHFxS1doNlo1eTNPZjZkQ19sREoxUFFEc2J1Y2dkd3ZVUGNXUHc?oc=5",
+      "source": "South Bend Tribune",
+      "ts": 1756742720.0,
+      "published_iso": "2025-09-01T16:05:20+00:00"
     },
     {
       "id": "https-news-google-com-rss-articles-cbmijgjbvv95cuxockftdhdonkjcu0rwcw5ot0h0unnvrlvunf95zhzqv1zutmxlawxsy2hnrujvouhgzvg5r",
