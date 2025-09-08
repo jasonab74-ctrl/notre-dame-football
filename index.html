@@ -1,122 +1,167 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Notre Dame Football</title>
-  <link rel="icon" href="static/favicon.ico">
-  <link rel="apple-touch-icon" href="static/apple-touch-icon.png">
-  <link rel="stylesheet" href="static/style.css">
-  <meta name="theme-color" content="#0C2340">
+
+  <!-- Icons / manifest -->
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#0C2340" />
+
+  <!-- cache-bust to force the hardened theme -->
+  <link rel="stylesheet" href="static/style.css?v=nd-2025-09-08" />
 </head>
 <body>
-  <header>
-    <img src="static/notre-dame-logo.png" class="logo" alt="ND">
-    <div class="titles">
-      <div class="brand">Notre Dame Football</div>
-      <div class="subtitle">Live news feed · auto-refreshing</div>
+  <header class="hero">
+    <div class="logo-box">
+      <!-- prefers nd.png, falls back to generic logo.png -->
+      <img
+        src="static/nd.png"
+        alt="Notre Dame logo"
+        width="64"
+        height="64"
+        onerror="this.onerror=null; this.src='static/logo.png';"
+      />
     </div>
-    <div class="actions">
-      <!-- Keep label constant to avoid button "jump"; style change only -->
-      <button class="pill" id="songBtn" aria-pressed="false">Victory March</button>
+
+    <div class="hero-titles">
+      <h1>Notre Dame<br>Football</h1>
+      <div class="sub">Live news feed · auto-refreshing</div>
     </div>
+
+    <!-- Inline audio toggle -->
+    <button id="fightBtn" class="fight-btn" type="button" aria-label="Play Victory March">
+      <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M8 5v14l11-7L8 5z"/></svg>
+      <span class="label">Victory<br>March</span>
+    </button>
+
+    <!-- hidden player (standardized filename) -->
+    <audio id="fightAudio" preload="auto">
+      <source src="static/fight-song.mp3" type="audio/mpeg" />
+    </audio>
   </header>
 
-  <nav class="links" id="quickLinks"></nav>
+  <!-- Quick links row (populated from items.json) -->
+  <div id="links" class="pill-row"></div>
 
-  <div id="updated">Updated: —</div>
+  <section class="controls">
+    <div class="control">
+      <label>News sources:</label>
+      <select id="sourceSelect"></select>
+    </div>
+    <div class="control right">
+      <label>Updated:</label>
+      <span id="updated">—</span>
+    </div>
+  </section>
 
-  <div class="controls">
-    <label for="srcSel">News sources:</label>
-    <select id="srcSel"><option value="*">All sources</option></select>
-  </div>
-
-  <main class="grid" id="grid"></main>
-
-  <footer>
-    <div>Auto-checking for new items…</div>
-    <a href="items.json">items.json</a>
-  </footer>
-
-  <audio id="song" preload="none" src="static/fight-song.mp3"></audio>
+  <main id="feed"></main>
 
   <script>
-    const els = {
-      grid: document.getElementById('grid'),
-      updated: document.getElementById('updated'),
-      srcSel: document.getElementById('srcSel'),
-      links: document.getElementById('quickLinks'),
-      song: document.getElementById('song'),
-      songBtn: document.getElementById('songBtn'),
+    // ---- Victory March inline play/pause
+    const fightBtn = document.getElementById('fightBtn');
+    const audio = document.getElementById('fightAudio');
+    let isPlaying = false;
+    const setBtn = s => {
+      isPlaying = s;
+      fightBtn.classList.toggle('playing', s);
+      fightBtn.querySelector('.label').textContent = s ? 'Pause' : 'Victory\nMarch';
+    };
+    fightBtn.addEventListener('click', async () => {
+      try {
+        if (!isPlaying) { await audio.play(); setBtn(true); }
+        else { audio.pause(); setBtn(false); }
+      } catch { alert('Could not play audio. Make sure static/fight-song.mp3 exists.'); }
+    });
+    audio.addEventListener('ended', ()=>setBtn(false));
+    audio.addEventListener('pause', ()=>setBtn(false));
+    audio.addEventListener('play',  ()=>setBtn(true));
+
+    // ---- feed rendering (hardened)
+    const feedEl = document.getElementById('feed');
+    const updatedEl = document.getElementById('updated');
+    const sourceSelect = document.getElementById('sourceSelect');
+    const linksEl = document.getElementById('links');
+
+    const fmtLocal = iso => {
+      try {
+        const d = new Date(iso);
+        return d.toLocaleString([], {year:'numeric', month:'short', day:'numeric', hour:'numeric', minute:'2-digit'});
+      } catch { return iso || ''; }
     };
 
-    // Header quick links (added Reddit ND Football back)
-    const STATIC_LINKS = [
-      {"label":"Inside ND Sports (Rivals)","url":"https://notredame.rivals.com/"},
-      {"label":"247Sports ND","url":"https://247sports.com/college/notre-dame/"},
-      {"label":"CBS ND","url":"https://www.cbssports.com/college-football/teams/ND/notre-dame-fighting-irish/"},
-      {"label":"Reddit (Notre Dame Football)","url":"https://www.reddit.com/r/NotreDame/search?q=football&restrict_sr=on&sort=new"},
-      {"label":"ND Insider","url":"https://www.southbendtribune.com/sports/notre-dame/"},
-      {"label":"Fighting Irish Wire","url":"https://fightingirishwire.usatoday.com/"},
-      {"label":"One Foot Down","url":"https://www.onefootdown.com/"},
-      {"label":"Blue & Gold (On3)","url":"https://www.on3.com/teams/notre-dame-fighting-irish/"},
-      {"label":"Schedule","url":"https://fightingirish.com/sports/football/schedule/"},
-      {"label":"Roster","url":"https://fightingirish.com/sports/football/roster/"},
-      {"label":"AP Poll","url":"https://apnews.com/hub/ap-top-25-college-football-poll"},
-      {"label":"Coaches Poll","url":"https://www.usatoday.com/sports/ncaaf/polls/coaches-poll/"}
-    ];
-
-    function buildLinks(){
-      els.links.innerHTML = STATIC_LINKS.map(l => `<a class="pill" href="${l.url}" target="_blank" rel="noopener">${l.label}</a>`).join('');
+    function renderLinks(links){
+      linksEl.innerHTML = '';
+      (links||[]).forEach(l=>{
+        const a = document.createElement('a');
+        a.className = 'pill';
+        a.href = l.url; a.target = '_blank'; a.rel = 'noopener';
+        a.textContent = l.label;
+        linksEl.appendChild(a);
+      });
     }
 
-    function escapeHtml(s){return (s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]))}
-
-    function parseDate(item){
-      if (typeof item.ts === 'number') return new Date(item.ts*1000);
-      if (item.ts && !Number.isNaN(Number(item.ts))) return new Date(Number(item.ts)*1000);
-      if (item.published_iso) return new Date(item.published_iso);
-      return new Date();
-    }
-    function fmtDate(item){ return parseDate(item).toLocaleString(); }
-
-    let all = {items:[]};
-
-    function render(){
-      const src = els.srcSel.value;
-      const items = all.items.filter(i => src === '*' || i.source === src);
-      els.grid.innerHTML = items.map(it => `
-        <article class="card">
-          <a class="title" href="${it.link}" target="_blank" rel="noopener">${escapeHtml(it.title)}</a>
-          <div class="meta">${escapeHtml(it.source || 'Unknown')} • ${escapeHtml(fmtDate(it))}</div>
-        </article>
-      `).join('');
+    function buildSourceDropdown(items, curated){
+      sourceSelect.innerHTML = '';
+      const base = Array.isArray(curated) && curated.length ? curated
+                 : Array.from(new Set((items||[]).map(i => i.source || i.feed).filter(Boolean))).sort();
+      const optAll = document.createElement('option');
+      optAll.value=''; optAll.textContent='All sources';
+      sourceSelect.appendChild(optAll);
+      base.forEach(s=>{
+        const o = document.createElement('option');
+        o.value = s; o.textContent = s;
+        sourceSelect.appendChild(o);
+      });
     }
 
-    async function load(){
-      const r = await fetch('items.json?cb='+Date.now());
-      const j = await r.json();
-      all = j;
-      els.updated.textContent = 'Updated: ' + new Date().toLocaleString();
+    function renderItems(items){
+      feedEl.innerHTML = '';
+      (items||[]).forEach(it=>{
+        const card = document.createElement('article');
+        card.className = 'card';
 
-      // Build the dropdown from the real outlets we wrote into items.json
-      const set = new Set(j.items.map(i => i.source).filter(Boolean));
-      els.srcSel.innerHTML = '<option value="*">All sources</option>' +
-        [...set].sort().map(s => `<option>${escapeHtml(s)}</option>`).join('');
-      render();
+        const a = document.createElement('a');
+        a.href = it.link; a.target='_blank'; a.rel='noopener';
+        a.className='title';
+        a.textContent = it.title || '(no title)';
+
+        const meta = document.createElement('div');
+        meta.className='meta';
+        meta.textContent = `${it.source || it.feed || ''} • ${fmtLocal(it.published || it.updated)}`;
+
+        card.appendChild(a);
+        card.appendChild(meta);
+        feedEl.appendChild(card);
+      });
     }
 
-    // Auto-refresh every 5 minutes
-    setInterval(load, 5*60*1000);
+    function applyFilter(all){
+      const src = sourceSelect.value;
+      const list = src ? all.filter(i => (i.source || i.feed) === src) : all;
+      renderItems(list);
+    }
 
-    // Keep button label constant; only toggle a CSS class (no layout jump)
-    els.songBtn.addEventListener('click', () => {
-      if (els.song.paused){ els.song.play(); els.songBtn.setAttribute('aria-pressed','true'); els.songBtn.classList.add('playing'); }
-      else { els.song.pause(); els.songBtn.setAttribute('aria-pressed','false'); els.songBtn.classList.remove('playing'); }
-    });
+    async function loadAndRender(initial=false){
+      try{
+        const r = await fetch('items.json?ts='+Date.now(), {cache:'no-store'});
+        const data = await r.json();
+        renderLinks(data.links || []);
+        buildSourceDropdown(data.items || [], data.sources || []);
+        updatedEl.textContent = data.updated ? fmtLocal(data.updated) : '—';
+        renderItems(data.items || []);
+        if (initial) sourceSelect.addEventListener('change', () => applyFilter(data.items || []));
+      }catch{
+        updatedEl.textContent = 'load failed';
+      }
+    }
 
-    buildLinks();
-    load();
+    loadAndRender(true);
+    setInterval(() => loadAndRender(false), 5*60*1000);
   </script>
 </body>
 </html>
