@@ -1,15 +1,7 @@
 {
-  "updated_iso": "2025-09-08T16:45:21.619923+00:00",
+  "updated_iso": "2025-09-08T16:56:30.363844+00:00",
   "count": 7,
   "items": [
-    {
-      "id": "https-onefootdown-com-notre-dame-fighting-irish-football-76991-notre-dame-fighting-irish-vs-texas-am-aggies-depth-charts",
-      "title": "Notre Dame Fighting Irish VS Texas A&M Aggies: Depth Charts",
-      "link": "https://onefootdown.com/notre-dame-fighting-irish-football/76991/notre-dame-fighting-irish-vs-texas-am-aggies-depth-charts",
-      "source": "One Foot Down",
-      "ts": 1757349707.0,
-      "published_iso": "2025-09-08T16:41:47+00:00"
-    },
     {
       "id": "https-onefootdown-com-notre-dame-fighting-irish-football-76987-notre-dame-vs-texas-am-weather-report",
       "title": "Notre Dame VS Texas A&M: Weather Report",
@@ -57,6 +49,14 @@
       "source": "One Foot Down",
       "ts": 1756981341.0,
       "published_iso": "2025-09-04T10:22:21+00:00"
+    },
+    {
+      "id": "https-onefootdown-com-notre-dame-charity-good-works-76900-fighting-hunger-the-irish-way",
+      "title": "Fighting Hunger, the Irish Way",
+      "link": "https://onefootdown.com/notre-dame-charity-good-works/76900/fighting-hunger-the-irish-way",
+      "source": "One Foot Down",
+      "ts": 1756980301.0,
+      "published_iso": "2025-09-04T10:05:01+00:00"
     }
   ]
 }
